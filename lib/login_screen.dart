@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/signup_screen.dart';
 import 'package:ripal_design/forgot_password_screen.dart';
+import 'package:ripal_design/resource/custom_text_field.dart';
+import 'package:ripal_design/resource/custom_button.dart';
+import 'package:ripal_design/client_dashborad.dart';
 
 class login_Screen extends StatefulWidget {
   const login_Screen({super.key});
@@ -11,8 +14,8 @@ class login_Screen extends StatefulWidget {
 
 class _login_ScreenState extends State<login_Screen> {
   final Color primaryColor = const Color(0xFF9E4723);
-  bool _obscureText = true;
-
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,84 +88,20 @@ class _login_ScreenState extends State<login_Screen> {
                       const SizedBox(height: 24),
 
                       // Email Field
-                      const Text(
-                        'EMAIL ADDRESS',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
+                      CustomTextField(
+                        label: 'EMAIL ADDRESS',
+                        hintText: 'name@architecture.com',
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: 'name@architecture.com',
-                          hintStyle: TextStyle(color: Colors.grey.shade500),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primaryColor),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                        ),
+                        controller: _emailController,
                       ),
                       const SizedBox(height: 16),
 
                       // Password Field
-                      const Text(
-                        'PASSWORD',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: '........',
-                          hintStyle: TextStyle(
-                            color: Colors.grey.shade500,
-                            letterSpacing: 2,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primaryColor),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.grey.shade500,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
+                      CustomTextField(
+                        label: 'PASSWORD',
+                        hintText: '........',
+                        isPassword: true,
+                        controller: _passwordController,
                       ),
                       const SizedBox(height: 4),
 
@@ -197,34 +136,25 @@ class _login_ScreenState extends State<login_Screen> {
                       const SizedBox(height: 16),
 
                       // Sign In Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+                      CustomButton(
+                        text: 'Sign In',
+                        onPressed: () {
+                          if (_emailController.text.toString() ==
+                                  "client@gmail.com" &&
+                              _passwordController.text.toString() ==
+                                  "client123") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const Client_Dashborad()),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Invalid email or password'),
                               ),
-                              SizedBox(width: 8),
-                              Icon(Icons.arrow_forward, color: Colors.white),
-                            ],
-                          ),
-                        ),
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 16),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:ripal_design/resource/custom_text_field.dart';
+import 'package:ripal_design/resource/custom_button.dart';
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -74,83 +75,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         const SizedBox(height: 32),
 
-                        // Email Field Label
-                        const Text(
-                          'EMAIL ADDRESS',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
                         // Email Field
-                        TextField(
+                        CustomTextField(
+                          label: 'EMAIL ADDRESS',
+                          hintText: 'name@studio.com',
                           keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: 'name@studio.com',
-                            hintStyle: TextStyle(color: Colors.grey.shade500),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: primaryColor),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            suffixIcon: Icon(
-                              Icons.alternate_email,
-                              color: Colors.grey.shade400,
-                              size: 20,
-                            ),
+                          suffixIcon: Icon(
+                            Icons.alternate_email,
+                            color: Colors.grey.shade400,
+                            size: 20,
                           ),
                         ),
                         const SizedBox(height: 24),
 
                         // Send Reset Link Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Send Reset Link',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ],
-                            ),
-                          ),
+                        CustomButton(
+                          text: 'Send Reset Link',
+                          onPressed: () {},
                         ),
 
                         const Spacer(),
