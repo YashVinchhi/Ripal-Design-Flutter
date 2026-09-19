@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/client_dashborad.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/resource/contact_info_row.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/resource/section_header.dart';
+import 'package:ripal_design/screen/client_project_view.dart';
+import 'package:ripal_design/screen/client_settings.dart';
 
 class ClientContactus extends StatefulWidget {
   const ClientContactus({super.key});
@@ -41,35 +43,31 @@ class _ClientContactusState extends State<ClientContactus> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F2),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.grid_view_outlined, color: titleColor),
-          onPressed: () {},
-        ),
-        title: Text(
-          'Ripal Design',
-          style: TextStyle(
-            color: titleColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        titleSpacing: -5.5,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              radius: 18,
-            ),
-          ),
-        ],
-      ),
+    return ClientScaffold(
+      currentIndex: _currentIndex,
+      onFabPressed: () {},
+      onNavTap: (index) {
+        if (index == _currentIndex) return;
+        if (index == 0) {
+          Navigator.pop(context); // Go back to Dashboard
+          return;
+        }
+        if (index == 1) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientProjectView()),
+          );
+          return;
+        }
+        if (index == 3) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientSettings()),
+          );
+          return;
+        }
+        setState(() => _currentIndex = index);
+      },
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -99,15 +97,7 @@ class _ClientContactusState extends State<ClientContactus> {
               const SizedBox(height: 32),
 
               // ─── Form Section ─────────────────────────────
-              Text(
-                'Start a Conversation',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: titleColor,
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SectionHeader(title: 'START A CONVERSATION'),
 
               // Full Name
               CustomTextField(
@@ -142,11 +132,11 @@ class _ClientContactusState extends State<ClientContactus> {
               ),
               const SizedBox(height: 40),
 
-              // ─── Divider ──────────────────────────────────
+              // ─── Divider ──────────────────────────────
               Divider(color: Colors.grey.shade200, thickness: 1),
               const SizedBox(height: 28),
 
-              // ─── Contact Info ─────────────────────────────
+              // ─── Contact Info ──────────────────────────
               const ContactInfoRow(
                 icon: Icons.phone_outlined,
                 label: 'CALL US',
@@ -171,25 +161,6 @@ class _ClientContactusState extends State<ClientContactus> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: titleColor,
-        shape: const CircleBorder(),
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if(index == 0){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> Client_Dashborad()));
-          }
-          setState(() {
-            _currentIndex = index;
-          });
-        },
       ),
     );
   }

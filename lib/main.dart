@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/login_screen.dart';
-import 'package:ripal_design/splashscreen.dart';
+import 'package:ripal_design/screen/splashscreen.dart';
 
 void main() {
   runApp(const MainApp());

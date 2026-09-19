@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/signup_screen.dart';
-import 'package:ripal_design/forgot_password_screen.dart';
+import 'package:ripal_design/screen/signup_screen.dart';
+import 'package:ripal_design/screen/forgot_password_screen.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
-import 'package:ripal_design/client_dashborad.dart';
+import 'package:ripal_design/screen/client_dashborad.dart';
 
 class login_Screen extends StatefulWidget {
   const login_Screen({super.key});
@@ -145,7 +145,9 @@ class _login_ScreenState extends State<login_Screen> {
                                   "client123") {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Client_Dashborad()),
+                              MaterialPageRoute(
+                                builder: (context) => const Client_Dashborad(),
+                              ),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

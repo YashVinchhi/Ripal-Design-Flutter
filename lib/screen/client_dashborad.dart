@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/portfolio_card.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/client_contactus.dart';
+import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/screen/client_contactus.dart';
+import 'package:ripal_design/screen/client_project_view.dart';
+import 'package:ripal_design/screen/client_applay.dart';
+import 'package:ripal_design/screen/client_settings.dart';
 
 class Client_Dashborad extends StatefulWidget {
   const Client_Dashborad({super.key});
@@ -11,41 +14,44 @@ class Client_Dashborad extends StatefulWidget {
 }
 
 class _Client_DashboradState extends State<Client_Dashborad> {
-  final Color titleColor = const Color(0xFF5A0000); // Dark maroon
-  final Color textColor = const Color(0xFF4A1009);
+  final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F2), // Very light cream background
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.grid_view_outlined, color: titleColor),
-          onPressed: () {},
-        ),
-        title: Text(
-          'Ripal Design',
-          style: TextStyle(
-            color: titleColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              radius: 18,
-            ),
-          ),
-        ],
-        titleSpacing: -5.5,
-      ),
+    return ClientScaffold(
+      currentIndex: _currentIndex,
+      onFabPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientApplay()),
+        );
+      },
+      onNavTap: (index) {
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientProjectView()),
+          );
+          return;
+        }
+        if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientContactus()),
+          );
+          return;
+        }
+        if (index == 3) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientSettings()),
+          );
+          return;
+        }
+        setState(() => _currentIndex = index);
+      },
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -154,31 +160,6 @@ class _Client_DashboradState extends State<Client_Dashborad> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: titleColor,
-        shape: const CircleBorder(),
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ClientContactus(),
-              ),
-            );
-            return;
-          }
-          setState(() {
-            _currentIndex = index;
-          });
-        },
       ),
     );
   }
