@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/screen/login_screen.dart';
-import 'package:ripal_design/screen/client_dashborad.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (isLoggedIn) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Client_Dashborad()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
       } else {
         Navigator.pushReplacement(

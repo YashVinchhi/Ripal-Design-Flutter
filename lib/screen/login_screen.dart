@@ -4,7 +4,7 @@ import 'package:ripal_design/screen/signup_screen.dart';
 import 'package:ripal_design/screen/forgot_password_screen.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
-import 'package:ripal_design/screen/client_dashborad.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 
 class login_Screen extends StatefulWidget {
   const login_Screen({super.key});
@@ -148,17 +148,33 @@ class _login_ScreenState extends State<login_Screen> {
                             await prefs.setBool('isLoggedIn', true);
                             await prefs.setString('userName', 'Rachit');
                             await prefs.setString('userEmail', _emailController.text);
-                            
+                            await prefs.setString('role', 'client');
+
                             if (!context.mounted) return;
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Client_Dashborad(),
+                                builder: (context) => const DashboardScreen(),
+                              ),
+                            );
+                          } else if (_emailController.text.toString() ==
+                                  "admin@gmail.com" &&
+                              _passwordController.text.toString() ==
+                                  "admin123") {
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setBool('isLoggedIn', true);
+                            await prefs.setString('role', 'admin');
+
+                            if (!context.mounted) return;
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DashboardScreen(),
                               ),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text('Invalid email or password'),
                               ),
                             );

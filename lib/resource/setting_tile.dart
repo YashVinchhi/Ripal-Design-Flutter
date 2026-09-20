@@ -51,7 +51,12 @@ class SettingTile extends StatelessWidget {
                 ],
               ),
             ),
-            trailing ?? Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
+            trailing ??
+                Icon(
+                  Icons.chevron_right,
+                  color: Colors.grey.shade400,
+                  size: 20,
+                ),
           ],
         ),
       ),

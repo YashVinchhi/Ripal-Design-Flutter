@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/project_card.dart';
-import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/screen/client_contactus.dart';
-import 'package:ripal_design/screen/client_settings.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 
 class ClientProjectView extends StatefulWidget {
   const ClientProjectView({super.key});
@@ -102,7 +102,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
   Widget build(BuildContext context) {
     final filtered = _filteredProjects;
 
-    return ClientScaffold(
+    return MainScaffold(
       currentIndex: _currentIndex,
       onFabPressed: () {},
       onNavTap: (index) {
@@ -121,7 +121,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
         if (index == 3) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ClientSettings()),
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
           );
           return;
         }

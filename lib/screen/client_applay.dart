@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
-import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/section_header.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
 import 'package:ripal_design/screen/client_contactus.dart';
@@ -42,7 +42,7 @@ class _ClientApplayState extends State<ClientApplay> {
 
   @override
   Widget build(BuildContext context) {
-    return ClientScaffold(
+    return MainScaffold(
       currentIndex: _currentIndex,
       onFabPressed: () {},
       onNavTap: (index) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
+
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -9,7 +10,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final Color primaryColor = const Color(0xFF9E4723);
+  final Color primaryColor = const Color(0xFF94180C);
   final Color titleColor = const Color(0xFF4A1009); // Dark maroon for titles
 
   @override
@@ -89,10 +90,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         const SizedBox(height: 24),
 
                         // Send Reset Link Button
-                        CustomButton(
-                          text: 'Send Reset Link',
-                          onPressed: () {},
-                        ),
+                        CustomButton(text: 'Send Reset Link', onPressed: () {}),
 
                         const Spacer(),
 

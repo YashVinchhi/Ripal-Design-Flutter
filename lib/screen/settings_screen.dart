@@ -1,79 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
-import 'package:ripal_design/screen/client_dashborad.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
 import 'package:ripal_design/screen/client_contactus.dart';
 import 'package:ripal_design/screen/login_screen.dart';
+import 'package:ripal_design/screen/admin_leave_screen.dart';
+import 'package:ripal_design/screen/placeholder_screen.dart';
 
-class ClientSettings extends StatefulWidget {
-  const ClientSettings({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<ClientSettings> createState() => _ClientSettingsState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _ClientSettingsState extends State<ClientSettings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   static const Color _primaryColor = Color(0xFF5A0000); // Maroon
 
   bool _pushNotifications = true;
   bool _emailReports = false;
-
-  String userName = 'Your Name';
-  String userEmail = 'youremail@example.com';
+  String role = 'client';
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadRole();
   }
 
-  Future<void> _loadUserData() async {
+  Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userName = prefs.getString('userName') ?? 'Your Name';
-      userEmail = prefs.getString('userEmail') ?? 'youremail@example.com';
+      role = prefs.getString('role') ?? 'client';
     });
+  }
+
+  void _onNavTap(int index) {
+    if (role == 'admin') {
+      if (index == 0) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+        return;
+      }
+      if (index == 1) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+        return;
+      }
+      if (index == 2) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const PlaceholderScreen(title: 'Finance')));
+        return;
+      }
+    } else {
+      if (index == 0) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+        return;
+      }
+      if (index == 1) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientProjectView()));
+        return;
+      }
+      if (index == 2) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientContactus()));
+        return;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ClientScaffold(
+    return MainScaffold(
       currentIndex: 3,
       appBarTitle: 'Settings',
       appBarLeading: IconButton(
         icon: const Icon(Icons.close, color: _primaryColor),
         onPressed: () => Navigator.pop(context),
       ),
-      onNavTap: (index) {
-        // if (index == 3) return; // Already on Settings
-
-        if (index == 0) {
-          // Instead of pop, explicitly go back to Dashboard to avoid closing the app
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const Client_Dashborad()),
-            // (route) => false,
-          );
-          return;
-        }
-        if (index == 1) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ClientProjectView()),
-          );
-          return;
-        }
-        if (index == 2) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ClientContactus()),
-          );
-          return;
-        }
-      },
+      onNavTap: _onNavTap,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -83,8 +87,7 @@ class _ClientSettingsState extends State<ClientSettings> {
             left: 24.0,
             right: 24.0,
             top: 8.0,
-            bottom:
-                100.0, // Extra padding so content isn't hidden behind the bottom nav bar
+            bottom: 100.0, 
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,7 +104,7 @@ class _ClientSettingsState extends State<ClientSettings> {
                       backgroundColor: const Color(0xFFFFF0E5),
                       child: ClipOval(
                         child: Image.network(
-                          'https://upload.wikimedia.org/wikipedia/commons/a/ac/Transparent_square.png', // Fallback transparent grid
+                          'https://upload.wikimedia.org/wikipedia/commons/a/ac/Transparent_square.png',
                           width: 84,
                           height: 84,
                           fit: BoxFit.cover,
@@ -117,7 +120,7 @@ class _ClientSettingsState extends State<ClientSettings> {
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF9E4723), // Brown pencil badge
+                        color: Color(0xFF9E4723), 
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -131,7 +134,7 @@ class _ClientSettingsState extends State<ClientSettings> {
               ),
               const SizedBox(height: 16),
               Text(
-                userName,
+                role == 'admin' ? 'Admin User' : 'Client Name',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -140,7 +143,7 @@ class _ClientSettingsState extends State<ClientSettings> {
               ),
               const SizedBox(height: 4),
               Text(
-                userEmail,
+                role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com',
                 style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               ),
               const SizedBox(height: 32),
@@ -164,6 +167,18 @@ class _ClientSettingsState extends State<ClientSettings> {
                     title: 'Security & Password',
                     onTap: () {},
                   ),
+                  if (role == 'admin') ...[
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Color(0xFFF5F5F5),
+                    ),
+                    SettingTile(
+                      icon: Icons.business_outlined,
+                      title: 'Office Configuration',
+                      onTap: () {},
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 24),
@@ -269,7 +284,6 @@ class _ClientSettingsState extends State<ClientSettings> {
                     await prefs.clear();
                     
                     if (!context.mounted) return;
-                    // Explicitly route to login screen and clear the stack
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const login_Screen(),
@@ -300,11 +314,6 @@ class _ClientSettingsState extends State<ClientSettings> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              Text(
-                'Logged in as $userEmail',
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
-              ),
               const SizedBox(height: 32),
             ],
           ),

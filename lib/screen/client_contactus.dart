@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/resource/contact_info_row.dart';
-import 'package:ripal_design/resource/client_scaffold.dart';
+import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/section_header.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
-import 'package:ripal_design/screen/client_settings.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 
 class ClientContactus extends StatefulWidget {
   const ClientContactus({super.key});
@@ -43,7 +43,7 @@ class _ClientContactusState extends State<ClientContactus> {
 
   @override
   Widget build(BuildContext context) {
-    return ClientScaffold(
+    return MainScaffold(
       currentIndex: _currentIndex,
       onFabPressed: () {},
       onNavTap: (index) {
@@ -62,7 +62,7 @@ class _ClientContactusState extends State<ClientContactus> {
         if (index == 3) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ClientSettings()),
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
           );
           return;
         }

@@ -4,11 +4,7 @@ class SettingGroup extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const SettingGroup({
-    super.key,
-    required this.title,
-    required this.children,
-  });
+  const SettingGroup({super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +29,7 @@ class SettingGroup extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
