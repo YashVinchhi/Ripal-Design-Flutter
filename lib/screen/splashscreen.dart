@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/screen/login_screen.dart';
+import 'package:ripal_design/screen/client_dashborad.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,12 +15,26 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to your NextScreen after 3 seconds
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => login_Screen()),
-      );
+      if (!mounted) return;
+      if (isLoggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Client_Dashborad()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const login_Screen()),
+        );
+      }
     });
   }
 
@@ -61,12 +77,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 230),
-                  // Replace with: Image.asset('assets/images/logo.png', width: 140)
-                  Image.network(
-                    'https://via.placeholder.com/150', // placeholder
+                  Image.asset(
+                    'assets/logo/Logo.png',
                     width: 140,
                     height: 140,
-                    color: primaryColor,
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.architecture,
                       size: 110,

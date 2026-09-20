@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/screen/signup_screen.dart';
 import 'package:ripal_design/screen/forgot_password_screen.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
@@ -138,12 +139,16 @@ class _login_ScreenState extends State<login_Screen> {
                       // Sign In Button
                       CustomButton(
                         text: 'Sign In',
-                        onPressed: () {
+                        onPressed: () async {
                           if (_emailController.text.toString() ==
                                   "client@gmail.com" &&
                               _passwordController.text.toString() ==
                                   "client123") {
-                            Navigator.push(
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setBool('isLoggedIn', true);
+                            
+                            if (!context.mounted) return;
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const Client_Dashborad(),
