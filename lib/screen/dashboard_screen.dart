@@ -267,12 +267,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Projects', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titleColor)),
-            Row(
-              children: [
-                Text('EXPLORE PROJECTS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
-                const SizedBox(width: 4),
-                Icon(Icons.arrow_forward, size: 16, color: Colors.grey.shade700),
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                );
+              },
+              child: Row(
+                children: [
+                  Text('EXPLORE PROJECTS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
+                  const SizedBox(width: 4),
+                  Icon(Icons.arrow_forward, size: 16, color: Colors.grey.shade700),
+                ],
+              ),
             ),
           ],
         ),

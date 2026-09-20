@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/project_card.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/client_contactus.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/screen/admin_leave_screen.dart';
+import 'package:ripal_design/screen/admin_finance_screen.dart';
+import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/client_applay.dart';
 
 class ClientProjectView extends StatefulWidget {
   const ClientProjectView({super.key});
@@ -15,6 +21,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
 
+  String role = 'client';
   int _currentIndex = 1;
   String _selectedFilter = 'ALL PROJECTS';
   String _searchQuery = '';
@@ -79,6 +86,25 @@ class _ClientProjectViewState extends State<ClientProjectView> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadRole();
+  }
+
+  Future<void> _loadRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loadedRole = prefs.getString('role') ?? 'client';
+    setState(() {
+      role = loadedRole;
+      if (role == 'admin') {
+        _currentIndex = -1;
+      } else {
+        _currentIndex = 1;
+      }
+    });
+  }
+
   List<Map<String, dynamic>> get _filteredProjects {
     return _projects.where((p) {
       final matchesFilter =
@@ -98,35 +124,83 @@ class _ClientProjectViewState extends State<ClientProjectView> {
     super.dispose();
   }
 
+  void _onNavTap(int index) {
+    if (index == 0) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+        );
+      }
+      return;
+    }
+
+    if (role == 'admin') {
+      if (index == 1) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminLeaveScreen()),
+        );
+        return;
+      }
+      if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminFinanceScreen()),
+        );
+        return;
+      }
+      if (index == 3) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
+        return;
+      }
+    } else {
+      if (index == 1) return;
+      if (index == 2) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientContactus()),
+        );
+        return;
+      }
+      if (index == 3) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
+        return;
+      }
+    }
+  }
+
+  void _onFabPressed() {
+    if (role == 'admin') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminCreateProject()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientApplay()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final filtered = _filteredProjects;
 
     return MainScaffold(
+      appBarTitle: 'Projects',
       currentIndex: _currentIndex,
-      onFabPressed: () {},
-      onNavTap: (index) {
-        if (index == _currentIndex) return;
-        if (index == 0) {
-          Navigator.pop(context); // Go back to Dashboard
-          return;
-        }
-        if (index == 2) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ClientContactus()),
-          );
-          return;
-        }
-        if (index == 3) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const SettingsScreen()),
-          );
-          return;
-        }
-        setState(() => _currentIndex = index);
-      },
+      onFabPressed: _onFabPressed,
+      onNavTap: _onNavTap,
       body: SafeArea(
         child: Column(
           children: [
