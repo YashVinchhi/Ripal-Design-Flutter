@@ -11,7 +11,6 @@ import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
 import 'package:ripal_design/screen/admin_user_management_screen.dart';
-import 'package:ripal_design/screen/placeholder_screen.dart';
 
 import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_invoice_screen.dart';
@@ -250,6 +249,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           value: '15',
           topRightText: '48 Active',
           topRightColor: const Color(0xFF9E4723),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ClientProjectView()),
+            );
+          },
         ),
         const SizedBox(height: 16),
         _buildMetricCard(
@@ -268,18 +273,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Text('Projects', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titleColor)),
             GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ClientProjectView()),
                 );
               },
-              child: Row(
-                children: [
-                  Text('EXPLORE PROJECTS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
-                  const SizedBox(width: 4),
-                  Icon(Icons.arrow_forward, size: 16, color: Colors.grey.shade700),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Text('EXPLORE PROJECTS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
+                    const SizedBox(width: 4),
+                    Icon(Icons.arrow_forward, size: 16, color: Colors.grey.shade700),
+                  ],
+                ),
               ),
             ),
           ],
@@ -290,9 +299,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _buildProjectCard('Skyline Plaza', 'Phase 3: Structural Framework', '75% Done', 0.75, 'ACTIVE'),
+              _buildProjectCard(
+                'Skyline Plaza',
+                'Phase 3: Structural Framework',
+                '75% Done',
+                0.75,
+                'ACTIVE',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                  );
+                },
+              ),
               const SizedBox(width: 16),
-              _buildProjectCard('Azure Heights', 'Phase 2: Foundation', '30% Done', 0.3, 'REVIEW', badgeColor: const Color(0xFF9E4723)),
+              _buildProjectCard(
+                'Azure Heights',
+                'Phase 2: Foundation',
+                '30% Done',
+                0.3,
+                'REVIEW',
+                badgeColor: const Color(0xFF9E4723),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -347,109 +381,126 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String value,
     required String topRightText,
     required Color topRightColor,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: Text(topRightText, style: TextStyle(color: topRightColor, fontWeight: FontWeight.bold, fontSize: 14)),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: iconBgColor,
-                  borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Text(topRightText, style: TextStyle(color: topRightColor, fontWeight: FontWeight.bold, fontSize: 14)),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: iconBgColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(iconData, color: Colors.black87, size: 24),
                 ),
-                child: Icon(iconData, color: Colors.black87, size: 24),
-              ),
-              const SizedBox(height: 20),
-              Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: titleColor)),
-            ],
-          ),
-        ],
+                const SizedBox(height: 20),
+                Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.0)),
+                const SizedBox(height: 8),
+                Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: titleColor)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProjectCard(String title, String subtitle, String progressText, double progress, String badgeText, {Color badgeColor = Colors.black87}) {
-    return Container(
-      width: 240,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 120,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                child: Center(
-                  child: Icon(Icons.image_outlined, size: 40, color: Colors.grey.shade400),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                left: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: badgeColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(badgeText, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildProjectCard(
+    String title,
+    String subtitle,
+    String progressText,
+    double progress,
+    String badgeText, {
+    Color badgeColor = Colors.black87,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 240,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor)),
-                    Text(progressText, style: const TextStyle(fontSize: 10, color: Colors.grey)),
-                  ],
+                Container(
+                  height: 120,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF2F2F2),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  child: Center(
+                    child: Icon(Icons.image_outlined, size: 40, color: Colors.grey.shade400),
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: const Color(0xFFFADCDC),
-                  valueColor: AlwaysStoppedAnimation<Color>(titleColor),
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(3),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: badgeColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(badgeText, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor)),
+                      Text(progressText, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: const Color(0xFFFADCDC),
+                    valueColor: AlwaysStoppedAnimation<Color>(titleColor),
+                    minHeight: 6,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
