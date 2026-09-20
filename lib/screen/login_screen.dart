@@ -140,30 +140,55 @@ class _login_ScreenState extends State<login_Screen> {
                       CustomButton(
                         text: 'Sign In',
                         onPressed: () async {
-                          if (_emailController.text.toString() ==
-                                  "rachit@gmail.com" &&
-                              _passwordController.text.toString() ==
-                                  "rachit123") {
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.setBool('isLoggedIn', true);
-                            await prefs.setString('userName', 'Rachit');
-                            await prefs.setString('userEmail', _emailController.text);
-                            await prefs.setString('role', 'client');
+                          final email = _emailController.text.trim().toLowerCase();
+                          final password = _passwordController.text.trim();
 
-                            if (!context.mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DashboardScreen(),
-                              ),
-                            );
-                          } else if (_emailController.text.toString() ==
-                                  "admin@gmail.com" &&
-                              _passwordController.text.toString() ==
-                                  "admin123") {
+                          final users = {
+                            'rohan@gmail.com': {
+                              'password': 'zxcv',
+                              'role': 'client',
+                              'name': 'Rohan',
+                            },
+                            'niku@gmail.com': {
+                              'password': 'zxcv',
+                              'role': 'worker',
+                              'name': 'Niku',
+                            },
+                            'rachit@gmail.com': {
+                              'password': 'zxcv',
+                              'role': 'employee',
+                              'name': 'Rachit',
+                            },
+                            'yash@gmail.com': {
+                              'password': 'zxcv',
+                              'role': 'admin',
+                              'name': 'Yash',
+                            },
+                            'admin@gmail.com': {
+                              'password': 'admin123',
+                              'role': 'admin',
+                              'name': 'Admin',
+                            },
+                          };
+
+                          bool isValidUser = false;
+                          Map<String, String>? userData;
+
+                          if (users.containsKey(email)) {
+                            final user = users[email]!;
+                            if (user['password'] == password ||
+                                (email == 'rachit@gmail.com' && password == 'rachit123')) {
+                              isValidUser = true;
+                              userData = user;
+                            }
+                          }
+
+                          if (isValidUser && userData != null) {
                             final prefs = await SharedPreferences.getInstance();
                             await prefs.setBool('isLoggedIn', true);
-                            await prefs.setString('role', 'admin');
+                            await prefs.setString('userName', userData['name']!);
+                            await prefs.setString('userEmail', email);
+                            await prefs.setString('role', userData['role']!);
 
                             if (!context.mounted) return;
                             Navigator.pushReplacement(

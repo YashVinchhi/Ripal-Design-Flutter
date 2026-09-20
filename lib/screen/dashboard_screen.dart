@@ -29,17 +29,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final Color primaryColor = const Color(0xFF9E4723);
   int _currentIndex = 0;
   String role = 'client';
+  String userName = '';
 
   @override
   void initState() {
     super.initState();
-    _loadRole();
+    _loadUserData();
   }
 
-  Future<void> _loadRole() async {
+  Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       role = prefs.getString('role') ?? 'client';
+      userName = prefs.getString('userName') ?? '';
     });
   }
 
@@ -216,7 +218,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Welcome, Rajibul',
+          'Welcome, ${userName.isNotEmpty ? userName : 'Yash'}',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: titleColor),
         ),
         const SizedBox(height: 8),
