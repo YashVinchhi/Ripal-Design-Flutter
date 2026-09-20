@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/admin_finance_screen.dart';
+import 'package:ripal_design/screen/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminLeaveScreen extends StatefulWidget {
   const AdminLeaveScreen({super.key});
@@ -19,7 +22,17 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
       return;
     }
-    // Handle other tabs...
+    if (index == 1) {
+      return;
+    }
+    if (index == 2) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      return;
+    }
+    if (index == 3) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      return;
+    }
     setState(() {
       _currentIndex = index;
     });
@@ -34,6 +47,15 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
         onPressed: () {},
       ),
       appBarActions: [
+        IconButton(
+          icon: Icon(Icons.history, color: primaryColor),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()),
+            );
+          },
+        ),
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: CircleAvatar(
@@ -95,13 +117,27 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Priority Requests', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor)),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE5CCC9)),
-                      borderRadius: BorderRadius.circular(8),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.history, color: Colors.white, size: 14),
+                          SizedBox(width: 4),
+                          Text('Leave History', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                        ],
+                      ),
                     ),
-                    child: Text('Filter All', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
                   ),
                 ],
               ),
@@ -112,7 +148,7 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
               _buildLeaveRequestCard('Yash Vinchhi', 'Lead Architect • Wellness Day', 'Oct 18 (1 day)'),
               const SizedBox(height: 16),
               _buildLeaveRequestCard('Rajibul Sheikh', 'Designer • Annual Leave', 'Oct 20 - Oct 27 (8 days)'),
-              
+
               const SizedBox(height: 40),
             ],
           ),

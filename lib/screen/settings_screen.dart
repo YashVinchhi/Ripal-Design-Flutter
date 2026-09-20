@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
+import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
-import 'package:ripal_design/screen/client_contactus.dart';
-import 'package:ripal_design/screen/login_screen.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/placeholder_screen.dart';
+import 'package:ripal_design/screen/admin_finance_screen.dart';
+import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/client_applay.dart';
+import 'package:ripal_design/screen/edit_profile_screen.dart';
+import 'package:ripal_design/screen/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,11 +21,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const Color _primaryColor = Color(0xFF5A0000); // Maroon
+  final Color primaryColor = const Color(0xFF5A0000);
+  final Color salmonColor = const Color(0xFFE07A5F);
 
   bool _pushNotifications = true;
   bool _emailReports = false;
-  String role = 'client';
+  String role = 'admin';
+  String userName = '';
+  String userEmail = '';
 
   @override
   void initState() {
@@ -34,8 +39,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      role = prefs.getString('role') ?? 'client';
+      role = prefs.getString('role') ?? 'admin';
+      userName = prefs.getString('userName') ?? (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User');
+      userEmail = prefs.getString('userEmail') ?? (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com');
     });
+  }
+
+  void _openEditProfile() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+    );
+    if (result == true) {
+      _loadRole();
+    }
   }
 
   void _onNavTap(int index) {
@@ -49,7 +66,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return;
       }
       if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const PlaceholderScreen(title: 'Finance')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+        return;
+      }
+      if (index == 3) {
         return;
       }
     } else {
@@ -62,9 +82,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return;
       }
       if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientContactus()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
         return;
       }
+      if (index == 3) {
+        return;
+      }
+    }
+  }
+
+  void _onFabPressed() {
+    if (role == 'admin') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
     }
   }
 
@@ -73,78 +104,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return MainScaffold(
       currentIndex: 3,
       appBarTitle: 'Settings',
-      appBarLeading: IconButton(
-        icon: const Icon(Icons.close, color: _primaryColor),
-        onPressed: () => Navigator.pop(context),
-      ),
       onNavTap: _onNavTap,
+      onFabPressed: _onFabPressed,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
-          padding: const EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
-            top: 8.0,
-            bottom: 100.0, 
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 16),
-
-              // ─── Profile Avatar ────────────────────────────────────
-              Center(
-                child: Stack(
-                  alignment: Alignment.bottomRight,
+              // ─── PROFILE HEADER ─────────────────────────────────
+              GestureDetector(
+                onTap: _openEditProfile,
+                child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 42,
-                      backgroundColor: const Color(0xFFFFF0E5),
-                      child: ClipOval(
-                        child: Image.network(
-                          'https://upload.wikimedia.org/wikipedia/commons/a/ac/Transparent_square.png',
-                          width: 84,
-                          height: 84,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
+                    Center(
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 44,
+                            backgroundColor: salmonColor.withOpacity(0.2),
+                            child: const CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Color(0xFFF5EBE6),
+                              child: Icon(
                                 Icons.person,
-                                size: 84,
-                                color: Colors.grey,
+                                size: 48,
+                                color: Color(0xFF5A0000),
                               ),
-                        ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF5A0000),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.edit,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF9E4723), 
-                        shape: BoxShape.circle,
+                    const SizedBox(height: 12),
+                    Text(
+                      userName.isNotEmpty ? userName : (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF2D2D2D),
                       ),
-                      child: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      userEmail.isNotEmpty ? userEmail : (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com'),
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                role == 'admin' ? 'Admin User' : 'Client Name',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF2D2D2D),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com',
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               ),
               const SizedBox(height: 32),
 
@@ -155,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingTile(
                     icon: Icons.person_outline,
                     title: 'Profile Information',
-                    onTap: () {},
+                    onTap: _openEditProfile,
                   ),
                   const Divider(
                     height: 1,
@@ -167,18 +189,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: 'Security & Password',
                     onTap: () {},
                   ),
-                  if (role == 'admin') ...[
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Color(0xFFF5F5F5),
-                    ),
-                    SettingTile(
-                      icon: Icons.business_outlined,
-                      title: 'Office Configuration',
-                      onTap: () {},
-                    ),
-                  ],
                 ],
               ),
               const SizedBox(height: 24),
@@ -210,14 +220,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 24),
 
-              // ─── PREFERENCES ──────────────────────────────────────
+              // ─── PREFERENCES ─────────────────────────────────────
               SettingGroup(
                 title: 'PREFERENCES',
                 children: [
                   SettingTile(
-                    icon: Icons.language,
-                    title: 'Language',
-                    subtitle: 'English (US)',
+                    icon: Icons.palette_outlined,
+                    title: 'Appearance',
+                    subtitle: 'Light theme',
                     onTap: () {},
                   ),
                   const Divider(
@@ -226,32 +236,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: Color(0xFFF5F5F5),
                   ),
                   SettingTile(
-                    icon: Icons.palette_outlined,
-                    title: 'Theme',
-                    subtitle: 'Light Mode',
+                    icon: Icons.language_outlined,
+                    title: 'Language',
+                    subtitle: 'English (US)',
                     onTap: () {},
                   ),
                 ],
               ),
               const SizedBox(height: 24),
 
-              // ─── SUPPORT ──────────────────────────────────────────
+              // ─── ABOUT & HELP ────────────────────────────────────
               SettingGroup(
-                title: 'SUPPORT',
+                title: 'ABOUT & HELP',
                 children: [
                   SettingTile(
                     icon: Icons.help_outline,
-                    title: 'Help Center',
-                    onTap: () {},
-                  ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingTile(
-                    icon: Icons.privacy_tip_outlined,
-                    title: 'Privacy Policy',
+                    title: 'Help & Support',
                     onTap: () {},
                   ),
                   const Divider(
@@ -261,60 +261,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SettingTile(
                     icon: Icons.info_outline,
-                    title: 'App Version',
-                    trailing: Text(
-                      'v0.0.0',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
+                    title: 'About Ripal Design',
+                    subtitle: 'Version 1.0.0',
                     onTap: () {},
                   ),
                 ],
               ),
               const SizedBox(height: 32),
 
-              // ─── LOG OUT ──────────────────────────────────────────
+              // ─── LOGOUT BUTTON ────────────────────────────────────
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () async {
+                    final navigator = Navigator.of(context);
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.clear();
-                    
-                    if (!context.mounted) return;
-                    Navigator.of(context).pushAndRemoveUntil(
+
+                    navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const login_Screen(),
                       ),
                       (route) => false,
                     );
                   },
-                  icon: const Icon(
-                    Icons.logout,
-                    color: Color(0xFF5A0000),
-                    size: 18,
-                  ),
+                  icon: const Icon(Icons.logout, color: Colors.red),
                   label: const Text(
-                    'Log Out',
+                    'Logout',
                     style: TextStyle(
-                      color: Color(0xFF5A0000),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Color(0xFFE0E0E0), width: 1),
+                    side: const BorderSide(color: Colors.red),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
             ],
           ),
         ),

@@ -10,11 +10,17 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.5.5
+  file_picker: ^8.1.7
+  pdf: ^3.11.1
+  printing: ^5.13.2
+  image_picker: ^1.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.4
+  image: ^4.3.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -22,8 +28,19 @@ flutter_launcher_icons:
   image_path: "assets/logo/Logo.png"
   min_sdk_android: 21
 
+flutter_native_splash:
+  color: "#FCE6E6"
+  image: assets/logo/splash_full.png
+  android_12:
+    image: assets/logo/splash_center.png
+    icon_background_color: "#FCE6E6"
+    color: "#FCE6E6"
+
 flutter:
   uses-material-design: true
 
   assets:
     - assets/logo/Logo.png
+    - assets/logo/Logo_android12.png
+    - assets/logo/splash_center.png
+    - assets/logo/splash_full.png

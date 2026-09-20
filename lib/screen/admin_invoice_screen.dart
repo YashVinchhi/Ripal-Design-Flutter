@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:printing/printing.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/screen/admin_create_invoice_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/screen/invoice_pdf_preview_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminInvoiceScreen extends StatefulWidget {
@@ -49,6 +51,69 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
   }
 
+  Future<void> _onSharePDF() async {
+    try {
+      final pdfBytes = await InvoicePdfHelper.generateInvoicePdf(
+        invoiceId: 'INV-2024-082',
+        clientName: 'Vanguard Properties',
+        totalAmount: '18,450.00',
+        issueDate: 'AUG 14, 2024',
+        dueDate: 'Sept 12, 2026',
+        status: 'PENDING',
+      );
+      await Printing.sharePdf(
+        bytes: pdfBytes,
+        filename: 'INV-2024-082.pdf',
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Sharing failed: $e'),
+            backgroundColor: _darkRed,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _onDownloadReceipt() async {
+    try {
+      final pdfBytes = await InvoicePdfHelper.generateInvoicePdf(
+        invoiceId: 'INV-2024-082',
+        clientName: 'Vanguard Properties',
+        totalAmount: '18,450.00',
+        issueDate: 'AUG 14, 2024',
+        dueDate: 'Sept 12, 2026',
+        status: 'PAID RECEIPT',
+      );
+
+      await Printing.layoutPdf(
+        onLayout: (format) async => pdfBytes,
+        name: 'INV-2024-082_Receipt.pdf',
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Receipt downloaded / saved successfully!'),
+            backgroundColor: _darkRed,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Download failed: $e'),
+            backgroundColor: _darkRed,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
@@ -57,38 +122,61 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
       onFabPressed: _onFabPressed,
       appBarTitle: 'Invoice',
       appBarLeading: IconButton(
-        icon: const Icon(Icons.grid_view_outlined, color: _darkRed, size: 24),
-        onPressed: () {},
+        icon: Icon(
+          Navigator.canPop(context) ? Icons.arrow_back : Icons.grid_view_outlined,
+          color: const Color(0xFF5A0000),
+        ),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        },
       ),
-      appBarActions: [
-        IconButton(
-          icon: const Icon(Icons.add_circle_outline, color: _darkRed, size: 24),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AdminCreateInvoiceScreen()),
-            );
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: CircleAvatar(
-            radius: 18,
-            backgroundColor: const Color(0xFFE0C0B0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.grey.shade200,
-              child: const Icon(Icons.person, color: _darkRed, size: 20),
-            ),
-          ),
-        ),
-      ],
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Studio Header Banner
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'RIPAL DESIGN STUDIO',
+                        style: TextStyle(
+                          color: _labelBrown,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Tax Invoice Statement',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline, color: Color(0xFF5A0000), size: 28),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AdminCreateInvoiceScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
               // Header Invoice ID & Pending Badge
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -319,7 +407,7 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: _onSharePDF,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _brownBtn,
                     elevation: 0,
@@ -346,7 +434,7 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
                 width: double.infinity,
                 height: 52,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: _onDownloadReceipt,
                   style: OutlinedButton.styleFrom(
                     backgroundColor: _cardPink,
                     side: const BorderSide(color: Color(0xFFE0C0B0), width: 1),

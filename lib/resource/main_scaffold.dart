@@ -41,7 +41,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      role = prefs.getString('role') ?? 'client';
+      role = prefs.getString('role') ?? 'admin';
     });
   }
 

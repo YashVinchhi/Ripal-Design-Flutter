@@ -42,7 +42,7 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
           const SizedBox(width: 48), // Space for FAB
           _buildNavItem(
-            icon: isAdmin ? Icons.money_outlined : Icons.description_outlined,
+            icon: isAdmin ? Icons.payments_outlined : Icons.description_outlined,
             label: isAdmin ? 'Finance' : 'Contact',
             index: 2,
           ),

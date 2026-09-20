@@ -53,25 +53,11 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
-      appBarTitle: 'FINANCE',
+      appBarTitle: 'Finance',
       appBarLeading: IconButton(
-        icon: const Icon(Icons.grid_view_outlined, color: _darkRed, size: 24),
+        icon: const Icon(Icons.grid_view_outlined, color: Color(0xFF5A0000)),
         onPressed: () {},
       ),
-      appBarActions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: CircleAvatar(
-            radius: 18,
-            backgroundColor: const Color(0xFFE0C0B0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.grey.shade200,
-              child: const Icon(Icons.person, color: _darkRed, size: 20),
-            ),
-          ),
-        ),
-      ],
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),

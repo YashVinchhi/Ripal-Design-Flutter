@@ -61,7 +61,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
               const SizedBox(height: 16),
               _buildStatCard(Icons.trending_up, 'NEW THIS WEEK', '+12%', const Color(0xFF0F3B68), iconBgColor: const Color(0xFFE6EEF5)),
               const SizedBox(height: 24),
-              
+
               // Filters
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -117,7 +117,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
                     const Divider(height: 1, color: Color(0xFFF2E6E3)),
                     _buildUserRow('Rajibul Sheikh', 'rajibul69@ripaldesign.com', 'ARCHITECT', const Color(0xFFFFF2EF), const Color(0xFF9E4723)),
                     const Divider(height: 1, color: Color(0xFFF2E6E3)),
-                    
+
                     // Pagination
                     Padding(
                       padding: const EdgeInsets.all(20.0),

@@ -57,23 +57,9 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
       onFabPressed: _onFabPressed,
       appBarTitle: 'File View',
       appBarLeading: IconButton(
-        icon: const Icon(Icons.grid_view_outlined, color: _darkRed, size: 24),
-        onPressed: () {},
+        icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
+        onPressed: () => Navigator.pop(context),
       ),
-      appBarActions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: CircleAvatar(
-            radius: 18,
-            backgroundColor: const Color(0xFFE0C0B0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.grey.shade200,
-              child: const Icon(Icons.person, color: _darkRed, size: 20),
-            ),
-          ),
-        ),
-      ],
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
@@ -92,7 +78,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                "Access your complete architectural documentation, site media, and structural blueprints for 'Ripal Design '.",
+                "Access your complete architectural documentation, site media, and structural blueprints for Ripal Design",
                 style: TextStyle(
                   color: Colors.grey.shade700,
                   fontSize: 13,
@@ -120,28 +106,31 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
               const SizedBox(height: 16),
 
               // Upload File Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _darkRed,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _darkRed,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
                   ),
-                ),
-                icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 18),
-                label: const Text(
-                  'Upload File',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                  icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 18),
+                  label: const Text(
+                    'Upload File',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),

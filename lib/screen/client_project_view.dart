@@ -8,6 +8,7 @@ import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/admin_project_detail_screen.dart';
 import 'package:ripal_design/screen/client_applay.dart';
 
 class ClientProjectView extends StatefulWidget {
@@ -21,7 +22,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
 
-  String role = 'client';
+  String role = 'admin';
   int _currentIndex = 1;
   String _selectedFilter = 'ALL PROJECTS';
   String _searchQuery = '';
@@ -34,7 +35,6 @@ class _ClientProjectViewState extends State<ClientProjectView> {
     'INTERIOR',
   ];
 
-  // Each project has a 'height' to create the staggered Pinterest masonry effect.
   final List<Map<String, dynamic>> _projects = [
     {
       'name': 'Verdian Heights',
@@ -94,7 +94,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
-    final loadedRole = prefs.getString('role') ?? 'client';
+    final loadedRole = prefs.getString('role') ?? 'admin';
     setState(() {
       role = loadedRole;
       if (role == 'admin') {
@@ -299,7 +299,6 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   /// Builds a 2-column Pinterest-style masonry grid without external packages.
   Widget _buildMasonryGrid(List<Map<String, dynamic>> items) {
-    // Split items into left (even indices) and right (odd indices) columns.
     final leftItems = <Map<String, dynamic>>[];
     final rightItems = <Map<String, dynamic>>[];
     for (int i = 0; i < items.length; i++) {
@@ -327,6 +326,21 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                         category: p['category'] as String,
                         year: p['year'] as String,
                         height: (p['height'] as num?)?.toDouble() ?? 200.0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminProjectDetailScreen(
+                                projectName: p['name'] as String,
+                                type: p['category'] as String,
+                                timeline: '${p['year']} - Present',
+                                clientName: 'Ripal Design Client',
+                                budget: '₹15,00,000',
+                                location: 'Architectural Studio',
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   )
@@ -337,7 +351,6 @@ class _ClientProjectViewState extends State<ClientProjectView> {
           Expanded(
             child: Column(
               children: [
-                // Offset the right column slightly for the Pinterest stagger feel
                 const SizedBox(height: 28),
                 ...rightItems.map(
                   (p) => Padding(
@@ -347,6 +360,21 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                       category: p['category'] as String,
                       year: p['year'] as String,
                       height: p['height'] as double,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdminProjectDetailScreen(
+                              projectName: p['name'] as String,
+                              type: p['category'] as String,
+                              timeline: '${p['year']} - Present',
+                              clientName: 'Ripal Design Client',
+                              budget: '₹15,00,000',
+                              location: 'Architectural Studio',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

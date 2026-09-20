@@ -16,6 +16,7 @@ import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_invoice_screen.dart';
 import 'package:ripal_design/screen/admin_file_view_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/admin_project_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -28,7 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
   int _currentIndex = 0;
-  String role = 'client';
+  String role = 'admin';
   String userName = '';
 
   @override
@@ -40,7 +41,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      role = prefs.getString('role') ?? 'client';
+      role = prefs.getString('role') ?? 'admin';
       userName = prefs.getString('userName') ?? '';
     });
   }
@@ -92,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onNavTap: _onNavTap,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: role == 'admin' 
+          padding: role == 'admin'
               ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
               : const EdgeInsets.all(24.0),
           child: role == 'admin' ? _buildAdminBody() : _buildClientBody(),
@@ -142,7 +143,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                );
+              },
               child: Row(
                 children: [
                   Column(
@@ -180,29 +186,74 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(height: 24),
 
         // Portfolio Cards
-        const PortfolioCard(
+        PortfolioCard(
           title: 'Sahara Retreat',
           value: '1.2L',
           badgeText: 'PLANNING',
-          badgeColor: Color(0xFF6C2B2B),
+          badgeColor: const Color(0xFF6C2B2B),
           progress: 0.35,
           progressText: '35% Completed',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminProjectDetailScreen(
+                  projectName: 'Sahara Retreat',
+                  clientName: 'Sahara Group',
+                  budget: '₹1,20,000',
+                  timeline: 'Oct 2023 - Dec 2024',
+                  type: 'Planning & Design',
+                  location: 'Resort District — Desert Hills',
+                ),
+              ),
+            );
+          },
         ),
-        const PortfolioCard(
+        PortfolioCard(
           title: 'The Vertical Garden',
           value: '2.8Cr',
           badgeText: 'CONSTRUCTION',
-          badgeColor: Color(0xFFA0604A),
+          badgeColor: const Color(0xFFA0604A),
           progress: 0.78,
           progressText: '78% Completed',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminProjectDetailScreen(
+                  projectName: 'The Vertical Garden',
+                  clientName: 'Eco Urban Developments',
+                  budget: '₹2,80,00,000',
+                  timeline: 'Jan 2023 - Dec 2024',
+                  type: 'Commercial Construction',
+                  location: 'Metropolitan Center',
+                ),
+              ),
+            );
+          },
         ),
-        const PortfolioCard(
+        PortfolioCard(
           title: 'Lake Obsidian',
           value: '8.4Cr',
           badgeText: 'FINISHING',
-          badgeColor: Color(0xFF3B5274),
+          badgeColor: const Color(0xFF3B5274),
           progress: 0.92,
           progressText: '92% Completed',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminProjectDetailScreen(
+                  projectName: 'Lake Obsidian',
+                  clientName: 'Obsidian Living Ltd',
+                  budget: '₹8,40,00,000',
+                  timeline: 'May 2022 - Aug 2024',
+                  type: 'Residential Luxury',
+                  location: 'Lakefront Sanctuary',
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -310,7 +361,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                    MaterialPageRoute(
+                      builder: (context) => const AdminProjectDetailScreen(
+                        projectName: 'Skyline Plaza',
+                        clientName: 'Vanguard Properties',
+                        budget: '₹2,50,000',
+                        timeline: 'Jan 2024 - Dec 2024',
+                        type: 'Commercial Architecture',
+                        location: 'Skyline Avenue — Phase 3',
+                      ),
+                    ),
                   );
                 },
               ),
@@ -325,7 +385,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                    MaterialPageRoute(
+                      builder: (context) => const AdminProjectDetailScreen(
+                        projectName: 'Azure Heights',
+                        clientName: 'Apex Real Estate',
+                        budget: '₹1,80,000',
+                        timeline: 'Mar 2024 - Nov 2024',
+                        type: 'Residential Luxury',
+                        location: 'Pacific Coast Highway — Bay Area',
+                      ),
+                    ),
                   );
                 },
               ),
@@ -363,7 +432,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _buildQuickAction(Icons.receipt_long_outlined, 'FINANCE', onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
             }),
-            _buildQuickAction(Icons.money_outlined, 'INVOICE', onTap: () {
+            _buildQuickAction(Icons.payments_outlined, 'INVOICE', onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminInvoiceScreen()));
             }),
             _buildQuickAction(Icons.settings_outlined, 'SETTINGS', onTap: () {
