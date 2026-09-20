@@ -94,6 +94,45 @@ class _login_ScreenState extends State<login_Screen> {
                         hintText: 'name@architecture.com',
                         keyboardType: TextInputType.emailAddress,
                         controller: _emailController,
+                        suffixIcon: IconButton(
+                          tooltip: 'Add @gmail.com',
+                          icon: Image.network(
+                            'https://cdn-icons-png.flaticon.com/512/2991/2991148.png',
+                            width: 20,
+                            height: 20,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                              Icons.g_mobiledata,
+                              color: Color(0xFF4285F4),
+                              size: 24,
+                            ),
+                          ),
+                          onPressed: () {
+                            final text = _emailController.text.trim();
+                            if (text.isEmpty) {
+                              _emailController.text = '@gmail.com';
+                              _emailController.selection =
+                                  TextSelection.fromPosition(
+                                const TextPosition(offset: 0),
+                              );
+                            } else if (!text.contains('@')) {
+                              _emailController.text = '$text@gmail.com';
+                              _emailController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                    offset: _emailController.text.length),
+                              );
+                            } else if (!text.endsWith('@gmail.com')) {
+                              final username = text.split('@').first;
+                              _emailController.text = '$username@gmail.com';
+                              _emailController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                    offset: _emailController.text.length),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       const SizedBox(height: 16),
 
