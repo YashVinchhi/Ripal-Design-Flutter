@@ -141,11 +141,13 @@ class _login_ScreenState extends State<login_Screen> {
                         text: 'Sign In',
                         onPressed: () async {
                           if (_emailController.text.toString() ==
-                                  "client@gmail.com" &&
+                                  "rachit@gmail.com" &&
                               _passwordController.text.toString() ==
-                                  "client123") {
+                                  "rachit123") {
                             final prefs = await SharedPreferences.getInstance();
                             await prefs.setBool('isLoggedIn', true);
+                            await prefs.setString('userName', 'Rachit');
+                            await prefs.setString('userEmail', _emailController.text);
                             
                             if (!context.mounted) return;
                             Navigator.pushReplacement(

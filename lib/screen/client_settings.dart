@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/client_scaffold.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
@@ -20,6 +21,23 @@ class _ClientSettingsState extends State<ClientSettings> {
 
   bool _pushNotifications = true;
   bool _emailReports = false;
+
+  String userName = 'Your Name';
+  String userEmail = 'youremail@example.com';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('userName') ?? 'Your Name';
+      userEmail = prefs.getString('userEmail') ?? 'youremail@example.com';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +130,9 @@ class _ClientSettingsState extends State<ClientSettings> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Your Name',
-                style: TextStyle(
+              Text(
+                userName,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   color: Color(0xFF2D2D2D),
@@ -122,7 +140,7 @@ class _ClientSettingsState extends State<ClientSettings> {
               ),
               const SizedBox(height: 4),
               Text(
-                'youremail@example.com',
+                userEmail,
                 style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               ),
               const SizedBox(height: 32),
@@ -246,7 +264,11 @@ class _ClientSettingsState extends State<ClientSettings> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () {
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
+                    
+                    if (!context.mounted) return;
                     // Explicitly route to login screen and clear the stack
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
@@ -280,7 +302,7 @@ class _ClientSettingsState extends State<ClientSettings> {
               const SizedBox(height: 16),
 
               Text(
-                'Logged in as youremail@example.com',
+                'Logged in as $userEmail',
                 style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
               ),
               const SizedBox(height: 32),
