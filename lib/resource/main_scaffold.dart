@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.
@@ -57,7 +58,13 @@ class _MainScaffoldState extends State<MainScaffold> {
             widget.appBarLeading ??
             IconButton(
               icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
-              onPressed: () {},
+              onPressed: () {
+                if(role == 'client') {
+Navigator.push(context, MaterialPageRoute(builder: (context)=> DashboardScreen()));
+                }else{
+
+                }
+              },
             ),
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',
@@ -68,20 +75,25 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
         ),
         titleSpacing: -5.5,
-        actions: widget.appBarActions ?? [
-          if (role == 'admin')
-            IconButton(
-              icon: const Icon(Icons.notifications_none_outlined, color: _titleColor),
-              onPressed: () {},
-            ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, left: 4.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              radius: role == 'admin' ? 16 : 18,
-            ),
-          ),
-        ],
+        actions:
+            widget.appBarActions ??
+            [
+              if (role == 'admin')
+                IconButton(
+                  icon: const Icon(
+                    Icons.notifications_none_outlined,
+                    color: _titleColor,
+                  ),
+                  onPressed: () {},
+                ),
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0, left: 4.0),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade300,
+                  radius: role == 'admin' ? 16 : 18,
+                ),
+              ),
+            ],
       ),
       body: widget.body,
       floatingActionButton: widget.onFabPressed != null
