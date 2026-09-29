@@ -17,6 +17,8 @@ import 'package:ripal_design/screen/admin_invoice_screen.dart';
 import 'package:ripal_design/screen/admin_file_view_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/admin_project_detail_screen.dart';
+import 'package:ripal_design/screen/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/client_project_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -68,6 +70,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
   }
 
+  // ─── Worker navigation ───────────────────────────────────────────────────
+  void _onWorkerNavTap(int index) {
+    if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()));
+      return;
+    }
+    if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+      return;
+    }
+    if (index == 3) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileScreen()));
+      return;
+    }
+    setState(() => _currentIndex = index);
+  }
+
+  void _onWorkerFabPressed() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+  }
+
+  // ─── Employee navigation ─────────────────────────────────────────────────
+  void _onEmployeeNavTap(int index) {
+    if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()));
+      return;
+    }
+    if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+      return;
+    }
+    if (index == 3) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      return;
+    }
+    setState(() => _currentIndex = index);
+  }
+
+  void _onEmployeeFabPressed() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+  }
+
   // ─── Client navigation (IndexedStack-based, no push) ─────────────────────
   void _onClientNavTap(int index) {
     setState(() => _currentIndex = index);
@@ -79,8 +123,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (role == 'client') {
+    final normalizedRole = role.toLowerCase().trim();
+    if (normalizedRole == 'client') {
       return _buildClientShell();
+    } else if (normalizedRole == 'worker') {
+      return _buildWorkerShell();
+    } else if (normalizedRole == 'employee') {
+      return _buildEmployeeShell();
     }
     return _buildAdminShell();
   }
@@ -88,6 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ─── Client Shell: IndexedStack tab navigation ────────────────────────────
   Widget _buildClientShell() {
     return MainScaffold(
+      role: 'client',
       currentIndex: _currentIndex,
       onFabPressed: _onClientFabPressed,
       onNavTap: _onClientNavTap,
@@ -105,9 +155,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const ClientProjectView(embeddedMode: true),
           // Tab 2: Contact
           const ClientContactus(embeddedMode: true),
-          // Tab 3: Settings
+          // Tab 3: Profile
           const SettingsScreen(embeddedMode: true),
         ],
+      ),
+    );
+  }
+
+  // ─── Worker Shell ────────────────────────────────────────────────────────
+  Widget _buildWorkerShell() {
+    return MainScaffold(
+      role: 'worker',
+      currentIndex: _currentIndex,
+      onFabPressed: _onWorkerFabPressed,
+      onNavTap: _onWorkerNavTap,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          child: _buildAdminBody(),
+        ),
+      ),
+    );
+  }
+
+  // ─── Employee Shell ───────────────────────────────────────────────────────
+  Widget _buildEmployeeShell() {
+    return MainScaffold(
+      role: 'employee',
+      currentIndex: _currentIndex,
+      onFabPressed: _onEmployeeFabPressed,
+      onNavTap: _onEmployeeNavTap,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          child: _buildAdminBody(),
+        ),
       ),
     );
   }
@@ -115,6 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ─── Admin Shell: unchanged push-based navigation ─────────────────────────
   Widget _buildAdminShell() {
     return MainScaffold(
+      role: 'admin',
       currentIndex: _currentIndex,
       onFabPressed: _onAdminFabPressed,
       onNavTap: _onAdminNavTap,
@@ -126,6 +209,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
 
   // ─── Client Home Tab Body ─────────────────────────────────────────────────
   Widget _buildClientHomeBody() {

@@ -13,6 +13,7 @@ class MainScaffold extends StatefulWidget {
   final String? appBarTitle;
   final Widget? appBarLeading;
   final List<Widget>? appBarActions;
+  final String? role;
 
   const MainScaffold({
     super.key,
@@ -23,6 +24,7 @@ class MainScaffold extends StatefulWidget {
     this.appBarTitle,
     this.appBarLeading,
     this.appBarActions,
+    this.role,
   });
 
   @override
@@ -31,7 +33,7 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   static const Color _titleColor = Color(0xFF5A0000);
-  String role = 'client';
+  String role = 'admin';
 
   @override
   void initState() {
@@ -42,12 +44,15 @@ class _MainScaffoldState extends State<MainScaffold> {
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      role = prefs.getString('role') ?? 'admin';
+      role = widget.role ?? prefs.getString('role') ?? 'admin';
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final effectiveRole = (widget.role != null && widget.role!.isNotEmpty)
+        ? widget.role!
+        : role;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F2),
       appBar: AppBar(
@@ -59,10 +64,10 @@ class _MainScaffoldState extends State<MainScaffold> {
             IconButton(
               icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
               onPressed: () {
-                if(role == 'client') {
-Navigator.push(context, MaterialPageRoute(builder: (context)=> DashboardScreen()));
-                }else{
-
+                if (effectiveRole.toLowerCase() == 'client') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+                } else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
                 }
               },
             ),
@@ -71,14 +76,14 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=> DashboardScreen()
           style: TextStyle(
             color: _titleColor,
             fontWeight: FontWeight.bold,
-            fontSize: role == 'admin' ? 22 : 24,
+            fontSize: effectiveRole.toLowerCase() == 'admin' ? 22 : 24,
           ),
         ),
         titleSpacing: -5.5,
         actions:
             widget.appBarActions ??
             [
-              if (role == 'admin')
+              if (effectiveRole.toLowerCase() == 'admin')
                 IconButton(
                   icon: const Icon(
                     Icons.notifications_none_outlined,
@@ -90,7 +95,7 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=> DashboardScreen()
                 padding: const EdgeInsets.only(right: 16.0, left: 4.0),
                 child: CircleAvatar(
                   backgroundColor: Colors.grey.shade300,
-                  radius: role == 'admin' ? 16 : 18,
+                  radius: effectiveRole.toLowerCase() == 'admin' ? 16 : 18,
                 ),
               ),
             ],
@@ -109,8 +114,9 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=> DashboardScreen()
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: widget.currentIndex,
         onTap: widget.onNavTap,
-        role: role,
+        role: effectiveRole,
       ),
     );
   }
 }
+
