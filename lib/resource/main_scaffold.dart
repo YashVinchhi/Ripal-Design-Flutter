@@ -64,12 +64,12 @@ class _MainScaffoldState extends State<MainScaffold> {
           style: TextStyle(
             color: _titleColor,
             fontWeight: FontWeight.bold,
-            fontSize: role == 'admin' ? 22 : 24,
+            fontSize: (role == 'admin' || role == 'worker') ? 22 : 24,
           ),
         ),
         titleSpacing: -5.5,
         actions: widget.appBarActions ?? [
-          if (role == 'admin')
+          if (role == 'admin' || role == 'worker')
             IconButton(
               icon: const Icon(Icons.notifications_none_outlined, color: _titleColor),
               onPressed: () {},
@@ -78,7 +78,7 @@ class _MainScaffoldState extends State<MainScaffold> {
             padding: const EdgeInsets.only(right: 16.0, left: 4.0),
             child: CircleAvatar(
               backgroundColor: Colors.grey.shade300,
-              radius: role == 'admin' ? 16 : 18,
+              radius: (role == 'admin' || role == 'worker') ? 16 : 18,
             ),
           ),
         ],

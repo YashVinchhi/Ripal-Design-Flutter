@@ -12,6 +12,9 @@ import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/client_applay.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/login_screen.dart';
+import 'package:ripal_design/screen/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker_password_update_screen.dart';
+import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -72,6 +75,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (index == 3) {
         return;
       }
+    } else if (role == 'worker') {
+      if (index == 0) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+        return;
+      }
+      if (index == 1) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
+        return;
+      }
+      if (index == 2) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+        return;
+      }
+      if (index == 3) {
+        return;
+      }
     } else {
       if (index == 0) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
@@ -94,6 +113,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _onFabPressed() {
     if (role == 'admin') {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    } else if (role == 'worker') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
     }
@@ -187,7 +208,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingTile(
                     icon: Icons.shield_outlined,
                     title: 'Security & Password',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WorkerPasswordUpdateScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/screen/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 
 class UploadProfilePhotoScreen extends StatefulWidget {
   const UploadProfilePhotoScreen({super.key});
@@ -22,8 +26,22 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
   static const Color _titleDark = Color(0xFF2A0501);
 
   int _currentIndex = 3;
+  String role = 'admin';
   String? _selectedImagePath;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRole();
+  }
+
+  Future<void> _loadRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      role = prefs.getString('role') ?? 'admin';
+    });
+  }
 
   Future<void> _onUploadPhoto() async {
     try {
@@ -173,22 +191,38 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
       return;
     }
     if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+      }
       return;
     }
     if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      }
       return;
     }
     if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      }
       return;
     }
     setState(() => _currentIndex = index);
   }
 
   void _onFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    if (role == 'worker') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    }
   }
 
   @override

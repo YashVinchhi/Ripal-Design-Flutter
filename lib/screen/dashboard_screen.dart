@@ -18,6 +18,15 @@ import 'package:ripal_design/screen/admin_file_view_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/admin_project_detail_screen.dart';
 
+import 'package:ripal_design/resource/checkered_placeholder.dart';
+import 'package:ripal_design/screen/worker_activity_screen.dart';
+import 'package:ripal_design/screen/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker_project_files_screen.dart';
+import 'package:ripal_design/screen/worker_project_view_screen.dart';
+import 'package:ripal_design/screen/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/screen/worker_view_member_screen.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -60,6 +69,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
         return;
       }
+    } else if (role == 'worker') {
+      if (index == 1) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
+        return;
+      }
+      if (index == 2) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+        return;
+      }
+      if (index == 3) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
+        return;
+      }
     } else {
       if (index == 1) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientProjectView()));
@@ -80,6 +102,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onFabPressed() {
     if (role == 'admin') {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    } else if (role == 'worker') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
     }
@@ -93,10 +117,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onNavTap: _onNavTap,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: role == 'admin'
+          padding: (role == 'admin' || role == 'worker')
               ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
               : const EdgeInsets.all(24.0),
-          child: role == 'admin' ? _buildAdminBody() : _buildClientBody(),
+          child: role == 'admin'
+              ? _buildAdminBody()
+              : (role == 'worker' ? _buildWorkerBody() : _buildClientBody()),
         ),
       ),
     );
@@ -600,6 +626,554 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 12),
             Text(title, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ═════════════════════════════════════════════════════════════════
+  // ─── WORKER DASHBOARD BODY (Worker Dashborad.png) ───────────────
+  // ═════════════════════════════════════════════════════════════════
+  Widget _buildWorkerBody() {
+    final displayName = userName.isNotEmpty ? userName : 'Rachit';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ─── DASHBOARD OVERVIEW HEADER ──────────────────────
+        const Text(
+          'DASHBOARD OVERVIEW',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: Color(0xFF7A6666),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Welcome, $displayName',
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E1E1E),
+            height: 1.15,
+          ),
+        ),
+        const SizedBox(height: 6),
+        RichText(
+          text: const TextSpan(
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF555555),
+              height: 1.35,
+            ),
+            children: [
+              TextSpan(text: 'You have '),
+              TextSpan(
+                text: '12 Active Projects',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF9E4723),
+                ),
+              ),
+              TextSpan(text: '\nrequiring your attention today.'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // ─── STAT CARD 1: ACTIVE PROJECTS ───────────────────
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFF2DED7)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEBEFFC),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.architecture,
+                  color: Color(0xFF5B78E6),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'ACTIVE PROJECTS',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: Color(0xFF7A6666),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '15',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        // ─── STAT CARD 2: TEAM VELOCITY ────────────────────
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFF2DED7)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFBECEB),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.groups_outlined,
+                      color: Color(0xFF5A0000),
+                      size: 20,
+                    ),
+                  ),
+                  const Text(
+                    '8 New',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF7A6666),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'TEAM VELOCITY',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: Color(0xFF7A6666),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '30',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // ─── SECTION: Assigned Projects ─────────────────────
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Assigned Projects',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1E1E1E),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerProjectViewScreen(),
+                  ),
+                );
+              },
+              child: Row(
+                children: const [
+                  Text(
+                    'EXPLORE PROJECTS',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: Color(0xFF8B3A1C),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Color(0xFF8B3A1C),
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+
+        // Horizontal Project Cards
+        SizedBox(
+          height: 245,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            children: [
+              _buildWorkerProjectCard(
+                title: 'Skyline Plaza',
+                subtitle: 'Phase 3: Structural Framework',
+                progress: 0.75,
+                progressText: '75% Done',
+                badgeText: 'ACTIVE',
+                badgeColor: const Color(0xFF232323),
+                progressColor: titleColor,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WorkerProjectViewScreen(
+                        projectName: 'Skyline Plaza',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 14),
+              _buildWorkerProjectCard(
+                title: 'Azure Residence',
+                subtitle: 'Phase 2: Interior Finishing',
+                progress: 0.40,
+                progressText: '40% Done',
+                badgeText: 'REVIEW',
+                badgeColor: const Color(0xFF8B3A1C),
+                progressColor: const Color(0xFF8B3A1C),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WorkerProjectViewScreen(
+                        projectName: 'Azure Residence',
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // ─── SECTION: Quick Actions ─────────────────────────
+        const Text(
+          'Quick Actions',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E1E1E),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
+          childAspectRatio: 1.15,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _buildWorkerQuickAction(
+              icon: Icons.visibility_outlined,
+              title: 'VIEW PROJECT',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerProjectViewScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.cloud_upload_outlined,
+              title: 'UPLOAD FILES',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerUploadFilesScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.person_outline,
+              title: 'TEAM VIEW',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerViewMemberScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.description_outlined,
+              title: 'FILE VIEWS',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerProjectFilesScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.event_note_outlined,
+              title: 'LEAVE MANGE',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerLeaveHistoryScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.show_chart,
+              title: 'ACTIVITY',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerActivityScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 40),
+      ],
+    );
+  }
+
+  Widget _buildWorkerProjectCard({
+    required String title,
+    required String subtitle,
+    required double progress,
+    required String progressText,
+    required String badgeText,
+    required Color badgeColor,
+    required Color progressColor,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 255,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFF2DED7)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top Checkered Image area with Badge
+              SizedBox(
+                height: 125,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    const CheckeredPlaceholder(
+                      height: 125,
+                      width: double.infinity,
+                      squareSize: 12,
+                    ),
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: badgeColor,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          badgeText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Bottom Content
+              Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E1E1E),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          progressText,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(3),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        backgroundColor: const Color(0xFFFBECEB),
+                        valueColor: AlwaysStoppedAnimation(progressColor),
+                        minHeight: 5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWorkerQuickAction({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: const Color(0xFFF2DED7)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFFFF9F6),
+                border: Border.all(color: const Color(0xFFF0DCD5), width: 1.5),
+              ),
+              child: Icon(icon, color: titleColor, size: 24),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.6,
+                color: Color(0xFF1E1E1E),
+              ),
+            ),
           ],
         ),
       ),

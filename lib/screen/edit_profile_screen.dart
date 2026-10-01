@@ -8,6 +8,10 @@ import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
 
+import 'package:ripal_design/screen/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -92,22 +96,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
     if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+      }
       return;
     }
     if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      }
       return;
     }
     if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      if (role == 'worker') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      }
       return;
     }
     setState(() => _currentIndex = index);
   }
 
   void _onFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    if (role == 'worker') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    }
   }
 
   @override
@@ -185,7 +205,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 10),
+              Center(
+                child: GestureDetector(
+                  onTap: _pickAvatar,
+                  child: const Text(
+                    'CHANGE PHOTO',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: Color(0xFF8B3A1C),
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
 
               // Section Header
               Text(

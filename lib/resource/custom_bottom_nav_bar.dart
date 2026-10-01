@@ -15,40 +15,49 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isAdmin = role == 'admin';
+    final isWorker = role == 'worker';
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: isAdmin ? const Color(0xFFFFF7F2) : Colors.white,
+        color: (isAdmin || isWorker) ? const Color(0xFFFFF7F2) : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: isAdmin
+        boxShadow: (isAdmin || isWorker)
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
               ],
-        border: isAdmin ? Border.all(color: Colors.black12, width: 0.5) : null,
+        border: (isAdmin || isWorker) ? Border.all(color: Colors.black12, width: 0.5) : null,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildNavItem(icon: Icons.home_outlined, label: 'Home', index: 0),
           _buildNavItem(
-            icon: isAdmin ? Icons.calendar_today_outlined : Icons.grid_view_outlined,
-            label: isAdmin ? 'Leave' : 'Project',
+            icon: (isAdmin || isWorker) ? Icons.calendar_today_outlined : Icons.grid_view_outlined,
+            label: (isAdmin || isWorker) ? 'Leave' : 'Project',
             index: 1,
           ),
           const SizedBox(width: 48), // Space for FAB
           _buildNavItem(
-            icon: isAdmin ? Icons.payments_outlined : Icons.description_outlined,
-            label: isAdmin ? 'Finance' : 'Contact',
+            icon: isWorker
+                ? Icons.arrow_circle_up_outlined
+                : (isAdmin ? Icons.payments_outlined : Icons.description_outlined),
+            label: isWorker
+                ? 'Upload'
+                : (isAdmin ? 'Finance' : 'Contact'),
             index: 2,
           ),
           _buildNavItem(
-            icon: isAdmin ? Icons.settings_outlined : Icons.person_outline,
-            label: isAdmin ? 'Settings' : 'Profile',
+            icon: isWorker
+                ? Icons.account_circle_outlined
+                : (isAdmin ? Icons.settings_outlined : Icons.person_outline),
+            label: isWorker
+                ? 'Profile'
+                : (isAdmin ? 'Settings' : 'Profile'),
             index: 3,
           ),
         ],
