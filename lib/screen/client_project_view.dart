@@ -8,11 +8,16 @@ import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/admin_leave_screen.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_project_detail_screen.dart';
+import 'package:ripal_design/screen/client_project_detail_screen.dart';
 import 'package:ripal_design/screen/client_applay.dart';
 
 class ClientProjectView extends StatefulWidget {
-  const ClientProjectView({super.key});
+  /// When [embeddedMode] is true, the widget renders only its body content
+  /// (no MainScaffold/AppBar/BottomNav) so it can be embedded inside an
+  /// IndexedStack in the client shell.
+  final bool embeddedMode;
+
+  const ClientProjectView({super.key, this.embeddedMode = false});
 
   @override
   State<ClientProjectView> createState() => _ClientProjectViewState();
@@ -89,7 +94,9 @@ class _ClientProjectViewState extends State<ClientProjectView> {
   @override
   void initState() {
     super.initState();
-    _loadRole();
+    if (!widget.embeddedMode) {
+      _loadRole();
+    }
   }
 
   Future<void> _loadRole() async {
@@ -124,6 +131,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
     super.dispose();
   }
 
+  // ─── Standalone mode nav (admin or direct push) ───────────────────────────
   void _onNavTap(int index) {
     if (index == 0) {
       if (Navigator.canPop(context)) {
@@ -194,106 +202,113 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filteredProjects;
+    // Embedded inside DashboardScreen's IndexedStack — no scaffold
+    if (widget.embeddedMode) {
+      return SafeArea(child: _buildBody());
+    }
 
+    // Standalone: full scaffold with nav bar
     return MainScaffold(
       appBarTitle: 'Projects',
       currentIndex: _currentIndex,
       onFabPressed: _onFabPressed,
       onNavTap: _onNavTap,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // ─── Search Bar ─────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (val) => setState(() => _searchQuery = val),
-                style: const TextStyle(fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'Search projects...',
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 14,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey.shade500,
-                    size: 20,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(color: primaryColor, width: 1.5),
+      body: SafeArea(child: _buildBody()),
+    );
+  }
+
+  Widget _buildBody() {
+    final filtered = _filteredProjects;
+    return Column(
+      children: [
+        // ─── Search Bar ─────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+          child: TextField(
+            controller: _searchController,
+            onChanged: (val) => setState(() => _searchQuery = val),
+            style: const TextStyle(fontSize: 14),
+            decoration: InputDecoration(
+              hintText: 'Search projects...',
+              hintStyle: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: 14,
+              ),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.grey.shade500,
+                size: 20,
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: primaryColor, width: 1.5),
+              ),
+            ),
+          ),
+        ),
+
+        // ─── Filter Chips ────────────────────────────
+        SizedBox(
+          height: 40,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              ..._filters.map((f) => _buildFilterChip(f)),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Text(
+                  '${filtered.length}',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-            // ─── Filter Chips ────────────────────────────
-            SizedBox(
-              height: 40,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  ..._filters.map((f) => _buildFilterChip(f)),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Text(
-                      '${filtered.length}',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
+        // ─── Pinterest 2-Column Masonry Grid ──────
+        Expanded(
+          child: filtered.isEmpty
+              ? Center(
+                  child: Text(
+                    'No projects found.',
+                    style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 14,
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // ─── Pinterest 2-Column Masonry Grid ──────
-            Expanded(
-              child: filtered.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No projects found.',
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 14,
-                        ),
-                      ),
-                    )
-                  : _buildMasonryGrid(filtered),
-            ),
-          ],
+                )
+              : _buildMasonryGrid(filtered),
         ),
-      ),
+      ],
     );
   }
 
@@ -330,13 +345,15 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AdminProjectDetailScreen(
+                              builder: (context) => ClientProjectDetailScreen(
                                 projectName: p['name'] as String,
                                 type: p['category'] as String,
                                 timeline: '${p['year']} - Present',
                                 clientName: 'Ripal Design Client',
                                 budget: '₹15,00,000',
                                 location: 'Architectural Studio',
+                                progress: 0.6,
+                                progressLabel: '60% Completed',
                               ),
                             ),
                           );
@@ -364,13 +381,15 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AdminProjectDetailScreen(
+                            builder: (context) => ClientProjectDetailScreen(
                               projectName: p['name'] as String,
                               type: p['category'] as String,
                               timeline: '${p['year']} - Present',
                               clientName: 'Ripal Design Client',
                               budget: '₹15,00,000',
                               location: 'Architectural Studio',
+                              progress: 0.6,
+                              progressLabel: '60% Completed',
                             ),
                           ),
                         );

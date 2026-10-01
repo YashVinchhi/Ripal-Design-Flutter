@@ -6,9 +6,15 @@ import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/section_header.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/screen/client_applay.dart';
 
 class ClientContactus extends StatefulWidget {
-  const ClientContactus({super.key});
+  /// When [embeddedMode] is true, the widget renders only its body content
+  /// (no MainScaffold/AppBar/BottomNav) so it can be embedded inside an
+  /// IndexedStack in the client shell.
+  final bool embeddedMode;
+
+  const ClientContactus({super.key, this.embeddedMode = false});
 
   @override
   State<ClientContactus> createState() => _ClientContactusState();
@@ -43,9 +49,20 @@ class _ClientContactusState extends State<ClientContactus> {
 
   @override
   Widget build(BuildContext context) {
+    // Embedded inside DashboardScreen's IndexedStack — no scaffold
+    if (widget.embeddedMode) {
+      return SafeArea(child: _buildBody());
+    }
+
+    // Standalone: full scaffold with nav bar
     return MainScaffold(
       currentIndex: _currentIndex,
-      onFabPressed: () {},
+      onFabPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientApplay()),
+        );
+      },
       onNavTap: (index) {
         if (index == _currentIndex) return;
         if (index == 0) {
@@ -68,10 +85,14 @@ class _ClientContactusState extends State<ClientContactus> {
         }
         setState(() => _currentIndex = index);
       },
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          child: Column(
+      body: SafeArea(child: _buildBody()),
+    );
+  }
+
+  Widget _buildBody() {
+    return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ─── Hero Header ─────────────────────────────
@@ -159,9 +180,7 @@ class _ClientContactusState extends State<ClientContactus> {
               ),
               const SizedBox(height: 32),
             ],
-          ),
         ),
-      ),
     );
   }
 

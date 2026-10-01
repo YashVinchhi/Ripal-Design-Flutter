@@ -16,8 +16,15 @@ import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_password_update_screen.dart';
 import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 
+import 'package:ripal_design/screen/client_contactus.dart';
+
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  /// When [embeddedMode] is true, the widget renders only its body content
+  /// (no MainScaffold/AppBar/BottomNav) so it can be embedded inside an
+  /// IndexedStack in the client shell.
+  final bool embeddedMode;
+
+  const SettingsScreen({super.key, this.embeddedMode = false});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -101,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return;
       }
       if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientContactus()));
         return;
       }
       if (index == 3) {
@@ -122,6 +129,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Embedded inside DashboardScreen's IndexedStack — no scaffold
+    if (widget.embeddedMode) {
+      return SafeArea(child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+        child: _buildSettingsContent(),
+      ));
+    }
+
+    // Standalone: full scaffold with nav bar
     return MainScaffold(
       currentIndex: 3,
       appBarTitle: 'Settings',
@@ -130,10 +146,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-          child: Column(
-            children: [
-              // ─── PROFILE HEADER ─────────────────────────────────
-              GestureDetector(
+          child: _buildSettingsContent(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsContent() {
+    return Column(
+      children: [
+        // ─── PROFILE HEADER ─────────────────────────────────
+        GestureDetector(
                 onTap: _openEditProfile,
                 child: Column(
                   children: [
@@ -332,10 +355,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-            ],
-          ),
-        ),
-      ),
+        ],
     );
   }
 }

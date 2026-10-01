@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.
@@ -12,6 +13,7 @@ class MainScaffold extends StatefulWidget {
   final String? appBarTitle;
   final Widget? appBarLeading;
   final List<Widget>? appBarActions;
+  final String? role;
 
   const MainScaffold({
     super.key,
@@ -22,6 +24,7 @@ class MainScaffold extends StatefulWidget {
     this.appBarTitle,
     this.appBarLeading,
     this.appBarActions,
+    this.role,
   });
 
   @override
@@ -30,7 +33,7 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   static const Color _titleColor = Color(0xFF5A0000);
-  String role = 'client';
+  String role = 'admin';
 
   @override
   void initState() {
@@ -41,12 +44,15 @@ class _MainScaffoldState extends State<MainScaffold> {
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      role = prefs.getString('role') ?? 'admin';
+      role = widget.role ?? prefs.getString('role') ?? 'admin';
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final effectiveRole = (widget.role != null && widget.role!.isNotEmpty)
+        ? widget.role!
+        : role;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F2),
       appBar: AppBar(
@@ -57,7 +63,13 @@ class _MainScaffoldState extends State<MainScaffold> {
             widget.appBarLeading ??
             IconButton(
               icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
-              onPressed: () {},
+              onPressed: () {
+                if (effectiveRole.toLowerCase() == 'client') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+                } else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
+                }
+              },
             ),
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',
@@ -97,8 +109,9 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: widget.currentIndex,
         onTap: widget.onNavTap,
-        role: role,
+        role: effectiveRole,
       ),
     );
   }
 }
+
