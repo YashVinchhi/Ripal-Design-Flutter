@@ -35,11 +35,31 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(icon: items[0].icon, label: items[0].label, index: 0),
-          _buildNavItem(icon: items[1].icon, label: items[1].label, index: 1),
-          const SizedBox(width: 48), // Space for center FAB
-          _buildNavItem(icon: items[2].icon, label: items[2].label, index: 2),
-          _buildNavItem(icon: items[3].icon, label: items[3].label, index: 3),
+          _buildNavItem(icon: Icons.home_outlined, label: 'Home', index: 0),
+          _buildNavItem(
+            icon: (isAdmin || isWorker) ? Icons.calendar_today_outlined : Icons.grid_view_outlined,
+            label: (isAdmin || isWorker) ? 'Leave' : 'Project',
+            index: 1,
+          ),
+          const SizedBox(width: 48), // Space for FAB
+          _buildNavItem(
+            icon: isWorker
+                ? Icons.arrow_circle_up_outlined
+                : (isAdmin ? Icons.payments_outlined : Icons.description_outlined),
+            label: isWorker
+                ? 'Upload'
+                : (isAdmin ? 'Finance' : 'Contact'),
+            index: 2,
+          ),
+          _buildNavItem(
+            icon: isWorker
+                ? Icons.account_circle_outlined
+                : (isAdmin ? Icons.settings_outlined : Icons.person_outline),
+            label: isWorker
+                ? 'Profile'
+                : (isAdmin ? 'Settings' : 'Profile'),
+            index: 3,
+          ),
         ],
       ),
     );

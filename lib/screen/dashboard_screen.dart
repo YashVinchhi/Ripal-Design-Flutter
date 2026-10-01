@@ -18,7 +18,6 @@ import 'package:ripal_design/screen/admin_file_view_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/admin_project_detail_screen.dart';
 import 'package:ripal_design/screen/admin_leave_history_screen.dart';
-import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/client_project_detail_screen.dart';
 
 import 'package:ripal_design/resource/checkered_placeholder.dart';
@@ -58,64 +57,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  void _onNavTap(int index) {
-    if (role == 'admin') {
-      if (index == 1) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-        return;
-      }
-      if (index == 3) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-        return;
-      }
-    } else if (role == 'worker') {
-      if (index == 1) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-        return;
-      }
-      if (index == 3) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
-        return;
-      }
-    } else {
-      if (index == 1) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientProjectView()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientContactus()));
-        return;
-      }
-      if (index == 3) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-        return;
-      }
+  // ─── Admin navigation ─────────────────────────────────────────────────────
+  void _onAdminNavTap(int index) {
+    if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
+      return;
+    }
+    if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
+      return;
+    }
+    if (index == 3) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      return;
     }
     setState(() => _currentIndex = index);
   }
 
-  void _onFabPressed() {
-    if (role == 'admin') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
-    } else if (role == 'worker') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
+  void _onAdminFabPressed() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+  }
+
+  // ─── Worker navigation ────────────────────────────────────────────────────
+  void _onWorkerNavTap(int index) {
+    if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
+      return;
     }
     if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
       return;
     }
     if (index == 3) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
       return;
     }
     setState(() => _currentIndex = index);
@@ -205,12 +179,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onNavTap: _onWorkerNavTap,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: (role == 'admin' || role == 'worker')
-              ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
-              : const EdgeInsets.all(24.0),
-          child: role == 'admin'
-              ? _buildAdminBody()
-              : (role == 'worker' ? _buildWorkerBody() : _buildClientBody()),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          child: _buildWorkerBody(),
         ),
       ),
     );
