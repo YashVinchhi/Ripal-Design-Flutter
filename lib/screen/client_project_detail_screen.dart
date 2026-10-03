@@ -29,11 +29,11 @@ class ClientProjectDetailScreen extends StatelessWidget {
   static const Color _primary = Color(0xFF5A0000);
 
   final List<String> _galleryImages = const [
-    'assets/project/behance_239114219_04.png',
-    'assets/project/behance_239114219_05.png',
-    'assets/project/behance_239114219_12.png',
-    'assets/project/behance_239114219_13.png',
-    'assets/project/behance_239114219_14.png',
+    'assets/project/behance_239114219_04.webp',
+    'assets/project/behance_239114219_05.webp',
+    'assets/project/behance_239114219_12.webp',
+    'assets/project/behance_239114219_13.webp',
+    'assets/project/behance_239114219_14.webp',
   ];
 
   @override
@@ -200,14 +200,14 @@ class _HeroBanner extends StatelessWidget {
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    Image.asset('assets/project/behance_239114219_04.png', fit: BoxFit.cover),
+                    Image.asset('assets/project/behance_239114219_04.webp', fit: BoxFit.cover),
               )
             else
               Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    Image.asset('assets/project/behance_239114219_04.png', fit: BoxFit.cover),
+                    Image.asset('assets/project/behance_239114219_04.webp', fit: BoxFit.cover),
               ),
 
             // Gradient Overlay

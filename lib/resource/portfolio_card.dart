@@ -173,7 +173,7 @@ class PortfolioCard extends StatelessWidget {
 
   Widget _defaultProjectImage() {
     return Image.asset(
-      'assets/project/behance_239114219_04.png',
+      'assets/project/behance_239114219_04.webp',
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) => _buildPlaceholderPattern(),
     );
