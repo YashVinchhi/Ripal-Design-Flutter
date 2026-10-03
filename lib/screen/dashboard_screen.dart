@@ -306,6 +306,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           badgeColor: const Color(0xFF6C2B2B),
           progress: 0.35,
           progressText: '35% Completed',
+          imageUrl: 'assets/project/behance_239114219_04.png',
           onTap: () {
             Navigator.push(
               context,
@@ -319,6 +320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   location: 'Resort District — Desert Hills',
                   progress: 0.35,
                   progressLabel: '35% Completed',
+                  imageUrl: 'assets/project/behance_239114219_04.png',
                 ),
               ),
             );
@@ -331,6 +333,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           badgeColor: const Color(0xFFA0604A),
           progress: 0.78,
           progressText: '78% Completed',
+          imageUrl: 'assets/project/behance_239114219_05.png',
           onTap: () {
             Navigator.push(
               context,
@@ -344,6 +347,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   location: 'Metropolitan Center',
                   progress: 0.78,
                   progressLabel: '78% Completed',
+                  imageUrl: 'assets/project/behance_239114219_05.png',
                 ),
               ),
             );
@@ -356,6 +360,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           badgeColor: const Color(0xFF3B5274),
           progress: 0.92,
           progressText: '92% Completed',
+          imageUrl: 'assets/project/behance_239114219_12.png',
           onTap: () {
             Navigator.push(
               context,
@@ -369,6 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   location: 'Lakefront Sanctuary',
                   progress: 0.92,
                   progressLabel: '92% Completed',
+                  imageUrl: 'assets/project/behance_239114219_12.png',
                 ),
               ),
             );
@@ -641,14 +647,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Stack(
               children: [
-                Container(
-                  height: 120,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF2F2F2),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: Center(
-                    child: Icon(Icons.image_outlined, size: 40, color: Colors.grey.shade400),
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  child: Image.asset(
+                    'assets/project/behance_239114219_13.png',
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(

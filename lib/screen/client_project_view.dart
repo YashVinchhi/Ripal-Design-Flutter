@@ -46,48 +46,56 @@ class _ClientProjectViewState extends State<ClientProjectView> {
       'category': 'RESIDENTIAL',
       'year': '2023',
       'height': 220.0,
+      'imageUrl': 'assets/project/behance_239114219_04.png',
     },
     {
       'name': 'The Quartz Pavilion',
       'category': 'COMMERCIAL',
       'year': '2023',
       'height': 170.0,
+      'imageUrl': 'assets/project/behance_239114219_05.png',
     },
     {
       'name': 'Terracotta Studio',
       'category': 'INTERIOR',
       'year': '2023',
       'height': 180.0,
+      'imageUrl': 'assets/project/behance_239114219_12.png',
     },
     {
       'name': 'Echo Cabin',
       'category': 'RESIDENTIAL',
       'year': '2023',
       'height': 240.0,
+      'imageUrl': 'assets/project/behance_239114219_13.png',
     },
     {
       'name': 'Skyline Loft',
       'category': 'RESIDENTIAL',
       'year': '2023',
       'height': 190.0,
+      'imageUrl': 'assets/project/behance_239114219_14.png',
     },
     {
       'name': 'The Curve Museum',
       'category': 'COMMERCIAL',
       'year': '2023',
       'height': 210.0,
+      'imageUrl': 'assets/project/behance_239114219_04.png',
     },
     {
       'name': 'Amber Courtyard',
       'category': 'INTERIOR',
       'year': '2023',
       'height': 160.0,
+      'imageUrl': 'assets/project/behance_239114219_05.png',
     },
     {
       'name': 'Black Glass Tower',
       'category': 'COMMERCIAL',
       'year': '2023',
       'height': 230.0,
+      'imageUrl': 'assets/project/behance_239114219_12.png',
     },
   ];
 
@@ -341,6 +349,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                         category: p['category'] as String,
                         year: p['year'] as String,
                         height: (p['height'] as num?)?.toDouble() ?? 200.0,
+                        imageUrl: p['imageUrl'] as String?,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -354,6 +363,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                                 location: 'Architectural Studio',
                                 progress: 0.6,
                                 progressLabel: '60% Completed',
+                                imageUrl: p['imageUrl'] as String?,
                               ),
                             ),
                           );
@@ -377,6 +387,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                       category: p['category'] as String,
                       year: p['year'] as String,
                       height: p['height'] as double,
+                      imageUrl: p['imageUrl'] as String?,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -390,6 +401,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                               location: 'Architectural Studio',
                               progress: 0.6,
                               progressLabel: '60% Completed',
+                              imageUrl: p['imageUrl'] as String?,
                             ),
                           ),
                         );

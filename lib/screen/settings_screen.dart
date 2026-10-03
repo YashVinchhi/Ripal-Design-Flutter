@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
 import 'package:ripal_design/resource/setting_group.dart';
@@ -39,6 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String role = 'admin';
   String userName = '';
   String userEmail = '';
+  String? avatarPath;
 
   @override
   void initState() {
@@ -52,7 +55,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
       role = prefs.getString('role') ?? 'admin';
       userName = prefs.getString('userName') ?? (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User');
       userEmail = prefs.getString('userEmail') ?? (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com');
+      avatarPath = prefs.getString('userAvatarPath');
     });
+  }
+
+  void _showInfoDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title, style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _openEditProfile() async {
@@ -166,13 +186,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           CircleAvatar(
                             radius: 44,
                             backgroundColor: salmonColor.withOpacity(0.2),
-                            child: const CircleAvatar(
+                            child: CircleAvatar(
                               radius: 40,
-                              backgroundColor: Color(0xFFF5EBE6),
-                              child: Icon(
-                                Icons.person,
-                                size: 48,
-                                color: Color(0xFF5A0000),
+                              backgroundColor: const Color(0xFFF5EBE6),
+                              child: ClipOval(
+                                child: buildProfileImage(
+                                  avatarPath,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                  fallback: const Icon(
+                                    Icons.person,
+                                    size: 48,
+                                    color: Color(0xFF5A0000),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -303,7 +331,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingTile(
                     icon: Icons.help_outline,
                     title: 'Help & Support',
-                    onTap: () {},
+                    subtitle: 'FAQs and support center',
+                    onTap: () {
+                      _showInfoDialog('Help & Support', 'Reach out to support@ripaldesign.com or call +91 94267 89012 for assistance.');
+                    },
+                  ),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Color(0xFFF5F5F5),
+                  ),
+                  SettingTile(
+                    icon: Icons.security,
+                    title: 'Privacy Policy',
+                    subtitle: 'Terms of service & privacy',
+                    onTap: () {
+                      _showInfoDialog('Privacy Policy', 'We process your data securely according to our privacy policy terms.');
+                    },
                   ),
                   const Divider(
                     height: 1,
@@ -314,7 +358,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: Icons.info_outline,
                     title: 'About Ripal Design',
                     subtitle: 'Version 1.0.0',
-                    onTap: () {},
+                    onTap: () {
+                      _showInfoDialog('About Ripal Design', 'Ripal Design Architecture Studio\nVersion 1.0.0');
+                    },
                   ),
                 ],
               ),

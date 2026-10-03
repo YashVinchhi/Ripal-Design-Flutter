@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
@@ -53,10 +55,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _cityController.text = prefs.getString('userCity') ?? 'Rajkot';
       _stateController.text = prefs.getString('userState') ?? 'Gujarat';
       _pinCodeController.text = prefs.getString('userPinCode') ?? '360005';
+      _avatarPath = prefs.getString('userAvatarPath');
     });
   }
 
   Future<void> _saveProfileData() async {
+    final cleanPhone = _phoneController.text.replaceAll(RegExp(r'\D'), '');
+    if (cleanPhone.length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Phone number must be exactly 10 digits'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userName', _fullNameController.text.trim());
     await prefs.setString('userEmail', _emailController.text.trim());
@@ -65,6 +79,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     await prefs.setString('userCity', _cityController.text.trim());
     await prefs.setString('userState', _stateController.text.trim());
     await prefs.setString('userPinCode', _pinCodeController.text.trim());
+    if (_avatarPath != null) {
+      await prefs.setString('userAvatarPath', _avatarPath!);
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -177,10 +194,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: CircleAvatar(
                             radius: 42,
                             backgroundColor: const Color(0xFFFDF8F5),
-                            child: const Icon(
-                              Icons.person,
-                              size: 52,
-                              color: primaryColor,
+                            child: ClipOval(
+                              child: buildProfileImage(
+                                _avatarPath,
+                                width: 84,
+                                height: 84,
+                                fit: BoxFit.cover,
+                                fallback: const Icon(
+                                  Icons.person,
+                                  size: 52,
+                                  color: primaryColor,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -242,7 +267,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildField('EMAIL ADDRESS', 'Enter Your Email', _emailController),
               const SizedBox(height: 16),
 
-              _buildField('PHONE NUMBER', 'Enter Your Phone Number', _phoneController),
+              _buildField('PHONE NUMBER', 'Enter 10-Digit Phone Number', _phoneController, maxLength: 10, keyboardType: TextInputType.phone),
               const SizedBox(height: 16),
 
               _buildField('MAILING ADDRESS', 'Enter Mailing Address', _addressController, maxLines: 3),
@@ -288,7 +313,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildField(String label, String hint, TextEditingController controller, {int maxLines = 1}) {
+  Widget _buildField(String label, String hint, TextEditingController controller, {int maxLines = 1, int? maxLength, TextInputType keyboardType = TextInputType.text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -305,6 +330,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         TextField(
           controller: controller,
           maxLines: maxLines,
+          maxLength: maxLength,
+          keyboardType: keyboardType,
+          buildCounter: maxLength != null ? (context, {required currentLength, required isFocused, maxLength}) => null : null,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),

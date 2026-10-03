@@ -7,6 +7,8 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextEditingController? controller;
   final Widget? suffixIcon;
+  final String? Function(String?)? validator;
+  final int? maxLength;
 
   const CustomTextField({
     super.key,
@@ -16,6 +18,8 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.controller,
     this.suffixIcon,
+    this.validator,
+    this.maxLength,
   });
 
   @override
@@ -47,10 +51,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
         ),
         const SizedBox(height: 8),
-        TextField(
+        TextFormField(
           controller: widget.controller,
           obscureText: _obscureText,
           keyboardType: widget.keyboardType,
+          validator: widget.validator,
+          maxLength: widget.maxLength,
+          buildCounter: widget.maxLength != null
+              ? (context, {required currentLength, required isFocused, maxLength}) => null
+              : null,
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: TextStyle(

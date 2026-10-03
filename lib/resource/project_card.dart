@@ -43,14 +43,8 @@ class ProjectCard extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               // Background image / checkered placeholder
-              imageUrl != null
-                  ? Image.network(
-                      imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildPlaceholder(),
-                    )
-                  : _buildPlaceholder(),
+              _buildImageWidget(),
+
 
               // Bottom gradient overlay
               Positioned.fill(
@@ -110,9 +104,36 @@ class ProjectCard extends StatelessWidget {
     );
   }
 
+  Widget _buildImageWidget() {
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      if (imageUrl!.startsWith('assets/')) {
+        return Image.asset(
+          imageUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _defaultProjectImage(),
+        );
+      }
+      return Image.network(
+        imageUrl!,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _defaultProjectImage(),
+      );
+    }
+    return _defaultProjectImage();
+  }
+
+  Widget _defaultProjectImage() {
+    return Image.asset(
+      'assets/project/behance_239114219_04.png',
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+    );
+  }
+
   Widget _buildPlaceholder() {
     return CustomPaint(painter: _CheckeredPainter());
   }
+
 }
 
 class _CheckeredPainter extends CustomPainter {

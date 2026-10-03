@@ -53,14 +53,8 @@ class PortfolioCard extends StatelessWidget {
                     height: 140,
                     width: double.infinity,
                     color: Colors.grey.shade100, // Placeholder background
-                    child: imageUrl != null
-                        ? Image.network(
-                            imageUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                _buildPlaceholderPattern(),
-                          )
-                        : _buildPlaceholderPattern(),
+                    child: _buildImageWidget(imageUrl),
+
                   ),
                 ),
                 Positioned(
@@ -158,7 +152,35 @@ class PortfolioCard extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildImageWidget(String? path) {
+    if (path != null && path.isNotEmpty) {
+      if (path.startsWith('assets/')) {
+        return Image.asset(
+          path,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _defaultProjectImage(),
+        );
+      }
+      return Image.network(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _defaultProjectImage(),
+      );
+    }
+    return _defaultProjectImage();
+  }
+
+  Widget _defaultProjectImage() {
+    return Image.asset(
+      'assets/project/behance_239114219_04.png',
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholderPattern(),
+    );
+  }
 }
+
+
 
 class _CheckeredPainter extends CustomPainter {
   @override

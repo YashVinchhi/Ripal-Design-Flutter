@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/screen/worker_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.
@@ -34,6 +37,7 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   static const Color _titleColor = Color(0xFF5A0000);
   String role = 'admin';
+  String? _userAvatarPath;
 
   @override
   void initState() {
@@ -43,9 +47,12 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      role = widget.role ?? prefs.getString('role') ?? 'admin';
-    });
+    if (mounted) {
+      setState(() {
+        role = widget.role ?? prefs.getString('role') ?? 'admin';
+        _userAvatarPath = prefs.getString('userAvatarPath');
+      });
+    }
   }
 
   @override
@@ -81,16 +88,47 @@ class _MainScaffoldState extends State<MainScaffold> {
         ),
         titleSpacing: -5.5,
         actions: widget.appBarActions ?? [
-          if (role == 'admin' || role == 'worker')
-            IconButton(
-              icon: const Icon(Icons.notifications_none_outlined, color: _titleColor),
-              onPressed: () {},
-            ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, left: 4.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              radius: (role == 'admin' || role == 'worker') ? 16 : 18,
+          IconButton(
+            icon: const Icon(Icons.notifications_none_outlined, color: _titleColor),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No new notifications'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          GestureDetector(
+            onTap: () {
+              if (effectiveRole.toLowerCase() == 'worker') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
+              } else {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0, left: 4.0),
+              child: Container(
+                width: (role == 'admin' || role == 'worker') ? 32 : 36,
+                height: (role == 'admin' || role == 'worker') ? 32 : 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1.5),
+                ),
+                child: ClipOval(
+                  child: buildProfileImage(
+                    _userAvatarPath,
+                    width: (role == 'admin' || role == 'worker') ? 32 : 36,
+                    height: (role == 'admin' || role == 'worker') ? 32 : 36,
+                    fit: BoxFit.cover,
+                    fallback: const CircleAvatar(
+                      backgroundColor: Color(0xFFF5EBE6),
+                      child: Icon(Icons.person, size: 18, color: _titleColor),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

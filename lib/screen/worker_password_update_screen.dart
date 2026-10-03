@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
@@ -23,12 +24,9 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   bool _obscureNew = true;
   bool _obscureConfirm = true;
 
-  final TextEditingController _currentController =
-      TextEditingController(text: 'zxcv1234');
-  final TextEditingController _newController =
-      TextEditingController(text: 'secretpass');
-  final TextEditingController _confirmController =
-      TextEditingController(text: 'secretpass');
+  final TextEditingController _currentController = TextEditingController();
+  final TextEditingController _newController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
 
   @override
   void dispose() {
@@ -74,15 +72,64 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
     );
   }
 
-  void _updatePassword() {
+  Future<void> _updatePassword() async {
+    final current = _currentController.text.trim();
+    final newPass = _newController.text.trim();
+    final confirmPass = _confirmController.text.trim();
+
+    if (current.isEmpty) {
+      _showError('Please enter your current password');
+      return;
+    }
+
+    if (newPass.length < 8) {
+      _showError('New password must be at least 8 characters long');
+      return;
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(newPass)) {
+      _showError('New password must contain at least one uppercase letter');
+      return;
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(newPass)) {
+      _showError('New password must contain at least one number');
+      return;
+    }
+
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(newPass)) {
+      _showError('New password must contain at least one special character');
+      return;
+    }
+
+    if (newPass != confirmPass) {
+      _showError('New password and confirm password do not match');
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userPassword', newPass);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password updated successfully!'),
+          backgroundColor: primaryColor,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      Navigator.pop(context);
+    }
+  }
+
+  void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Password updated successfully!'),
-        backgroundColor: primaryColor,
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
       ),
     );
-    Navigator.pop(context);
   }
 
   @override

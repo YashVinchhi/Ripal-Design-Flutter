@@ -11,6 +11,7 @@ class ClientProjectDetailScreen extends StatelessWidget {
   final String location;
   final double progress;
   final String progressLabel;
+  final String? imageUrl;
 
   const ClientProjectDetailScreen({
     super.key,
@@ -22,12 +23,23 @@ class ClientProjectDetailScreen extends StatelessWidget {
     this.location = '—',
     this.progress = 0.5,
     this.progressLabel = '50% Completed',
+    this.imageUrl,
   });
 
   static const Color _primary = Color(0xFF5A0000);
 
+  final List<String> _galleryImages = const [
+    'assets/project/behance_239114219_04.png',
+    'assets/project/behance_239114219_05.png',
+    'assets/project/behance_239114219_12.png',
+    'assets/project/behance_239114219_13.png',
+    'assets/project/behance_239114219_14.png',
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final heroImage = imageUrl ?? _galleryImages.first;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F2),
       appBar: AppBar(
@@ -54,22 +66,62 @@ class ClientProjectDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ─── Hero Banner ──────────────────────────────────────────────
+              // ─── Hero Banner with Image ──────────────────────────────────
               _HeroBanner(
                 projectName: projectName,
                 type: type,
                 progressLabel: progressLabel,
+                imageUrl: heroImage,
+              ),
+              const SizedBox(height: 28),
+
+              // ─── Project Gallery Section ──────────────────────────────────
+              const _SectionLabel(label: 'PROJECT GALLERY'),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 140,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _galleryImages.length,
+                  itemBuilder: (context, index) {
+                    final img = _galleryImages[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          width: 200,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            img,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(color: Colors.grey.shade300),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
               const SizedBox(height: 28),
 
               // ─── Progress Bar ─────────────────────────────────────────────
-              _SectionLabel(label: 'PROJECT PROGRESS'),
+              const _SectionLabel(label: 'PROJECT PROGRESS'),
               const SizedBox(height: 12),
               _ProgressCard(progress: progress, label: progressLabel),
               const SizedBox(height: 28),
 
               // ─── Project Info ─────────────────────────────────────────────
-              _SectionLabel(label: 'PROJECT DETAILS'),
+              const _SectionLabel(label: 'PROJECT DETAILS'),
               const SizedBox(height: 12),
               _InfoCard(
                 items: [
@@ -77,12 +129,13 @@ class ClientProjectDetailScreen extends StatelessWidget {
                   _InfoItem(icon: Icons.schedule_outlined, label: 'TIMELINE', value: timeline),
                   _InfoItem(icon: Icons.location_on_outlined, label: 'LOCATION', value: location),
                   _InfoItem(icon: Icons.person_outline, label: 'CLIENT', value: clientName),
+                  _InfoItem(icon: Icons.account_balance_wallet_outlined, label: 'BUDGET', value: budget),
                 ],
               ),
               const SizedBox(height: 28),
 
               // ─── Status Timeline ──────────────────────────────────────────
-              _SectionLabel(label: 'MILESTONE STATUS'),
+              const _SectionLabel(label: 'MILESTONE STATUS'),
               const SizedBox(height: 12),
               _MilestoneTimeline(progress: progress),
               const SizedBox(height: 40),
@@ -118,11 +171,13 @@ class _HeroBanner extends StatelessWidget {
   final String projectName;
   final String type;
   final String progressLabel;
+  final String imageUrl;
 
   const _HeroBanner({
     required this.projectName,
     required this.type,
     required this.progressLabel,
+    required this.imageUrl,
   });
 
   @override
@@ -134,84 +189,95 @@ class _HeroBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         color: const Color(0xFF2A0501),
       ),
-      child: Stack(
-        children: [
-          // Subtle pattern
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: CustomPaint(painter: _GridPatternPainter()),
-            ),
-          ),
-          // Gradient
-          Positioned.fill(
-            child: Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background Image
+            if (imageUrl.startsWith('assets/'))
+              Image.asset(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Image.asset('assets/project/behance_239114219_04.png', fit: BoxFit.cover),
+              )
+            else
+              Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Image.asset('assets/project/behance_239114219_04.png', fit: BoxFit.cover),
+              ),
+
+            // Gradient Overlay
+            Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [
-                    Color(0x885A0000),
-                    Color(0xCC2A0501),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.85),
                   ],
                 ),
               ),
             ),
-          ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
-                  ),
-                  child: Text(
-                    type.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.white.withOpacity(0.4)),
                     ),
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  projectName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.check_circle_outline, color: Colors.white70, size: 14),
-                    const SizedBox(width: 6),
-                    Text(
-                      progressLabel,
+                    child: Text(
+                      type.toUpperCase(),
                       style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const Spacer(),
+                  Text(
+                    projectName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.check_circle_outline, color: Colors.white70, size: 14),
+                      const SizedBox(width: 6),
+                      Text(
+                        progressLabel,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -249,11 +315,7 @@ class _ProgressCard extends StatelessWidget {
               ),
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF5A0000),
-                ),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF5A0000)),
               ),
             ],
           ),
@@ -262,8 +324,8 @@ class _ProgressCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 10,
-              backgroundColor: const Color(0xFFFADCDC),
+              minHeight: 8,
+              backgroundColor: const Color(0xFFFDECE9),
               valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF5A0000)),
             ),
           ),
@@ -280,6 +342,7 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -293,53 +356,38 @@ class _InfoCard extends StatelessWidget {
       ),
       child: Column(
         children: items.asMap().entries.map((entry) {
-          final i = entry.key;
+          final isLast = entry.key == items.length - 1;
           final item = entry.value;
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFCEFEA),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(item.icon, color: const Color(0xFF5A0000), size: 18),
-                    ),
+                    Icon(item.icon, size: 20, color: const Color(0xFF5A0000)),
                     const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.label,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            item.value,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF2D2D2D),
-                            ),
-                          ),
-                        ],
+                    Text(
+                      item.label,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      item.value,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF2D2D2D),
                       ),
                     ),
                   ],
                 ),
               ),
-              if (i < items.length - 1)
-                const Divider(height: 1, thickness: 1, color: Color(0xFFF5F5F5), indent: 20, endIndent: 20),
+              if (!isLast) Divider(color: Colors.grey.shade100, height: 1),
             ],
           );
         }).toList(),
@@ -352,24 +400,24 @@ class _InfoItem {
   final IconData icon;
   final String label;
   final String value;
-  const _InfoItem({required this.icon, required this.label, required this.value});
+  _InfoItem({required this.icon, required this.label, required this.value});
 }
 
 class _MilestoneTimeline extends StatelessWidget {
   final double progress;
   const _MilestoneTimeline({required this.progress});
 
-  static const _milestones = [
-    ('PLANNING', 'Site survey, concept, permits'),
-    ('DESIGN', 'Schematics & detailed drawings'),
-    ('CONSTRUCTION', 'Foundation, structure, MEP'),
-    ('FINISHING', 'Interiors, landscape, handover'),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final completedSteps = (progress * 4).ceil();
+    final milestones = [
+      _Milestone(title: 'Schematic Design', completed: progress >= 0.25),
+      _Milestone(title: 'Design Development', completed: progress >= 0.50),
+      _Milestone(title: 'Construction Documents', completed: progress >= 0.75),
+      _Milestone(title: 'Project Handover', completed: progress >= 1.00),
+    ];
+
     return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -381,105 +429,41 @@ class _MilestoneTimeline extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
-        children: _milestones.asMap().entries.map((entry) {
-          final i = entry.key;
-          final milestone = entry.value;
-          final isDone = i < completedSteps - 1;
-          final isCurrent = i == completedSteps - 1;
-
-          Color dotColor;
-          IconData dotIcon;
-          Color textColor;
-          if (isDone) {
-            dotColor = const Color(0xFF5A0000);
-            dotIcon = Icons.check;
-            textColor = const Color(0xFF5A0000);
-          } else if (isCurrent) {
-            dotColor = const Color(0xFF9E4723);
-            dotIcon = Icons.timelapse;
-            textColor = const Color(0xFF9E4723);
-          } else {
-            dotColor = Colors.grey.shade300;
-            dotIcon = Icons.circle_outlined;
-            textColor = Colors.grey.shade500;
-          }
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
+        children: milestones.asMap().entries.map((entry) {
+          final isLast = entry.key == milestones.length - 1;
+          final m = entry.value;
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Icon(
+                    m.completed ? Icons.check_circle : Icons.radio_button_unchecked,
+                    size: 20,
+                    color: m.completed ? const Color(0xFF5A0000) : Colors.grey.shade400,
+                  ),
+                  if (!isLast)
                     Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: dotColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(dotIcon, color: Colors.white, size: 16),
+                      width: 2,
+                      height: 24,
+                      color: m.completed ? const Color(0xFF5A0000) : Colors.grey.shade200,
                     ),
-                    if (i < _milestones.length - 1)
-                      Container(
-                        width: 2,
-                        height: 28,
-                        color: isDone ? const Color(0xFF5A0000) : Colors.grey.shade200,
-                      ),
-                  ],
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          milestone.$1,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: textColor,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          milestone.$2,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade500,
-                          ),
-                        ),
-                        if (isCurrent)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFCEFEA),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: const Text(
-                                'IN PROGRESS',
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF9E4723),
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                ],
+              ),
+              const SizedBox(width: 14),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  m.title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: m.completed ? FontWeight.bold : FontWeight.normal,
+                    color: m.completed ? const Color(0xFF2D2D2D) : Colors.grey.shade600,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }).toList(),
       ),
@@ -487,22 +471,8 @@ class _MilestoneTimeline extends StatelessWidget {
   }
 }
 
-/// Subtle grid background pattern for the hero banner.
-class _GridPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
-      ..strokeWidth = 1;
-    const step = 28.0;
-    for (double x = 0; x < size.width; x += step) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
-    for (double y = 0; y < size.height; y += step) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_GridPatternPainter oldDelegate) => false;
+class _Milestone {
+  final String title;
+  final bool completed;
+  _Milestone({required this.title, required this.completed});
 }

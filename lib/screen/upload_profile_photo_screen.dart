@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_finance_screen.dart';
@@ -40,6 +41,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       role = prefs.getString('role') ?? 'admin';
+      _selectedImagePath = prefs.getString('userAvatarPath');
     });
   }
 
@@ -116,8 +118,8 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
 
                 // Preview Circle
                 ClipOval(
-                  child: Image.file(
-                    File(imagePath),
+                  child: buildProfileImage(
+                    imagePath,
                     width: 150,
                     height: 150,
                     fit: BoxFit.cover,
@@ -153,7 +155,10 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setString('userAvatarPath', imagePath);
+                          if (!mounted) return;
                           Navigator.pop(dialogContext); // Close dialog
                           setState(() {
                             _selectedImagePath = imagePath;
@@ -270,20 +275,19 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: ClipOval(
-                          child: (_selectedImagePath != null && File(_selectedImagePath!).existsSync())
-                              ? Image.file(
-                                  File(_selectedImagePath!),
-                                  width: 170,
-                                  height: 170,
-                                  fit: BoxFit.cover,
-                                )
-                              : Center(
-                                  child: Icon(
-                                    Icons.person_outline,
-                                    size: 72,
-                                    color: Colors.brown.shade300,
-                                  ),
-                                ),
+                          child: buildProfileImage(
+                            _selectedImagePath,
+                            width: 170,
+                            height: 170,
+                            fit: BoxFit.cover,
+                            fallback: Center(
+                              child: Icon(
+                                Icons.person_outline,
+                                size: 72,
+                                color: Colors.brown.shade300,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],

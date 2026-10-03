@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/setting_group.dart';
@@ -31,6 +33,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
 
   String _userName = 'Your Name';
   String _userEmail = 'youremail@example.com';
+  String? _userAvatarPath;
 
   @override
   void initState() {
@@ -43,7 +46,24 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
     setState(() {
       _userName = prefs.getString('userName') ?? 'Your Name';
       _userEmail = prefs.getString('userEmail') ?? 'youremail@example.com';
+      _userAvatarPath = prefs.getString('userAvatarPath');
     });
+  }
+
+  void _showInfoDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title, style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _onNavTap(int index) {
@@ -139,17 +159,40 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
-              ),
-              child: const ClipOval(
-                child: CheckeredPlaceholder(squareSize: 4),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_outlined, color: primaryColor),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No new notifications'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          GestureDetector(
+            onTap: _openUploadPhoto,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
+                ),
+                child: ClipOval(
+                  child: buildProfileImage(
+                    _userAvatarPath,
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                    fallback: const CircleAvatar(
+                      backgroundColor: Color(0xFFF5EBE6),
+                      child: Icon(Icons.person, size: 18, color: primaryColor),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -192,8 +235,21 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                             width: 2,
                           ),
                         ),
-                        child: const ClipOval(
-                          child: CheckeredPlaceholder(squareSize: 8),
+                        child: ClipOval(
+                          child: buildProfileImage(
+                            _userAvatarPath,
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            fallback: const CircleAvatar(
+                              backgroundColor: Color(0xFFF5EBE6),
+                              child: Icon(
+                                Icons.person,
+                                size: 48,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -298,54 +354,35 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
               ),
               const SizedBox(height: 20),
 
-              // ─── SUPPORT SECTION ─────────────────────────────────
+              // ─── ABOUT & HELP ────────────────────────────────────
               SettingGroup(
-                title: 'SUPPORT',
+                title: 'ABOUT & HELP',
                 children: [
                   SettingTile(
                     icon: Icons.help_outline,
-                    title: 'Help Center',
-                    onTap: () {},
+                    title: 'Help & Support',
+                    subtitle: 'FAQs and support center',
+                    onTap: () {
+                      _showInfoDialog('Help Center', 'Reach out to support@ripaldesign.com or call +91 94267 89012 for assistance.');
+                    },
                   ),
                   const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
                   SettingTile(
                     icon: Icons.security,
                     title: 'Privacy Policy',
-                    onTap: () {},
+                    subtitle: 'Terms of service & privacy',
+                    onTap: () {
+                      _showInfoDialog('Privacy Policy', 'Your data is handled securely under Ripal Design Candidate & User Privacy terms.');
+                    },
                   ),
                   const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              color: Colors.brown.shade400,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 14),
-                            const Text(
-                              'App Version',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: _titleDark,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'v0.0.1',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
+                  SettingTile(
+                    icon: Icons.info_outline,
+                    title: 'About Ripal Design',
+                    subtitle: 'Version 1.0.0',
+                    onTap: () {
+                      _showInfoDialog('About Ripal Design', 'Ripal Design Architecture Studio\nVersion 1.0.0');
+                    },
                   ),
                 ],
               ),

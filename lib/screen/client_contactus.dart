@@ -7,6 +7,9 @@ import 'package:ripal_design/resource/section_header.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/client_applay.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+// import 'package:ripal_design/screen/dashboard_screen.dart';
+
 
 class ClientContactus extends StatefulWidget {
   /// When [embeddedMode] is true, the widget renders only its body content
@@ -24,6 +27,7 @@ class _ClientContactusState extends State<ClientContactus> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
 
+  final _formKey = GlobalKey<FormState>();
   int _currentIndex = 2; // Contact is index 2 in bottom nav
 
   String? _selectedProjectType;
@@ -45,6 +49,138 @@ class _ClientContactusState extends State<ClientContactus> {
     _emailController.dispose();
     _messageController.dispose();
     super.dispose();
+  }
+
+  void _submitInquiry() {
+    FocusScope.of(context).unfocus();
+
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please complete all required fields properly'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_selectedProjectType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a project type'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    _showSuccessDialog();
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: const Color(0xFFFFF7F2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE5DDD5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.mark_email_read_outlined,
+                    size: 40,
+                    color: primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Inquiry Sent Successfully!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: titleColor,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Thank you, ${_fullNameController.text.trim()}. We have received your inquiry for ${_selectedProjectType ?? "your project"}. An architect will reach out within 24 hours.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade700,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.confirmation_number_outlined, size: 18, color: primaryColor),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Ticket Ref: #INQ-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardScreen()),
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -91,96 +227,116 @@ class _ClientContactusState extends State<ClientContactus> {
 
   Widget _buildBody() {
     return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ─── Hero Header ─────────────────────────────
-              Text(
-                'Get in\nTouch',
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w800,
-                  color: titleColor,
-                  height: 1.05,
-                  letterSpacing: -1,
-                ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ─── Hero Header ─────────────────────────────
+            Text(
+              'Get in\nTouch',
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.w800,
+                color: titleColor,
+                height: 1.05,
+                letterSpacing: -1,
               ),
-              const SizedBox(height: 12),
-              Text(
-                'We believe in the power of meaningful collaboration. Let\'s discuss how we can bring architectural precision and tactile luxury to your next project.',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade700,
-                  height: 1.5,
-                ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'We believe in the power of meaningful collaboration. Let\'s discuss how we can bring architectural precision and tactile luxury to your next project.',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade700,
+                height: 1.5,
               ),
-              const SizedBox(height: 32),
+            ),
+            const SizedBox(height: 32),
 
-              // ─── Form Section ─────────────────────────────
-              const SectionHeader(title: 'START A CONVERSATION'),
+            // ─── Form Section ─────────────────────────────
+            const SectionHeader(title: 'START A CONVERSATION'),
 
-              // Full Name
-              CustomTextField(
-                label: 'FULL NAME',
-                hintText: 'Enter Your Full Name',
-                controller: _fullNameController,
-              ),
-              const SizedBox(height: 20),
+            // Full Name
+            CustomTextField(
+              label: 'FULL NAME',
+              hintText: 'Enter Your Full Name',
+              controller: _fullNameController,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your full name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
 
-              // Email Address
-              CustomTextField(
-                label: 'EMAIL ADDRESS',
-                hintText: 'youremail@example.com',
-                keyboardType: TextInputType.emailAddress,
-                controller: _emailController,
-              ),
-              const SizedBox(height: 20),
+            // Email Address
+            CustomTextField(
+              label: 'EMAIL ADDRESS',
+              hintText: 'youremail@example.com',
+              keyboardType: TextInputType.emailAddress,
+              controller: _emailController,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your email address';
+                }
+                final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                if (!emailRegex.hasMatch(value.trim())) {
+                  return 'Please enter a valid email address';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
 
-              // Project Type Dropdown
-              _buildDropdownField(),
-              const SizedBox(height: 20),
+            // Project Type Dropdown
+            _buildDropdownField(),
+            const SizedBox(height: 20),
 
-              // Message
-              _buildMessageField(),
-              const SizedBox(height: 28),
+            // Message
+            _buildMessageField(),
+            const SizedBox(height: 28),
 
-              // Send Inquiry Button
-              CustomButton(
-                text: 'Send Inquiry',
-                onPressed: () {},
-                icon: Icons.arrow_forward,
-              ),
-              const SizedBox(height: 40),
+            // Send Inquiry Button
+            CustomButton(
+              text: 'Send Inquiry',
+              onPressed: _submitInquiry,
+              icon: Icons.arrow_forward,
+            ),
+            const SizedBox(height: 40),
 
-              // ─── Divider ──────────────────────────────
-              Divider(color: Colors.grey.shade200, thickness: 1),
-              const SizedBox(height: 28),
+            // ─── Divider ──────────────────────────────
+            Divider(color: Colors.grey.shade200, thickness: 1),
+            const SizedBox(height: 28),
 
-              // ─── Contact Info ──────────────────────────
-              const ContactInfoRow(
-                icon: Icons.phone_outlined,
-                label: 'CALL US',
-                value: '+91 94267 89012',
-              ),
-              const SizedBox(height: 24),
+            // ─── Contact Info ──────────────────────────
+            const ContactInfoRow(
+              icon: Icons.phone_outlined,
+              label: 'CALL US',
+              value: '+91 94267 89012',
+            ),
+            const SizedBox(height: 24),
 
-              const ContactInfoRow(
-                icon: Icons.mail_outline,
-                label: 'MAIL US',
-                value: 'projects@ripaldesign.studio',
-              ),
-              const SizedBox(height: 24),
+            const ContactInfoRow(
+              icon: Icons.mail_outline,
+              label: 'MAIL US',
+              value: 'projects@ripaldesign.studio',
+            ),
+            const SizedBox(height: 24),
 
-              const ContactInfoRow(
-                icon: Icons.location_on_outlined,
-                label: 'LOCATION',
-                value:
-                    '308 Jassal Complex,\nNanaKati Chowne,\nIsset Ring Road,\nRajkot, Gujarat, India',
-              ),
-              const SizedBox(height: 32),
-            ],
+            const ContactInfoRow(
+              icon: Icons.location_on_outlined,
+              label: 'LOCATION',
+              value:
+                  '308 Jassal Complex,\nNanaKati Chowne,\nIsset Ring Road,\nRajkot, Gujarat, India',
+            ),
+            const SizedBox(height: 32),
+          ],
         ),
+      ),
     );
   }
 
@@ -201,9 +357,15 @@ class _ClientContactusState extends State<ClientContactus> {
         DropdownButtonFormField<String>(
           value: _selectedProjectType,
           hint: Text(
-            'Residential Design',
+            'Select Project Type',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select a project type';
+            }
+            return null;
+          },
           icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade500),
           decoration: InputDecoration(
             border: OutlineInputBorder(
@@ -250,10 +412,16 @@ class _ClientContactusState extends State<ClientContactus> {
           ),
         ),
         const SizedBox(height: 8),
-        TextField(
+        TextFormField(
           controller: _messageController,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
+          validator: (value) {
+            if (value == null || value.trim().length < 10) {
+              return 'Please enter a message (min 10 characters)';
+            }
+            return null;
+          },
           decoration: InputDecoration(
             hintText: 'Tell us about your vision...',
             hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
