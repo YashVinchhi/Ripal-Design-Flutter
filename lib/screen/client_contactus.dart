@@ -355,7 +355,7 @@ class _ClientContactusState extends State<ClientContactus> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _selectedProjectType,
+          initialValue: _selectedProjectType,
           hint: Text(
             'Select Project Type',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),

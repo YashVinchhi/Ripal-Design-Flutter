@@ -191,7 +191,7 @@ class _AdminCreateProjectState extends State<AdminCreateProject> {
             decoration: BoxDecoration(
               color: isActive
                   ? primaryColor
-                  : (isCompleted ? primaryColor.withOpacity(0.8) : const Color(0xFFF2E6E3)),
+                  : (isCompleted ? primaryColor.withValues(alpha: 0.8) : const Color(0xFFF2E6E3)),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -279,7 +279,7 @@ class _AdminCreateProjectState extends State<AdminCreateProject> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _selectedSector,
+          initialValue: _selectedSector,
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
           style: const TextStyle(fontSize: 16, color: Colors.black87),
           decoration: InputDecoration(

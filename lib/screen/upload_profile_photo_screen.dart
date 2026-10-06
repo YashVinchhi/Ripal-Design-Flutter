@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -156,21 +156,24 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          final navigator = Navigator.of(context);
+                          final dialogNavigator = Navigator.of(dialogContext);
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setString('userAvatarPath', imagePath);
                           if (!mounted) return;
-                          Navigator.pop(dialogContext); // Close dialog
+                          dialogNavigator.pop(); // Close dialog
                           setState(() {
                             _selectedImagePath = imagePath;
                           });
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             const SnackBar(
                               content: Text('Profile photo approved & updated!'),
                               backgroundColor: primaryColor,
                               duration: Duration(seconds: 2),
                             ),
                           );
-                          Navigator.pop(context, imagePath); // Pass approved image path back to EditProfileScreen
+                          navigator.pop(imagePath); // Pass approved image path back to EditProfileScreen
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
