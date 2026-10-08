@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
@@ -185,7 +185,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           CircleAvatar(
                             radius: 44,
-                            backgroundColor: salmonColor.withOpacity(0.2),
+                            backgroundColor: salmonColor.withValues(alpha: 0.2),
                             child: CircleAvatar(
                               radius: 40,
                               backgroundColor: const Color(0xFFF5EBE6),
@@ -377,7 +377,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const login_Screen(),
+                        builder: (context) => const LoginScreen(),
                       ),
                       (route) => false,
                     );

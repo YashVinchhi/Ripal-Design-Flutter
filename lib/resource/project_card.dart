@@ -31,7 +31,7 @@ class ProjectCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.10),
+              color: Colors.black.withValues(alpha: 0.10),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -56,7 +56,7 @@ class ProjectCard extends StatelessWidget {
                       stops: const [0.40, 1.0],
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.78),
+                        Colors.black.withValues(alpha: 0.78),
                       ],
                     ),
                   ),
@@ -88,7 +88,7 @@ class ProjectCard extends StatelessWidget {
                     Text(
                       '$category • $year',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.72),
+                        color: Colors.white.withValues(alpha: 0.72),
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.2,

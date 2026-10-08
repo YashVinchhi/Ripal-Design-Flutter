@@ -65,42 +65,6 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 
-  List<_NavItemData> _getNavItemsForRole(String role) {
-    if (role == 'client') {
-      // 1st Image: Client Navigation (Home, Project, FAB, Contact, Profile)
-      return [
-        const _NavItemData(icon: Icons.home_outlined, label: 'Home'),
-        const _NavItemData(icon: Icons.grid_view_outlined, label: 'Project'),
-        const _NavItemData(icon: Icons.description_outlined, label: 'Contact'),
-        const _NavItemData(icon: Icons.person_outline, label: 'Profile'),
-      ];
-    } else if (role == 'worker') {
-      // 2nd Image: Worker Navigation (Home, Leave, FAB, Upload, Profile)
-      return [
-        const _NavItemData(icon: Icons.home_outlined, label: 'Home'),
-        const _NavItemData(icon: Icons.calendar_today_outlined, label: 'Leave'),
-        const _NavItemData(icon: Icons.arrow_circle_up_outlined, label: 'Upload'),
-        const _NavItemData(icon: Icons.person_outline, label: 'Profile'),
-      ];
-    } else if (role == 'employee') {
-      // 3rd Image: Employee Navigation (Home, Leave, FAB, Upload, Profile)
-      return [
-        const _NavItemData(icon: Icons.home_outlined, label: 'Home'),
-        const _NavItemData(icon: Icons.calendar_today_outlined, label: 'Leave'),
-        const _NavItemData(icon: Icons.arrow_circle_up_outlined, label: 'Upload'),
-        const _NavItemData(icon: Icons.person_outline, label: 'Profile'),
-      ];
-    } else {
-      // 4th Image: Admin Navigation (Home, Leave, FAB, Finance, Settings)
-      return [
-        const _NavItemData(icon: Icons.home_outlined, label: 'Home'),
-        const _NavItemData(icon: Icons.calendar_today_outlined, label: 'Leave'),
-        const _NavItemData(icon: Icons.payments_outlined, label: 'Finance'),
-        const _NavItemData(icon: Icons.settings_outlined, label: 'Settings'),
-      ];
-    }
-  }
-
   Widget _buildNavItem({
     required IconData icon,
     required String label,
@@ -134,10 +98,4 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 }
 
-class _NavItemData {
-  final IconData icon;
-  final String label;
-
-  const _NavItemData({required this.icon, required this.label});
-}
 

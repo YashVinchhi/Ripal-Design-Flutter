@@ -116,7 +116,7 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
                   color: const Color(0xFF333333),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -143,7 +143,7 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withOpacity(0.85),
+                              Colors.black.withValues(alpha: 0.85),
                             ],
                           ),
                         ),
@@ -177,9 +177,9 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.25),
+                                  color: Colors.white.withValues(alpha: 0.25),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.white.withOpacity(0.4)),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
                                 ),
                                 child: const Text(
                                   '75% COMPLETE',
@@ -350,7 +350,7 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
             decoration: BoxDecoration(
               color: isActive
                   ? primaryColor
-                  : (isCompleted ? primaryColor.withOpacity(0.8) : const Color(0xFFF2E6E3)),
+                  : (isCompleted ? primaryColor.withValues(alpha: 0.8) : const Color(0xFFF2E6E3)),
               shape: BoxShape.circle,
             ),
             child: Center(

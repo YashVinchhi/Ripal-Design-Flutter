@@ -778,7 +778,7 @@ class _AdminTeamScreenState extends State<AdminTeamScreen> {
             decoration: BoxDecoration(
               color: isActive
                   ? primaryColor
-                  : (isCompleted ? primaryColor.withOpacity(0.8) : const Color(0xFFF2E6E3)),
+                  : (isCompleted ? primaryColor.withValues(alpha: 0.8) : const Color(0xFFF2E6E3)),
               shape: BoxShape.circle,
             ),
             child: Center(

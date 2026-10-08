@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
-import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
@@ -400,7 +398,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
 
                     navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const login_Screen(),
+                        builder: (context) => const LoginScreen(),
                       ),
                       (route) => false,
                     );

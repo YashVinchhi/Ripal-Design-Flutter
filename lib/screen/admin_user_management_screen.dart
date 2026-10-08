@@ -10,7 +10,7 @@ class AdminUserManagementScreen extends StatefulWidget {
 
 class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
   final Color primaryColor = const Color(0xFF5A0000);
-  int _currentIndex = 3; // Settings or Profile equivalent
+  final int _currentIndex = 3; // Settings or Profile equivalent
 
   @override
   Widget build(BuildContext context) {

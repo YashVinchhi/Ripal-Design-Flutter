@@ -6,14 +6,14 @@ import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 
-class login_Screen extends StatefulWidget {
-  const login_Screen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<login_Screen> createState() => _login_ScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _login_ScreenState extends State<login_Screen> {
+class _LoginScreenState extends State<LoginScreen> {
   final Color primaryColor = const Color(0xFF9E4723);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();

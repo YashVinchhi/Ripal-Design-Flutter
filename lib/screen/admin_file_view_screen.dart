@@ -290,7 +290,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.play_arrow, color: Colors.white, size: 36),
