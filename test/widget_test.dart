@@ -15,6 +15,6 @@ void main() {
     await tester.pumpWidget(const MainApp());
 
     // Verify that our text is found.
-    expect(find.text('Hello World!'), findsOneWidget);
+    expect(find.text('Ripal Design'), findsOneWidget);
   });
 }

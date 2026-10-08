@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
+import 'package:ripal_design/service/project_service.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_project_detail_screen.dart';
 import 'package:ripal_design/screen/admin_team_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminActivityScreen extends StatefulWidget {
   const AdminActivityScreen({super.key});
@@ -21,31 +21,15 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
   static const Color _titleDark = Color(0xFF2A0501);
   static const Color _cardPink = Color(0xFFFCEFEA);
 
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
   final int _currentStep = 4; // Step 4: Activity
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index);
   }
 
   void _onFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    AppNavigation.handleFabPressed(context);
   }
 
   void _onStepTap(int step) {
@@ -62,11 +46,14 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin', 'employee'],
+      child: MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: 'SITE LOG',
+      appBarActions: const [AppNotificationIcon(iconColor: primaryColor)],
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back, color: primaryColor),
         onPressed: () => Navigator.pop(context),
@@ -285,6 +272,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
                         backgroundColor: primaryColor,
                       ),
                     );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                      (route) => false,
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: primaryColor),
@@ -306,17 +298,20 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    final name = ProjectService.draft.projectName.isNotEmpty
+                        ? ProjectService.draft.projectName
+                        : 'New Project';
+                    ProjectService.resetDraft();
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Project created successfully!'),
+                      SnackBar(
+                        content: Text('Project "$name" created successfully!'),
                         backgroundColor: primaryColor,
                       ),
                     );
-                    Navigator.pushReplacement(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdminProjectDetailScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                      (route) => false,
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -342,8 +337,9 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildStep(int number, String title) {
     final bool isActive = _currentStep == number;

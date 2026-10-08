@@ -4,14 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class UploadProfilePhotoScreen extends StatefulWidget {
   const UploadProfilePhotoScreen({super.key});
@@ -26,7 +20,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
   static const Color _cardPink = Color(0xFFFCEFEA);
   static const Color _titleDark = Color(0xFF2A0501);
 
-  int _currentIndex = 3;
+  final int _currentIndex = 3;
   String role = 'admin';
   String? _selectedImagePath;
   final ImagePicker _picker = ImagePicker();
@@ -159,8 +153,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                           final messenger = ScaffoldMessenger.of(context);
                           final navigator = Navigator.of(context);
                           final dialogNavigator = Navigator.of(dialogContext);
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.setString('userAvatarPath', imagePath);
+                          await UserService.updateAvatar(imagePath);
                           if (!mounted) return;
                           dialogNavigator.pop(); // Close dialog
                           setState(() {
@@ -173,7 +166,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                               duration: Duration(seconds: 2),
                             ),
                           );
-                          navigator.pop(imagePath); // Pass approved image path back to EditProfileScreen
+                          navigator.pop(imagePath); // Pass approved image path back to caller
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
@@ -194,43 +187,11 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      }
-      return;
-    }
-    if (index == 2) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      }
-      return;
-    }
-    if (index == 3) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      }
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentRole: role);
   }
 
   void _onFabPressed() {
-    if (role == 'worker') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
-    }
+    AppNavigation.handleFabPressed(context, currentRole: role);
   }
 
   @override

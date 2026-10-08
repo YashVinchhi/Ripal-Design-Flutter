@@ -1,11 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_invoice_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminFinanceScreen extends StatefulWidget {
   const AdminFinanceScreen({super.key});
@@ -22,25 +21,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
   static const Color _labelBrown = Color(0xFF7C5D53);
   static const Color _salmonOrange = Color(0xFFF17B58);
 
-  int _currentIndex = 2;
+  final int _currentIndex = 2;
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      return;
-    }
-    if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentRole: 'admin');
   }
 
   void _onFabPressed() {
@@ -49,15 +33,17 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
-      currentIndex: _currentIndex,
-      onNavTap: _onNavTap,
-      onFabPressed: _onFabPressed,
-      appBarTitle: 'Finance',
-      appBarLeading: IconButton(
-        icon: const Icon(Icons.grid_view_outlined, color: Color(0xFF5A0000)),
-        onPressed: () {},
-      ),
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin'],
+      child: MainScaffold(
+        currentIndex: _currentIndex,
+        onNavTap: _onNavTap,
+        onFabPressed: _onFabPressed,
+        appBarTitle: 'Finance',
+        appBarLeading: IconButton(
+          icon: const Icon(Icons.grid_view_outlined, color: Color(0xFF5A0000)),
+          onPressed: () {},
+        ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
@@ -376,7 +362,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildTransactionRow({

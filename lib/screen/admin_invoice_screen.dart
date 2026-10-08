@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/admin_create_invoice_screen.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/invoice_pdf_preview_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminInvoiceScreen extends StatefulWidget {
   const AdminInvoiceScreen({super.key});
@@ -25,26 +23,10 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
   static const Color _pendingText = Color(0xFFA35D43);
   static const Color _pendingBg = Color(0xFFFCECE4);
 
-  int _currentIndex = 2;
+  final int _currentIndex = 2;
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentRole: 'admin');
   }
 
   void _onFabPressed() {
@@ -116,7 +98,9 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin'],
+      child: MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
@@ -460,7 +444,7 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildServiceItem({

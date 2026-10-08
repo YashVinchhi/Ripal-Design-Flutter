@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/portfolio_card.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 import 'package:ripal_design/screen/client_contactus.dart';
 import 'package:ripal_design/screen/client_project_view.dart';
-import 'package:ripal_design/screen/client_applay.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 
 import 'package:ripal_design/screen/admin_create_project.dart';
@@ -17,17 +16,18 @@ import 'package:ripal_design/screen/admin_invoice_screen.dart';
 import 'package:ripal_design/screen/admin_file_view_screen.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/admin_project_detail_screen.dart';
+import 'package:ripal_design/screen/admin_team_screen.dart';
 import 'package:ripal_design/screen/admin_leave_history_screen.dart';
 import 'package:ripal_design/screen/client_project_detail_screen.dart';
 
 import 'package:ripal_design/resource/checkered_placeholder.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/worker_activity_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_project_files_screen.dart';
 import 'package:ripal_design/screen/worker_project_view_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 import 'package:ripal_design/screen/worker_view_member_screen.dart';
+import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -40,7 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
   int _currentIndex = 0;
-  String role = 'admin';
+  String role = '';
   String userName = '';
 
   @override
@@ -50,74 +50,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
+    final user = await UserService.getCurrentUser();
+    if (!mounted) return;
     setState(() {
-      role = prefs.getString('role') ?? 'admin';
-      userName = prefs.getString('userName') ?? '';
+      role = user.role;
+      userName = user.name;
     });
   }
 
   // ─── Admin navigation ─────────────────────────────────────────────────────
   void _onAdminNavTap(int index) {
-    if (index == 1) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'admin', currentIndex: _currentIndex);
   }
 
   void _onAdminFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    AppNavigation.handleFabPress(context, 'admin');
   }
 
   // ─── Worker navigation ────────────────────────────────────────────────────
   void _onWorkerNavTap(int index) {
-    if (index == 1) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onWorkerFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+    AppNavigation.handleFabPress(context, 'worker');
   }
 
   // ─── Employee navigation ─────────────────────────────────────────────────
   void _onEmployeeNavTap(int index) {
-    if (index == 1) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'employee', currentIndex: _currentIndex);
   }
 
   void _onEmployeeFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()));
+    AppNavigation.handleFabPress(context, 'employee');
   }
 
   // ─── Client navigation (IndexedStack-based, no push) ─────────────────────
@@ -126,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _onClientFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
+    AppNavigation.handleFabPress(context, 'client');
   }
 
   @override
@@ -196,7 +161,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          child: _buildAdminBody(),
+          child: _buildEmployeeBody(),
         ),
       ),
     );
@@ -431,7 +396,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ClientProjectView()),
+              MaterialPageRoute(
+                builder: (context) => const AdminProjectDetailScreen(
+                  projectName: 'Skyline Plaza',
+                  clientName: 'Vanguard Properties',
+                  budget: '₹2,50,000',
+                  timeline: 'Jan 2024 - Dec 2024',
+                  type: 'Commercial Architecture',
+                  location: 'Skyline Avenue — Phase 3',
+                ),
+              ),
             );
           },
         ),
@@ -456,7 +430,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ClientProjectView()),
+                  MaterialPageRoute(
+                    builder: (context) => const AdminProjectDetailScreen(
+                      projectName: 'Skyline Plaza',
+                      clientName: 'Vanguard Properties',
+                      budget: '₹2,50,000',
+                      timeline: 'Jan 2024 - Dec 2024',
+                      type: 'Commercial Architecture',
+                      location: 'Skyline Avenue — Phase 3',
+                    ),
+                  ),
                 );
               },
               child: Padding(
@@ -474,7 +457,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 220,
+          height: 260,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
@@ -678,7 +661,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor)),
+                      Expanded(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
                       Text(progressText, style: const TextStyle(fontSize: 10, color: Colors.grey)),
                     ],
                   ),
@@ -735,7 +726,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ─── WORKER DASHBOARD BODY (Worker Dashborad.png) ───────────────
   // ═════════════════════════════════════════════════════════════════
   Widget _buildWorkerBody() {
-    final displayName = userName.isNotEmpty ? userName : 'Rachit';
+    final displayName = userName.isNotEmpty ? userName : 'Niku';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -911,20 +902,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Assigned Projects',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1E1E1E),
+            const Expanded(
+              child: Text(
+                'Assigned Projects',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                ),
               ),
             ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const WorkerProjectViewScreen(),
+                    builder: (context) => const WorkerProjectViewScreen(
+                      projectName: 'Skyline Plaza',
+                      clientName: 'Skyline Dev',
+                      budget: '₹4,50,000',
+                      timeline: 'Oct 2023 - Dec 2024',
+                      type: 'Structural Framework',
+                      location: 'Metropolitan Center',
+                    ),
                   ),
                 );
               },
@@ -1276,6 +1277,325 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // ═════════════════════════════════════════════════════════════════
+  // ─── EMPLOYEE DASHBOARD BODY (Employee Dashborad.png) ────────────
+  // ═════════════════════════════════════════════════════════════════
+  Widget _buildEmployeeBody() {
+    final displayName = userName.isNotEmpty ? userName : 'Rachit';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ─── DASHBOARD OVERVIEW HEADER ──────────────────────
+        const Text(
+          'DASHBOARD OVERVIEW',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: Color(0xFF7A6666),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Welcome, $displayName',
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E1E1E),
+            height: 1.15,
+          ),
+        ),
+        const SizedBox(height: 6),
+        RichText(
+          text: const TextSpan(
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF555555),
+              height: 1.35,
+            ),
+            children: [
+              TextSpan(text: 'You have '),
+              TextSpan(
+                text: '12 Active Projects',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF9E4723),
+                ),
+              ),
+              TextSpan(text: '\nrequiring your attention today.'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // ─── STAT CARD: ACTIVE PROJECTS (Only 1 stat card on Employee) ─────
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFF2DED7)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEBEFFC),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.architecture,
+                  color: Color(0xFF5B78E6),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'ACTIVE PROJECTS',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: Color(0xFF7A6666),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '15',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // ─── SECTION: Assigned Projects ─────────────────────
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Expanded(
+              child: Text(
+                'Assigned Projects',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerProjectViewScreen(
+                      projectName: 'Skyline Plaza',
+                      clientName: 'Skyline Dev',
+                      budget: '₹4,50,000',
+                      timeline: 'Oct 2023 - Dec 2024',
+                      type: 'Structural Framework',
+                      location: 'Metropolitan Center',
+                    ),
+                  ),
+                );
+              },
+              child: Row(
+                children: const [
+                  Text(
+                    'EXPLORE PROJECTS',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: Color(0xFF8B3A1C),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Color(0xFF8B3A1C),
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+
+        // Horizontal Project Cards
+        SizedBox(
+          height: 245,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            children: [
+              _buildWorkerProjectCard(
+                title: 'Skyline Plaza',
+                subtitle: 'Phase 3: Structural Framework',
+                progress: 0.75,
+                progressText: '75% Done',
+                badgeText: 'ACTIVE',
+                badgeColor: const Color(0xFF232323),
+                progressColor: titleColor,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WorkerProjectViewScreen(
+                        projectName: 'Skyline Plaza',
+                        clientName: 'Skyline Dev',
+                        budget: '₹4,50,000',
+                        timeline: 'Oct 2023 - Dec 2024',
+                        type: 'Structural Framework',
+                        location: 'Metropolitan Center',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 14),
+              _buildWorkerProjectCard(
+                title: 'Azure Residence',
+                subtitle: 'Phase 2: Interior Finishing',
+                progress: 0.40,
+                progressText: '40% Done',
+                badgeText: 'REVIEW',
+                badgeColor: const Color(0xFF8B3A1C),
+                progressColor: const Color(0xFF8B3A1C),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WorkerProjectViewScreen(
+                        projectName: 'Azure Residence',
+                        clientName: 'Azure Living Ltd',
+                        budget: '₹6,80,000',
+                        timeline: 'Jan 2024 - Dec 2024',
+                        type: 'Interior Finishing',
+                        location: 'Harbor District',
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // ─── SECTION: Actions (Matching Employee Dashborad.png exactly) ──────
+        const Text(
+          'Actions',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1E1E1E),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
+          childAspectRatio: 1.15,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _buildWorkerQuickAction(
+              icon: Icons.add_circle_outline,
+              title: 'CREATE PROJECT',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminCreateProject()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.cloud_upload_outlined,
+              title: 'UPLOAD FILES',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminUploadFileScreen()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.add_circle_outline,
+              title: 'ADD TEAM\nMEMBER',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminTeamScreen()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.description_outlined,
+              title: 'FILE VIEWS',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminFileViewScreen()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.event_busy_outlined,
+              title: 'LEAVE\nMANAGEMENT',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminLeaveScreen()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.description_outlined,
+              title: 'LEAVE HISTORY',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminLeaveHistoryScreen()),
+                );
+              },
+            ),
+            _buildWorkerQuickAction(
+              icon: Icons.settings_outlined,
+              title: 'SETTINGS',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 40),
+      ],
     );
   }
 }

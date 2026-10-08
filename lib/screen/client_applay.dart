@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
@@ -24,6 +25,7 @@ class _ClientApplayState extends State<ClientApplay> {
   int _currentIndex = 0;
   
   bool _cvUploaded = false;
+  bool _isSubmitting = false;
   String? _cvFileName;
   int? _cvFileSize;
 
@@ -81,7 +83,8 @@ class _ClientApplayState extends State<ClientApplay> {
     });
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
+    if (_isSubmitting) return;
     FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) {
@@ -104,7 +107,30 @@ class _ClientApplayState extends State<ClientApplay> {
       return;
     }
 
-    _showSuccessDialog();
+    setState(() => _isSubmitting = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('lastApplicationName', _fullNameController.text.trim());
+      await prefs.setString('lastApplicationCv', _cvFileName!);
+      if (!mounted) return;
+      _showSuccessDialog();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Unable to submit application. Please try again.'),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: _submitForm,
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   void _showSuccessDialog() {
@@ -519,7 +545,8 @@ class _ClientApplayState extends State<ClientApplay> {
                 // ─── Submit Button ───────────────────────────
                 CustomButton(
                   text: 'Submit Application',
-                  onPressed: _submitForm,
+                  isLoading: _isSubmitting,
+                  onPressed: _isSubmitting ? null : _submitForm,
                   icon: Icons.arrow_forward,
                 ),
                 const SizedBox(height: 16),

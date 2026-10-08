@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
@@ -87,42 +88,32 @@ class _WorkerActivityScreenState extends State<WorkerActivityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgCream,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'SITE LOG',
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
-            letterSpacing: 1.0,
+    return RoleGuardedScreen(
+      allowedRoles: const ['worker'],
+      child: Scaffold(
+        backgroundColor: _bgCream,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: primaryColor),
+            onPressed: () => Navigator.pop(context),
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
-              ),
-              child: const ClipOval(
-                child: CheckeredPlaceholder(squareSize: 4),
-              ),
+          title: const Text(
+            'SITE LOG',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.w800,
+              fontSize: 20,
+              letterSpacing: 1.0,
             ),
           ),
-        ],
-      ),
+          actions: const [
+            AppNotificationIcon(),
+            SizedBox(width: 8),
+          ],
+        ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
         backgroundColor: primaryColor,
@@ -436,7 +427,7 @@ class _WorkerActivityScreenState extends State<WorkerActivityScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildFeedCard({

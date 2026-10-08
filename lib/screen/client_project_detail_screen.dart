@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 
 /// A read-only project detail screen for the client role.
 /// No admin navigation links, no admin actions.
@@ -59,6 +60,10 @@ class ClientProjectDetailScreen extends StatelessWidget {
             letterSpacing: 0.5,
           ),
         ),
+        actions: const [
+          AppNotificationIcon(),
+          SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

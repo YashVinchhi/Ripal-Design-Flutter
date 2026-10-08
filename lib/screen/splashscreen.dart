@@ -70,44 +70,46 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
 
             // Center Branding Content
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 230),
-                  Image.asset(
-                    'assets/logo/Logo.png',
-                    width: 140,
-                    height: 140,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.architecture,
-                      size: 110,
-                      color: primaryColor,
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Spacer(),
+                    Image.asset(
+                      'assets/logo/Logo.png',
+                      width: 140,
+                      height: 140,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.architecture,
+                        size: 110,
+                        color: primaryColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Ripal Design',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: primaryColor,
-                      letterSpacing: -0.5,
+                    const SizedBox(height: 32),
+                    const Text(
+                      'Ripal Design',
+                      style: TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w800,
+                        color: primaryColor,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 160),
-                  const Text(
-                    'ARCHITECTURAL EXCELLENCE',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: subtleTextColor,
-                      letterSpacing: 2.8,
+                    const Spacer(),
+                    const Text(
+                      'ARCHITECTURAL EXCELLENCE',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: subtleTextColor,
+                        letterSpacing: 2.8,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ],

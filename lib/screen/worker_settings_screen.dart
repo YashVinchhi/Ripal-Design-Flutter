@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
@@ -12,6 +14,7 @@ import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_password_update_screen.dart';
 import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class WorkerSettingsScreen extends StatefulWidget {
   const WorkerSettingsScreen({super.key});
@@ -40,11 +43,12 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
+    final user = await UserService.getCurrentUser();
+    if (!mounted) return;
     setState(() {
-      _userName = prefs.getString('userName') ?? 'Your Name';
-      _userEmail = prefs.getString('userEmail') ?? 'youremail@example.com';
-      _userAvatarPath = prefs.getString('userAvatarPath');
+      _userName = user.name;
+      _userEmail = user.email;
+      _userAvatarPath = user.avatarPath;
     });
   }
 
@@ -114,6 +118,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
       context,
       MaterialPageRoute(builder: (context) => const UploadProfilePhotoScreen()),
     );
+    _loadUserData();
   }
 
   void _openSecurity() {
@@ -129,45 +134,37 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
     final displayEmail = _userEmail.isNotEmpty ? _userEmail : 'youremail@example.com';
     final loggedInText = 'Logged in as ${_userName.toLowerCase().replaceAll(' ', '')}';
 
-    return Scaffold(
-      backgroundColor: _bgCream,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: primaryColor),
-          onPressed: () {
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            } else {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const DashboardScreen()),
-              );
-            }
-          },
-        ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.w800,
-            fontSize: 22,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none_outlined, color: primaryColor),
+    return RoleGuardedScreen(
+      allowedRoles: const ['worker'],
+      child: Scaffold(
+        backgroundColor: _bgCream,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.close, color: primaryColor),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('No new notifications'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                );
+              }
             },
           ),
+          title: const Text(
+            'Settings',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.w800,
+              fontSize: 22,
+            ),
+          ),
+          actions: [
+            const AppNotificationIcon(),
           GestureDetector(
             onTap: _openUploadPhoto,
             child: Padding(
@@ -439,6 +436,6 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

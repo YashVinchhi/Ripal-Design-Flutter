@@ -1,14 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/service/project_service.dart';
 import 'package:ripal_design/screen/admin_activity_screen.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/admin_file_view_screen.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_team_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminUploadFileScreen extends StatefulWidget {
   const AdminUploadFileScreen({super.key});
@@ -22,7 +19,7 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
   static const Color primaryColor = Color(0xFF5A0000);
   static const Color _titleDark = Color(0xFF2A0501);
 
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
   final int _currentStep = 3; // Step 3: Files
 
   final List<Map<String, dynamic>> _syncingFiles = [
@@ -41,38 +38,33 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
   ];
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index);
   }
 
   void _onFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    AppNavigation.handleFabPressed(context);
+  }
+
+  bool _validateStep() {
+    ProjectService.draft.uploadedFiles = List.from(_syncingFiles);
+    return ProjectService.validateStep3(ProjectService.draft, onError: (err) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err), backgroundColor: Colors.red, duration: const Duration(seconds: 2)),
+      );
+    });
   }
 
   void _onStepTap(int step) {
     if (step == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+      Navigator.popUntil(context, (r) => r.isFirst);
     } else if (step == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminTeamScreen()));
+      Navigator.pop(context);
     } else if (step == 3) {
       // Already on Files step
     } else if (step == 4) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminActivityScreen()));
+      if (!_validateStep()) return;
+      ProjectService.draft.maxStepReached = 4;
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminActivityScreen()));
     }
   }
 
@@ -142,6 +134,8 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
   }
 
   void _onNext() {
+    if (!_validateStep()) return;
+    ProjectService.draft.maxStepReached = 4;
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AdminActivityScreen()),
@@ -150,7 +144,9 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin', 'employee'],
+      child: MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
@@ -413,8 +409,9 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildStep(int number, String title) {
     final bool isActive = _currentStep == number;

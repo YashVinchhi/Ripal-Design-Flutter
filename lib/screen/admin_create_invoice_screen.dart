@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ripal_design/resource/role_guard.dart';
 
 class AdminCreateInvoiceScreen extends StatefulWidget {
   const AdminCreateInvoiceScreen({super.key});
@@ -40,7 +41,9 @@ class _AdminCreateInvoiceScreenState extends State<AdminCreateInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin'],
+      child: Scaffold(
       backgroundColor: _bgWarm,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -474,7 +477,7 @@ class _AdminCreateInvoiceScreenState extends State<AdminCreateInvoiceScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   @override

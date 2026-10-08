@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker_activity_screen.dart';
@@ -128,40 +130,46 @@ class _WorkerViewMemberScreenState extends State<WorkerViewMemberScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgCream,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'PROJECT DETAILS',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-                color: Colors.grey.shade600,
+    return RoleGuardedScreen(
+      allowedRoles: const ['worker'],
+      child: Scaffold(
+        backgroundColor: _bgCream,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: primaryColor),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'PROJECT DETAILS',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: Colors.grey.shade600,
+                ),
               ),
-            ),
-            Text(
-              widget.projectName,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: _titleDark,
+              Text(
+                widget.projectName,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: _titleDark,
+                ),
               ),
-            ),
+            ],
+          ),
+          actions: const [
+            AppNotificationIcon(),
+            SizedBox(width: 8),
           ],
         ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
         backgroundColor: primaryColor,
@@ -232,7 +240,7 @@ class _WorkerViewMemberScreenState extends State<WorkerViewMemberScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildMemberTile(Map<String, String> member) {

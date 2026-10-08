@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 
 class AdminUserManagementScreen extends StatefulWidget {
   const AdminUserManagementScreen({super.key});
@@ -14,42 +17,28 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
-      appBarTitle: 'Management',
-      appBarActions: [
-        Container(
-          margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(8),
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin'],
+      child: MainScaffold(
+        appBarTitle: 'Management',
+        appBarActions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {},
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              padding: EdgeInsets.zero,
+            ),
           ),
-          child: IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () {},
-            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFDE9E6),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: IconButton(
-            icon: Icon(Icons.notifications_none_outlined, color: primaryColor),
-            onPressed: () {},
-            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ],
-      currentIndex: _currentIndex,
-      onNavTap: (index) {
-        if (index == 0) {
-          Navigator.pop(context);
-        }
-      },
+          const AppNotificationIcon(),
+        ],
+        currentIndex: _currentIndex,
+        onNavTap: (index) => AppNavigation.handleNavTap(context, index, currentRole: 'admin'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -143,7 +132,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildStatCard(IconData icon, String title, String value, Color valueColor, {Color? iconBgColor}) {

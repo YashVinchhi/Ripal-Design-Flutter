@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/service/user_service.dart';
 import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
-
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -24,7 +16,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   static const Color primaryColor = Color(0xFF5A0000);
   static const Color _titleDark = Color(0xFF2A0501);
 
-  int _currentIndex = 3;
+  final int _currentIndex = 3;
   String role = 'admin';
 
   final TextEditingController _fullNameController = TextEditingController();
@@ -44,43 +36,57 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _loadProfileData() async {
-    final prefs = await SharedPreferences.getInstance();
+    final user = await UserService.getCurrentUser();
+    if (!mounted) return;
     setState(() {
-      role = prefs.getString('role') ?? 'admin';
-      _fullNameController.text = prefs.getString('userName') ?? (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User');
-      _emailController.text = prefs.getString('userEmail') ?? (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com');
-      _phoneController.text = prefs.getString('userPhone') ?? '+91 98765 43210';
-      _addressController.text = prefs.getString('userAddress') ?? '101 Design Studio Tower, Off Ring Road';
-      _cityController.text = prefs.getString('userCity') ?? 'Rajkot';
-      _stateController.text = prefs.getString('userState') ?? 'Gujarat';
-      _pinCodeController.text = prefs.getString('userPinCode') ?? '360005';
-      _avatarPath = prefs.getString('userAvatarPath');
+      role = user.role;
+      _fullNameController.text = user.name;
+      _emailController.text = user.email;
+      _phoneController.text = user.phone;
+      _addressController.text = user.address;
+      _cityController.text = user.city;
+      _stateController.text = user.state;
+      _pinCodeController.text = user.pinCode;
+      _avatarPath = user.avatarPath;
     });
   }
 
   Future<void> _saveProfileData() async {
+    final name = _fullNameController.text.trim();
+    final email = _emailController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter your full name'), backgroundColor: Colors.red),
+      );
+      return;
+    }
+    if (!email.contains('@') || !email.contains('.')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email address'), backgroundColor: Colors.red),
+      );
+      return;
+    }
     final cleanPhone = _phoneController.text.replaceAll(RegExp(r'\D'), '');
-    if (cleanPhone.length != 10) {
+    if (cleanPhone.length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Phone number must be exactly 10 digits'),
+          content: Text('Phone number must have at least 10 digits'),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userName', _fullNameController.text.trim());
-    await prefs.setString('userEmail', _emailController.text.trim());
-    await prefs.setString('userPhone', _phoneController.text.trim());
-    await prefs.setString('userAddress', _addressController.text.trim());
-    await prefs.setString('userCity', _cityController.text.trim());
-    await prefs.setString('userState', _stateController.text.trim());
-    await prefs.setString('userPinCode', _pinCodeController.text.trim());
-    if (_avatarPath != null) {
-      await prefs.setString('userAvatarPath', _avatarPath!);
-    }
+    await UserService.updateProfile(
+      name: name,
+      email: email,
+      phone: _phoneController.text.trim(),
+      address: _addressController.text.trim(),
+      city: _cityController.text.trim(),
+      state: _stateController.text.trim(),
+      pinCode: _pinCodeController.text.trim(),
+      avatarPath: _avatarPath,
+    );
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,47 +109,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         _avatarPath = result;
       });
+    } else {
+      final user = await UserService.getCurrentUser();
+      setState(() {
+        _avatarPath = user.avatarPath;
+      });
     }
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      }
-      return;
-    }
-    if (index == 2) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      }
-      return;
-    }
-    if (index == 3) {
-      if (role == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      }
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentRole: role);
   }
 
   void _onFabPressed() {
-    if (role == 'worker') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
-    }
+    AppNavigation.handleFabPressed(context, currentRole: role);
   }
 
   @override

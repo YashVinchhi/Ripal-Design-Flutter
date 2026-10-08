@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/worker_settings_screen.dart';
@@ -36,7 +37,7 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   static const Color _titleColor = Color(0xFF5A0000);
-  String role = 'admin';
+  String role = '';
   String? _userAvatarPath;
 
   @override
@@ -45,11 +46,17 @@ class _MainScaffoldState extends State<MainScaffold> {
     _loadRole();
   }
 
+  @override
+  void didUpdateWidget(covariant MainScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _loadRole();
+  }
+
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        role = widget.role ?? prefs.getString('role') ?? 'admin';
+        role = widget.role ?? prefs.getString('role') ?? '';
         _userAvatarPath = prefs.getString('userAvatarPath');
       });
     }
@@ -70,35 +77,23 @@ class _MainScaffoldState extends State<MainScaffold> {
             widget.appBarLeading ??
             IconButton(
               icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
-              onPressed: () {
-                if (effectiveRole.toLowerCase() == 'client') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-                } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-                }
-              },
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                (route) => false,
+              ),
             ),
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',
           style: TextStyle(
             color: _titleColor,
             fontWeight: FontWeight.bold,
-            fontSize: (role == 'admin' || role == 'worker') ? 22 : 24,
+            fontSize: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 22 : 24,
           ),
         ),
         titleSpacing: -5.5,
         actions: widget.appBarActions ?? [
-          IconButton(
-            icon: const Icon(Icons.notifications_none_outlined, color: _titleColor),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('No new notifications'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
-          ),
+          const AppNotificationIcon(),
           GestureDetector(
             onTap: () {
               if (effectiveRole.toLowerCase() == 'worker') {
@@ -110,8 +105,8 @@ class _MainScaffoldState extends State<MainScaffold> {
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0, left: 4.0),
               child: Container(
-                width: (role == 'admin' || role == 'worker') ? 32 : 36,
-                height: (role == 'admin' || role == 'worker') ? 32 : 36,
+                width: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
+                height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: const Color(0xFFE2C4BD), width: 1.5),
@@ -119,8 +114,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                 child: ClipOval(
                   child: buildProfileImage(
                     _userAvatarPath,
-                    width: (role == 'admin' || role == 'worker') ? 32 : 36,
-                    height: (role == 'admin' || role == 'worker') ? 32 : 36,
+                    width: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
+                    height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                     fit: BoxFit.cover,
                     fallback: const CircleAvatar(
                       backgroundColor: Color(0xFFF5EBE6),
@@ -152,4 +147,3 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 }
-

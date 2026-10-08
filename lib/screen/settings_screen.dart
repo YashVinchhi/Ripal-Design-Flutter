@@ -6,19 +6,12 @@ import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/client_project_view.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/client_applay.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/login_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_password_update_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
-
-import 'package:ripal_design/screen/client_contactus.dart';
+import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   /// When [embeddedMode] is true, the widget renders only its body content
@@ -50,12 +43,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadRole() async {
-    final prefs = await SharedPreferences.getInstance();
+    final user = await UserService.getCurrentUser();
+    if (!mounted) return;
     setState(() {
-      role = prefs.getString('role') ?? 'admin';
-      userName = prefs.getString('userName') ?? (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User');
-      userEmail = prefs.getString('userEmail') ?? (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com');
-      avatarPath = prefs.getString('userAvatarPath');
+      role = user.role;
+      userName = user.name;
+      userEmail = user.email;
+      avatarPath = user.avatarPath;
     });
   }
 
@@ -85,66 +79,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  void _openUploadPhoto() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UploadProfilePhotoScreen()),
+    );
+    _loadRole();
+  }
+
   void _onNavTap(int index) {
-    if (role == 'admin') {
-      if (index == 0) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-        return;
-      }
-      if (index == 1) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-        return;
-      }
-      if (index == 3) {
-        return;
-      }
-    } else if (role == 'worker') {
-      if (index == 0) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-        return;
-      }
-      if (index == 1) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-        return;
-      }
-      if (index == 3) {
-        return;
-      }
-    } else {
-      if (index == 0) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-        return;
-      }
-      if (index == 1) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientProjectView()));
-        return;
-      }
-      if (index == 2) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ClientContactus()));
-        return;
-      }
-      if (index == 3) {
-        return;
-      }
-    }
+    AppNavigation.handleNavTap(context, index, currentRole: role);
   }
 
   void _onFabPressed() {
-    if (role == 'admin') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
-    } else if (role == 'worker') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientApplay()));
-    }
+    AppNavigation.handleFabPressed(context, currentRole: role);
   }
 
   @override
@@ -176,54 +124,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Column(
       children: [
         // ─── PROFILE HEADER ─────────────────────────────────
-        GestureDetector(
-                onTap: _openEditProfile,
-                child: Column(
+        Column(
+          children: [
+            Center(
+              child: GestureDetector(
+                onTap: _openUploadPhoto,
+                child: Stack(
                   children: [
-                    Center(
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 44,
-                            backgroundColor: salmonColor.withValues(alpha: 0.2),
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundColor: const Color(0xFFF5EBE6),
-                              child: ClipOval(
-                                child: buildProfileImage(
-                                  avatarPath,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                  fallback: const Icon(
-                                    Icons.person,
-                                    size: 48,
-                                    color: Color(0xFF5A0000),
-                                  ),
-                                ),
-                              ),
+                    CircleAvatar(
+                      radius: 44,
+                      backgroundColor: salmonColor.withValues(alpha: 0.2),
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: const Color(0xFFF5EBE6),
+                        child: ClipOval(
+                          child: buildProfileImage(
+                            avatarPath,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                            fallback: const Icon(
+                              Icons.person,
+                              size: 48,
+                              color: Color(0xFF5A0000),
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF5A0000),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.edit,
-                                size: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF5A0000),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: _openEditProfile,
+              child: Column(
+                children: [
                     Text(
                       userName.isNotEmpty ? userName : (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User'),
                       style: const TextStyle(
@@ -240,7 +193,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+            ],
+          ),
+          const SizedBox(height: 32),
 
               // ─── ACCOUNT ─────────────────────────────────────────
               SettingGroup(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class WorkerPasswordUpdateScreen extends StatefulWidget {
   const WorkerPasswordUpdateScreen({super.key});
@@ -18,15 +17,28 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   static const Color _bgCream = Color(0xFFFFF7F2);
   static const Color _titleDark = Color(0xFF1E1E1E);
 
-  int _currentIndex = 3;
+  final int _currentIndex = 3;
+  String _currentRole = 'worker';
 
   bool _obscureCurrent = true;
   bool _obscureNew = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false;
 
   final TextEditingController _currentController = TextEditingController();
   final TextEditingController _newController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRole();
+  }
+
+  Future<void> _loadRole() async {
+    final role = await UserService.getRole();
+    if (mounted) setState(() => _currentRole = role);
+  }
 
   @override
   void dispose() {
@@ -37,42 +49,15 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      Navigator.pop(context);
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentRole: _currentRole);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    AppNavigation.handleFabPressed(context, currentRole: _currentRole);
   }
 
   Future<void> _updatePassword() async {
+    if (_isLoading) return;
     final current = _currentController.text.trim();
     final newPass = _newController.text.trim();
     final confirmPass = _confirmController.text.trim();
@@ -82,43 +67,57 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
       return;
     }
 
-    if (newPass.length < 8) {
-      _showError('New password must be at least 8 characters long');
-      return;
-    }
+    setState(() => _isLoading = true);
+    try {
+      final savedPassword = await UserService.getCurrentPassword();
+      if (savedPassword.isNotEmpty && current != savedPassword) {
+        _showError('Current password is incorrect');
+        return;
+      }
 
-    if (!RegExp(r'[A-Z]').hasMatch(newPass)) {
-      _showError('New password must contain at least one uppercase letter');
-      return;
-    }
+      if (newPass.length < 8) {
+        _showError('New password must be at least 8 characters long');
+        return;
+      }
 
-    if (!RegExp(r'[0-9]').hasMatch(newPass)) {
-      _showError('New password must contain at least one number');
-      return;
-    }
+      if (!RegExp(r'[A-Z]').hasMatch(newPass)) {
+        _showError('New password must contain at least one uppercase letter');
+        return;
+      }
 
-    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(newPass)) {
-      _showError('New password must contain at least one special character');
-      return;
-    }
+      if (!RegExp(r'[0-9]').hasMatch(newPass)) {
+        _showError('New password must contain at least one number');
+        return;
+      }
 
-    if (newPass != confirmPass) {
-      _showError('New password and confirm password do not match');
-      return;
-    }
+      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(newPass)) {
+        _showError('New password must contain at least one special character');
+        return;
+      }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userPassword', newPass);
+      if (newPass != confirmPass) {
+        _showError('New password and confirm password do not match');
+        return;
+      }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Password updated successfully!'),
-          backgroundColor: primaryColor,
-          duration: Duration(seconds: 2),
-        ),
-      );
-      Navigator.pop(context);
+      await UserService.updatePassword(newPass);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password updated successfully!'),
+            backgroundColor: primaryColor,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showError('Failed to update password. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -152,6 +151,10 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
             fontSize: 20,
           ),
         ),
+        actions: const [
+          AppNotificationIcon(),
+          SizedBox(width: 8),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
@@ -164,7 +167,7 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onNavTap,
-        role: 'worker',
+        role: _currentRole,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -296,22 +299,32 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _updatePassword,
+                  onPressed: _isLoading ? null : _updatePassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
+                    disabledBackgroundColor: primaryColor.withValues(alpha: 0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
                   ),
-                  child: const Text(
-                    'Update Password',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'Update Password',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 40),

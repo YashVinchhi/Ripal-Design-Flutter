@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/resource/contact_info_row.dart';
@@ -42,6 +43,7 @@ class _ClientContactusState extends State<ClientContactus> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _messageController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -51,7 +53,8 @@ class _ClientContactusState extends State<ClientContactus> {
     super.dispose();
   }
 
-  void _submitInquiry() {
+  Future<void> _submitInquiry() async {
+    if (_isSubmitting) return;
     FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) {
@@ -74,7 +77,30 @@ class _ClientContactusState extends State<ClientContactus> {
       return;
     }
 
-    _showSuccessDialog();
+    setState(() => _isSubmitting = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('lastInquiryName', _fullNameController.text.trim());
+      await prefs.setString('lastInquiryMessage', _messageController.text.trim());
+      if (!mounted) return;
+      _showSuccessDialog();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Unable to send inquiry. Please try again.'),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: _submitInquiry,
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   void _showSuccessDialog() {
@@ -303,7 +329,8 @@ class _ClientContactusState extends State<ClientContactus> {
             // Send Inquiry Button
             CustomButton(
               text: 'Send Inquiry',
-              onPressed: _submitInquiry,
+              isLoading: _isSubmitting,
+              onPressed: _isSubmitting ? null : _submitInquiry,
               icon: Icons.arrow_forward,
             ),
             const SizedBox(height: 40),

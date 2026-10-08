@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker_activity_screen.dart';
@@ -106,7 +108,7 @@ class _WorkerUploadFilesScreenState extends State<WorkerUploadFilesScreen> {
         MaterialPageRoute(builder: (context) => const WorkerViewMemberScreen()),
       );
     } else if (step == 3) {
-      // Current step
+      // current step
     } else if (step == 4) {
       Navigator.pushReplacement(
         context,
@@ -117,25 +119,31 @@ class _WorkerUploadFilesScreenState extends State<WorkerUploadFilesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgCream,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Upload Files',
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+    return RoleGuardedScreen(
+      allowedRoles: const ['worker'],
+      child: Scaffold(
+        backgroundColor: _bgCream,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: primaryColor),
+            onPressed: () => Navigator.pop(context),
           ),
+          title: const Text(
+            'Upload Files',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          actions: const [
+            AppNotificationIcon(),
+            SizedBox(width: 8),
+          ],
         ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
         backgroundColor: primaryColor,
@@ -318,7 +326,7 @@ class _WorkerUploadFilesScreenState extends State<WorkerUploadFilesScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildDashedDropZone() {

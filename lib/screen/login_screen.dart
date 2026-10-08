@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final Color primaryColor = const Color(0xFF9E4723);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,70 +179,97 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Sign In Button
                       CustomButton(
                         text: 'Sign In',
-                        onPressed: () async {
+                        isLoading: _isLoading,
+                        onPressed: _isLoading ? null : () async {
                           final email = _emailController.text.trim().toLowerCase();
                           final password = _passwordController.text.trim();
 
-                          final users = {
-                            'rohan@gmail.com': {
-                              'password': 'zxcv',
-                              'role': 'client',
-                              'name': 'Rohan',
-                            },
-                            'niku@gmail.com': {
-                              'password': 'zxcv',
-                              'role': 'worker',
-                              'name': 'Niku',
-                            },
-                            'rachit@gmail.com': {
-                              'password': 'zxcv',
-                              'role': 'employee',
-                              'name': 'Rachit',
-                            },
-                            'yash@gmail.com': {
-                              'password': 'zxcv',
-                              'role': 'admin',
-                              'name': 'Yash',
-                            },
-                            'admin@gmail.com': {
-                              'password': 'admin123',
-                              'role': 'admin',
-                              'name': 'Admin',
-                            },
-                          };
-
-                          bool isValidUser = false;
-                          Map<String, String>? userData;
-
-                          if (users.containsKey(email)) {
-                            final user = users[email]!;
-                            if (user['password'] == password ||
-                                (email == 'rachit@gmail.com' && password == 'rachit123')) {
-                              isValidUser = true;
-                              userData = user;
-                            }
-                          }
-
-                          if (isValidUser && userData != null) {
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.setBool('isLoggedIn', true);
-                            await prefs.setString('userName', userData['name']!);
-                            await prefs.setString('userEmail', email);
-                            await prefs.setString('role', userData['role']!);
-
-                            if (!context.mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DashboardScreen(),
-                              ),
-                            );
-                          } else {
+                          if (email.isEmpty || password.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Invalid email or password'),
+                                content: Text('Please enter both email and password'),
                               ),
                             );
+                            return;
+                          }
+
+                          setState(() => _isLoading = true);
+
+                          try {
+                            final users = {
+                              'rohan@gmail.com': {
+                                'password': 'zxcv',
+                                'role': 'client',
+                                'name': 'Rohan',
+                              },
+                              'niku@gmail.com': {
+                                'password': 'zxcv',
+                                'role': 'worker',
+                                'name': 'Niku',
+                              },
+                              'rachit@gmail.com': {
+                                'password': 'zxcv',
+                                'role': 'employee',
+                                'name': 'Rachit',
+                              },
+                              'yash@gmail.com': {
+                                'password': 'zxcv',
+                                'role': 'admin',
+                                'name': 'Yash',
+                              },
+                              'admin@gmail.com': {
+                                'password': 'admin123',
+                                'role': 'admin',
+                                'name': 'Admin',
+                              },
+                            };
+
+                            bool isValidUser = false;
+                            Map<String, String>? userData;
+
+                            final prefs = await SharedPreferences.getInstance();
+                            final savedEmail = (prefs.getString('userEmail') ?? '').toLowerCase().trim();
+                            final savedPassword = prefs.getString('userPassword');
+
+                            if (users.containsKey(email)) {
+                              final user = users[email]!;
+                              final effectivePassword = (savedEmail == email && savedPassword != null && savedPassword.isNotEmpty)
+                                  ? savedPassword
+                                  : user['password'];
+
+                              if (password == effectivePassword ||
+                                  password == user['password'] ||
+                                  (email == 'rachit@gmail.com' && password == 'rachit123')) {
+                                isValidUser = true;
+                                userData = user;
+                              }
+                            }
+
+                            if (isValidUser && userData != null) {
+                              await prefs.setBool('isLoggedIn', true);
+                              await prefs.setString('userName', userData['name']!);
+                              await prefs.setString('userEmail', email);
+                              await prefs.setString('role', userData['role']!);
+                              await prefs.setString('userPassword', password);
+
+                              if (!context.mounted) return;
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const DashboardScreen(),
+                                ),
+                              );
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Invalid email or password'),
+                                  ),
+                                );
+                              }
+                            }
+                          } finally {
+                            if (mounted) setState(() => _isLoading = false);
                           }
                         },
                       ),

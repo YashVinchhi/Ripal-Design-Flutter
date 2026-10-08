@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_settings_screen.dart';
@@ -68,46 +70,36 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgCream,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: widget.showBackButton
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: primaryColor),
-                onPressed: () => Navigator.pop(context),
-              )
-            : IconButton(
-                icon: const Icon(Icons.grid_view_outlined, color: primaryColor),
-                onPressed: () {},
-              ),
-        title: const Text(
-          'File View',
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
-              ),
-              child: const ClipOval(
-                child: CheckeredPlaceholder(squareSize: 4),
-              ),
+    return RoleGuardedScreen(
+      allowedRoles: const ['worker'],
+      child: Scaffold(
+        backgroundColor: _bgCream,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: widget.showBackButton
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back, color: primaryColor),
+                  onPressed: () => Navigator.pop(context),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.grid_view_outlined, color: primaryColor),
+                  onPressed: () {},
+                ),
+          title: const Text(
+            'File View',
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
             ),
           ),
-        ],
-      ),
+          actions: const [
+            AppNotificationIcon(),
+            SizedBox(width: 8),
+          ],
+        ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
         backgroundColor: primaryColor,
@@ -348,7 +340,7 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildFilterChip(String label, int index) {

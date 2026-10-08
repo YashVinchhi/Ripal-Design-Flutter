@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
+import 'package:ripal_design/resource/role_guard.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/admin_upload_file_screen.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 
 class AdminFileViewScreen extends StatefulWidget {
   const AdminFileViewScreen({super.key});
@@ -23,35 +21,21 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
   static const Color _salmonOrange = Color(0xFFF17B58);
 
   int selectedFilter = 1; // 0: Contracts, 1: All Assets, 2: Blueprints
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
-      return;
-    }
-    if (index == 1) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminLeaveScreen()));
-      return;
-    }
-    if (index == 2) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminFinanceScreen()));
-      return;
-    }
-    if (index == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index);
   }
 
   void _onFabPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
+    AppNavigation.handleFabPressed(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
+    return RoleGuardedScreen(
+      allowedRoles: const ['admin', 'employee'],
+      child: MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
@@ -60,6 +44,10 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
         icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
         onPressed: () => Navigator.pop(context),
       ),
+      appBarActions: const [
+        AppNotificationIcon(),
+        SizedBox(width: 8),
+      ],
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
@@ -334,7 +322,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildFilterChip(String label, int index) {

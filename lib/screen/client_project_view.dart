@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/project_card.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/client_contactus.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/admin_create_project.dart';
 import 'package:ripal_design/screen/client_project_detail_screen.dart';
 import 'package:ripal_design/screen/client_applay.dart';
@@ -139,59 +135,9 @@ class _ClientProjectViewState extends State<ClientProjectView> {
     super.dispose();
   }
 
-  // ─── Standalone mode nav (admin or direct push) ───────────────────────────
+  // ─── Standalone mode nav ───────────────────────────
   void _onNavTap(int index) {
-    if (index == 0) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const DashboardScreen()),
-        );
-      }
-      return;
-    }
-
-    if (role == 'admin') {
-      if (index == 1) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminLeaveScreen()),
-        );
-        return;
-      }
-      if (index == 2) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminFinanceScreen()),
-        );
-        return;
-      }
-      if (index == 3) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
-        );
-        return;
-      }
-    } else {
-      if (index == 1) return;
-      if (index == 2) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ClientContactus()),
-        );
-        return;
-      }
-      if (index == 3) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
-        );
-        return;
-      }
-    }
+    AppNavigation.handleNavTap(context, index, currentRole: role);
   }
 
   void _onFabPressed() {
