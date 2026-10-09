@@ -5,12 +5,12 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker_activity_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_project_files_screen.dart';
-import 'package:ripal_design/screen/worker_project_view_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker_view_member_screen.dart';
+import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
+import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_project_files_screen.dart';
+import 'package:ripal_design/screen/worker/worker_project_view_screen.dart';
+import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 
 class WorkerUploadFilesScreen extends StatefulWidget {
   const WorkerUploadFilesScreen({super.key});

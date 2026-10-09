@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/app_image_helper.dart';
@@ -7,9 +6,9 @@ import 'package:ripal_design/resource/setting_tile.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
-import 'package:ripal_design/screen/login_screen.dart';
-import 'package:ripal_design/screen/worker_password_update_screen.dart';
-import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
+import 'package:ripal_design/screen/auth/login_screen.dart';
+import 'package:ripal_design/screen/worker/worker_password_update_screen.dart';
+import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/user_service.dart';
 

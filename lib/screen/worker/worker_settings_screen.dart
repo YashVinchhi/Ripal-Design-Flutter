@@ -9,11 +9,11 @@ import 'package:ripal_design/resource/setting_switch_tile.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
-import 'package:ripal_design/screen/login_screen.dart';
-import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_password_update_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/screen/auth/login_screen.dart';
+import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
+import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_password_update_screen.dart';
+import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 class WorkerSettingsScreen extends StatefulWidget {

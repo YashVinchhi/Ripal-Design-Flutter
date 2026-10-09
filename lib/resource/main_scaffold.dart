@@ -4,7 +4,7 @@ import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.

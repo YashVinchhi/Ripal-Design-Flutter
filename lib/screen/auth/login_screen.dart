@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ripal_design/screen/signup_screen.dart';
-import 'package:ripal_design/screen/forgot_password_screen.dart';
+import 'package:ripal_design/screen/auth/signup_screen.dart';
+import 'package:ripal_design/screen/auth/forgot_password_screen.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';

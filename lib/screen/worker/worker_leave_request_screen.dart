@@ -5,9 +5,9 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class WorkerLeaveRequestScreen extends StatefulWidget {
   final bool initialSubmitted;

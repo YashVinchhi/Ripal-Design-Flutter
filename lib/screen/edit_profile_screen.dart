@@ -3,7 +3,7 @@ import 'package:ripal_design/resource/app_image_helper.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/user_service.dart';
-import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
+import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

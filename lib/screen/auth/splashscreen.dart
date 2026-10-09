@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ripal_design/screen/login_screen.dart';
+import 'package:ripal_design/screen/auth/login_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {

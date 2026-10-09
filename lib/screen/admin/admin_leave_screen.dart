@@ -4,8 +4,8 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/admin/admin_create_project.dart';
+import 'package:ripal_design/screen/admin/admin_leave_history_screen.dart';
 
 class AdminLeaveScreen extends StatefulWidget {
   const AdminLeaveScreen({super.key});

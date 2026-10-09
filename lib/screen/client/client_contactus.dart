@@ -5,9 +5,9 @@ import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/resource/contact_info_row.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/section_header.dart';
-import 'package:ripal_design/screen/client_project_view.dart';
+import 'package:ripal_design/screen/client/client_project_view.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
-import 'package:ripal_design/screen/client_applay.dart';
+import 'package:ripal_design/screen/client/client_applay.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 // import 'package:ripal_design/screen/dashboard_screen.dart';
 

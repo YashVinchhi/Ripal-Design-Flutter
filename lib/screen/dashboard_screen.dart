@@ -3,31 +3,31 @@ import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/portfolio_card.dart';
 import 'package:ripal_design/service/user_service.dart';
 
-import 'package:ripal_design/screen/client_contactus.dart';
-import 'package:ripal_design/screen/client_project_view.dart';
+import 'package:ripal_design/screen/client/client_contactus.dart';
+import 'package:ripal_design/screen/client/client_project_view.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_user_management_screen.dart';
+import 'package:ripal_design/screen/admin/admin_create_project.dart';
+import 'package:ripal_design/screen/admin/admin_leave_screen.dart';
+import 'package:ripal_design/screen/admin/admin_user_management_screen.dart';
 
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_invoice_screen.dart';
-import 'package:ripal_design/screen/admin_file_view_screen.dart';
-import 'package:ripal_design/screen/admin_upload_file_screen.dart';
-import 'package:ripal_design/screen/admin_project_detail_screen.dart';
-import 'package:ripal_design/screen/admin_team_screen.dart';
-import 'package:ripal_design/screen/admin_leave_history_screen.dart';
-import 'package:ripal_design/screen/client_project_detail_screen.dart';
+import 'package:ripal_design/screen/admin/admin_finance_screen.dart';
+import 'package:ripal_design/screen/admin/admin_invoice_screen.dart';
+import 'package:ripal_design/screen/admin/admin_file_view_screen.dart';
+import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/admin/admin_project_detail_screen.dart';
+import 'package:ripal_design/screen/admin/admin_team_screen.dart';
+import 'package:ripal_design/screen/admin/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/client/client_project_detail_screen.dart';
 
 import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/screen/worker_activity_screen.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_project_files_screen.dart';
-import 'package:ripal_design/screen/worker_project_view_screen.dart';
-import 'package:ripal_design/screen/worker_view_member_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
+import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_project_files_screen.dart';
+import 'package:ripal_design/screen/worker/worker_project_view_screen.dart';
+import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
+import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

@@ -3,9 +3,9 @@ import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/project_service.dart';
-import 'package:ripal_design/screen/admin_activity_screen.dart';
-import 'package:ripal_design/screen/admin_team_screen.dart';
-import 'package:ripal_design/screen/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
+import 'package:ripal_design/screen/admin/admin_team_screen.dart';
+import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 
 class AdminCreateProject extends StatefulWidget {

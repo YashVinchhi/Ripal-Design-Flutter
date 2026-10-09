@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/admin_leave_screen.dart';
-import 'package:ripal_design/screen/admin_leave_history_screen.dart';
-import 'package:ripal_design/screen/admin_finance_screen.dart';
-import 'package:ripal_design/screen/admin_upload_file_screen.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/admin/admin_leave_screen.dart';
+import 'package:ripal_design/screen/admin/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/admin/admin_finance_screen.dart';
+import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/admin/admin_create_project.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
-import 'package:ripal_design/screen/client_project_view.dart';
-import 'package:ripal_design/screen/client_contactus.dart';
-import 'package:ripal_design/screen/client_applay.dart';
-import 'package:ripal_design/screen/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker_upload_files_screen.dart';
-import 'package:ripal_design/screen/worker_settings_screen.dart';
+import 'package:ripal_design/screen/client/client_project_view.dart';
+import 'package:ripal_design/screen/client/client_contactus.dart';
+import 'package:ripal_design/screen/client/client_applay.dart';
+import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
+import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
 
 class AppNavigation {
   static void handleNavTap(

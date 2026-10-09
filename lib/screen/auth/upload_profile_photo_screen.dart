@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -197,14 +196,14 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
-      currentIndex: _currentIndex,
-      onNavTap: _onNavTap,
-      onFabPressed: _onFabPressed,
-      appBarTitle: 'Profile Photo',
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
         onPressed: () => Navigator.pop(context),
       ),
+      appBarTitle: 'Profile Photo',
+      onNavTap: _onNavTap,
+      onFabPressed: _onFabPressed,
+      currentIndex: _currentIndex,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),

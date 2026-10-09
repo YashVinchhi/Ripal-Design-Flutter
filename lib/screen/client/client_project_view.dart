@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/project_card.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
-import 'package:ripal_design/screen/client_project_detail_screen.dart';
-import 'package:ripal_design/screen/client_applay.dart';
+import 'package:ripal_design/screen/admin/admin_create_project.dart';
+import 'package:ripal_design/screen/client/client_project_detail_screen.dart';
+import 'package:ripal_design/screen/client/client_applay.dart';
 
 class ClientProjectView extends StatefulWidget {
   /// When [embeddedMode] is true, the widget renders only its body content

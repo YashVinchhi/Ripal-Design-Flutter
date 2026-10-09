@@ -4,8 +4,8 @@ import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/project_service.dart';
-import 'package:ripal_design/screen/admin_activity_screen.dart';
-import 'package:ripal_design/screen/admin_file_view_screen.dart';
+import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
+import 'package:ripal_design/screen/admin/admin_file_view_screen.dart';
 
 class AdminUploadFileScreen extends StatefulWidget {
   const AdminUploadFileScreen({super.key});

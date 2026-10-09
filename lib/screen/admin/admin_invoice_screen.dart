@@ -3,8 +3,8 @@ import 'package:printing/printing.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/screen/admin_create_invoice_screen.dart';
-import 'package:ripal_design/screen/admin_create_project.dart';
+import 'package:ripal_design/screen/admin/admin_create_invoice_screen.dart';
+import 'package:ripal_design/screen/admin/admin_create_project.dart';
 import 'package:ripal_design/screen/invoice_pdf_preview_screen.dart';
 
 class AdminInvoiceScreen extends StatefulWidget {
