@@ -109,6 +109,39 @@
   
   
   <!--
+    Fix for Intl.v8BreakIterator deprecation in Chromium/V8
+    Polyfills the deprecated V8 break iterator to prevent JS errors/warnings in newer browsers.
+  -->
+  <script>
+    if (typeof Intl !== 'undefined' && !Intl.v8BreakIterator) {
+      Intl.v8BreakIterator = function (locale, options) {
+        this.adoptText = function (text) {
+          this._text = text || '';
+          this._pos = 0;
+        };
+        this.first = function () {
+          this._pos = 0;
+          return 0;
+        };
+        this.next = function () {
+          if (!this._text || this._pos >= this._text.length) return -1;
+          this._pos++;
+          return this._pos;
+        };
+        this.current = function () {
+          return this._pos || 0;
+        };
+      };
+    }
+
+    // Configure default Flutter Web renderer configuration
+    window._flutter = window._flutter || {};
+    window._flutter.buildConfig = window._flutter.buildConfig || {
+      renderer: "html"
+    };
+  </script>
+
+  <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
     or to give the user feedback during the initialization process.
