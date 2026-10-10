@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/role_guard.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/role_guard.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker/worker_leave_request_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class WorkerLeaveHistoryScreen extends StatefulWidget {
@@ -73,7 +73,7 @@ class _WorkerLeaveHistoryScreenState extends State<WorkerLeaveHistoryScreen> {
     if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
+        MaterialPageRoute(builder: (context) => const SettingsScreen()),
       );
       return;
     }
@@ -94,7 +94,7 @@ class _WorkerLeaveHistoryScreenState extends State<WorkerLeaveHistoryScreen> {
     final remainingDays = (20 - approvedCount * 2).clamp(0, 30);
 
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(

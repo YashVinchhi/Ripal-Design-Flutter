@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ripal_design/resource/app_image_helper.dart';
-import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/resource/setting_tile.dart';
-import 'package:ripal_design/resource/setting_group.dart';
-import 'package:ripal_design/resource/setting_switch_tile.dart';
+import 'package:ripal_design/resource/utils/app_image_helper.dart';
+import 'package:ripal_design/resource/widgets/main_scaffold.dart';
+import 'package:ripal_design/resource/widgets/setting_tile.dart';
+import 'package:ripal_design/resource/widgets/setting_group.dart';
+import 'package:ripal_design/resource/widgets/setting_switch_tile.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/auth/login_screen.dart';
 import 'package:ripal_design/screen/worker/worker_password_update_screen.dart';
 import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
-import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/resource/controllers/app_navigation.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -50,6 +50,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
       userEmail = user.email;
       avatarPath = user.avatarPath;
     });
+  }
+
+  String _getDefaultName(String r) {
+    switch (r.toLowerCase()) {
+      case 'admin':
+        return 'Ar. Ripal Patel';
+      case 'worker':
+        return 'Worker Member';
+      case 'employee':
+        return 'Employee Member';
+      case 'client':
+      default:
+        return 'Client User';
+    }
+  }
+
+  String _getDefaultEmail(String r) {
+    switch (r.toLowerCase()) {
+      case 'admin':
+        return 'admin@gmail.com';
+      case 'worker':
+        return 'worker@gmail.com';
+      case 'employee':
+        return 'employee@gmail.com';
+      case 'client':
+      default:
+        return 'client@gmail.com';
+    }
   }
 
   void _showInfoDialog(String title, String message) {
@@ -177,7 +205,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 children: [
                     Text(
-                      userName.isNotEmpty ? userName : (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User'),
+                      userName.isNotEmpty
+                          ? userName
+                          : _getDefaultName(role),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
@@ -186,7 +216,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      userEmail.isNotEmpty ? userEmail : (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com'),
+                      userEmail.isNotEmpty
+                          ? userEmail
+                          : _getDefaultEmail(role),
                       style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                     ),
                   ],

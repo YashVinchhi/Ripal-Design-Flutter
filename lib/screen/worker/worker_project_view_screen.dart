@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/checkered_placeholder.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/role_guard.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
-import 'package:ripal_design/resource/worker_step_header.dart';
+import 'package:ripal_design/resource/widgets/checkered_placeholder.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/role_guard.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
+import 'package:ripal_design/resource/widgets/worker_step_header.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
 import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 
@@ -65,7 +65,7 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
     if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
+        MaterialPageRoute(builder: (context) => const SettingsScreen()),
       );
       return;
     }
@@ -103,7 +103,7 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(
@@ -323,11 +323,13 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
               _buildTeamMemberCard(
                 name: 'Rajibul Sheikh',
                 role: 'Lead Architect',
+                avatarUrl: 'assets/project/behance_239114219_14.webp',
               ),
               const SizedBox(height: 10),
               _buildTeamMemberCard(
                 name: 'Yash Vinchhi',
                 role: 'Structural Lead',
+                avatarUrl: 'assets/project/behance_239114219_13.webp',
               ),
               const SizedBox(height: 28),
 
@@ -358,11 +360,11 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_05.webp')),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_12.webp')),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_13.webp')),
                 ],
               ),
               const SizedBox(height: 40),
@@ -538,7 +540,9 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
   Widget _buildTeamMemberCard({
     required String name,
     required String role,
+    String? avatarUrl,
   }) {
+    final initials = name.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -555,8 +559,41 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
               shape: BoxShape.circle,
               border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
             ),
-            child: const ClipOval(
-              child: CheckeredPlaceholder(squareSize: 4),
+            child: ClipOval(
+              child: avatarUrl != null && avatarUrl.isNotEmpty
+                  ? (avatarUrl.startsWith('assets/')
+                      ? Image.asset(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              initials,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                            ),
+                          ),
+                        )
+                      : Image.network(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              initials,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                            ),
+                          ),
+                        ))
+                  : Container(
+                      color: primaryColor,
+                      alignment: Alignment.center,
+                      child: Text(
+                        initials,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 14),
@@ -593,7 +630,7 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
     );
   }
 
-  Widget _buildGallerySquare() {
+  Widget _buildGallerySquare(String imagePath) {
     return Container(
       height: 80,
       decoration: BoxDecoration(
@@ -602,7 +639,11 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: const CheckeredPlaceholder(squareSize: 6),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(squareSize: 6),
+        ),
       ),
     );
   }

@@ -43,17 +43,13 @@ class _AdminCreateProjectState extends State<AdminCreateProject> {
     super.initState();
     final draft = ProjectService.draft;
     _selectedSector = draft.sector.isNotEmpty ? draft.sector : 'Residential Luxe';
-    _nameController = TextEditingController(text: draft.projectName.isNotEmpty ? draft.projectName : 'Skyline Plaza');
-    _timelineController = TextEditingController(text: draft.timeline.isNotEmpty ? draft.timeline : '18 Months');
-    _descriptionController = TextEditingController(
-      text: draft.description.isNotEmpty
-          ? draft.description
-          : 'High-end mixed-use commercial and luxury residential tower featuring parametric facade design.',
-    );
-    _budgetController = TextEditingController(text: draft.budget.isNotEmpty ? draft.budget : '₹12.5 Cr');
-    _ownerNameController = TextEditingController(text: draft.ownerName.isNotEmpty ? draft.ownerName : 'Ar. Ripal Patel');
-    _ownerEmailController = TextEditingController(text: draft.ownerEmail.isNotEmpty ? draft.ownerEmail : 'ripal@design.com');
-    _ownerPhoneController = TextEditingController(text: draft.ownerPhone.isNotEmpty ? draft.ownerPhone : '9876543210');
+    _nameController = TextEditingController(text: draft.projectName);
+    _timelineController = TextEditingController(text: draft.timeline);
+    _descriptionController = TextEditingController(text: draft.description);
+    _budgetController = TextEditingController(text: draft.budget);
+    _ownerNameController = TextEditingController(text: draft.ownerName);
+    _ownerEmailController = TextEditingController(text: draft.ownerEmail);
+    _ownerPhoneController = TextEditingController(text: draft.ownerPhone);
   }
 
   @override

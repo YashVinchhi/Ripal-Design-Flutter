@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/app_navigation.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
+import 'package:ripal_design/resource/utils/app_image_helper.dart';
 import 'package:ripal_design/service/user_service.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
 
 class WorkerPasswordUpdateScreen extends StatefulWidget {
   const WorkerPasswordUpdateScreen({super.key});
@@ -19,6 +21,7 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
 
   final int _currentIndex = 3;
   String _currentRole = 'worker';
+  String? _userAvatarPath;
 
   bool _obscureCurrent = true;
   bool _obscureNew = true;
@@ -32,12 +35,17 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   @override
   void initState() {
     super.initState();
-    _loadRole();
+    _loadUserData();
   }
 
-  Future<void> _loadRole() async {
-    final role = await UserService.getRole();
-    if (mounted) setState(() => _currentRole = role);
+  Future<void> _loadUserData() async {
+    final user = await UserService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentRole = user.role;
+        _userAvatarPath = user.avatarPath;
+      });
+    }
   }
 
   @override
@@ -151,9 +159,39 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
             fontSize: 20,
           ),
         ),
-        actions: const [
-          AppNotificationIcon(),
-          SizedBox(width: 8),
+        actions: [
+          const AppNotificationIcon(),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0, left: 4.0),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1.5),
+                ),
+                child: ClipOval(
+                  child: buildProfileImage(
+                    _userAvatarPath,
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                    fallback: const CircleAvatar(
+                      backgroundColor: Color(0xFFF5EBE6),
+                      child: Icon(Icons.person, size: 18, color: primaryColor),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

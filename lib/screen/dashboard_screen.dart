@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/main_scaffold.dart';
-import 'package:ripal_design/resource/portfolio_card.dart';
+import 'package:ripal_design/resource/widgets/main_scaffold.dart';
+import 'package:ripal_design/resource/widgets/portfolio_card.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 import 'package:ripal_design/screen/client/client_contactus.dart';
@@ -612,6 +612,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     String badgeText, {
     Color badgeColor = Colors.black87,
     VoidCallback? onTap,
+    String? imageUrl,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -633,7 +634,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: Image.asset(
-                    'assets/project/behance_239114219_13.webp',
+                    imageUrl ?? 'assets/project/behance_239114219_13.webp',
                     height: 120,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -968,6 +969,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 badgeText: 'ACTIVE',
                 badgeColor: const Color(0xFF232323),
                 progressColor: titleColor,
+                imageUrl: 'assets/project/behance_239114219_04.webp',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -988,6 +990,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 badgeText: 'REVIEW',
                 badgeColor: const Color(0xFF8B3A1C),
                 progressColor: const Color(0xFF8B3A1C),
+                imageUrl: 'assets/project/behance_239114219_05.webp',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -1111,6 +1114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color badgeColor,
     required Color progressColor,
     required VoidCallback onTap,
+    String? imageUrl,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -1133,16 +1137,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Checkered Image area with Badge
+              // Top Image area with Badge
               SizedBox(
                 height: 125,
                 width: double.infinity,
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    const CheckeredPlaceholder(
+                    Image.asset(
+                      imageUrl ?? 'assets/project/behance_239114219_04.webp',
                       height: 125,
                       width: double.infinity,
-                      squareSize: 12,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(
+                        height: 125,
+                        width: double.infinity,
+                        squareSize: 12,
+                      ),
                     ),
                     Positioned(
                       top: 10,
@@ -1457,6 +1468,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 badgeText: 'ACTIVE',
                 badgeColor: const Color(0xFF232323),
                 progressColor: titleColor,
+                imageUrl: 'assets/project/behance_239114219_04.webp',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -1482,6 +1494,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 badgeText: 'REVIEW',
                 badgeColor: const Color(0xFF8B3A1C),
                 progressColor: const Color(0xFF8B3A1C),
+                imageUrl: 'assets/project/behance_239114219_05.webp',
                 onTap: () {
                   Navigator.push(
                     context,
