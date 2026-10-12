@@ -188,7 +188,7 @@ dart run flutter_native_splash:create
         <sub>Collaborator · Authentication & Client Role</sub>
       </td>
       <td align="center">
-        <a href="https://github.com/YashVinchhi/Ripal-Design-Flutter">
+        <a href="https://github.com/Rajib-AFK">
           <img src="https://ui-avatars.com/api/?name=Rohan&background=21262d&color=58a6ff&size=100&bold=true" width="100px;" alt="Rohan"/><br />
           <sub><b>Rohan</b></sub>
         </a><br />
