@@ -18,13 +18,19 @@ class SettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
-            Icon(icon, color: const Color(0xFF9E4723), size: 22),
+            Icon(
+              icon,
+              color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723),
+              size: 22,
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -32,10 +38,10 @@ class SettingTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF2D2D2D),
+                      color: isDark ? Colors.white : const Color(0xFF2D2D2D),
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -44,7 +50,7 @@ class SettingTile extends StatelessWidget {
                       subtitle!,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey.shade500,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                       ),
                     ),
                   ],
@@ -54,7 +60,7 @@ class SettingTile extends StatelessWidget {
             trailing ??
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.grey.shade400,
+                  color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                   size: 20,
                 ),
           ],

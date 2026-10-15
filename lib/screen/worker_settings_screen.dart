@@ -14,6 +14,7 @@ import 'package:ripal_design/screen/upload_profile_photo_screen.dart';
 import 'package:ripal_design/screen/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker_password_update_screen.dart';
 import 'package:ripal_design/screen/worker_upload_files_screen.dart';
+import 'package:ripal_design/service/theme_service.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 class WorkerSettingsScreen extends StatefulWidget {
@@ -130,20 +131,22 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final displayName = _userName.isNotEmpty ? _userName : 'Your Name';
     final displayEmail = _userEmail.isNotEmpty ? _userEmail : 'youremail@example.com';
     final loggedInText = 'Logged in as ${_userName.toLowerCase().replaceAll(' ', '')}';
+    final dividerColor = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFF7EBE8);
 
     return RoleGuardedScreen(
       allowedRoles: const ['worker'],
       child: Scaffold(
-        backgroundColor: _bgCream,
+        backgroundColor: isDark ? const Color(0xFF141212) : _bgCream,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.close, color: primaryColor),
+            icon: Icon(Icons.close, color: isDark ? Colors.white : primaryColor),
             onPressed: () {
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
@@ -155,10 +158,10 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
               }
             },
           ),
-          title: const Text(
+          title: Text(
             'Settings',
             style: TextStyle(
-              color: primaryColor,
+              color: isDark ? Colors.white : primaryColor,
               fontWeight: FontWeight.w800,
               fontSize: 22,
             ),
@@ -174,7 +177,10 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                 height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1),
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF333333) : const Color(0xFFE2C4BD),
+                    width: 1,
+                  ),
                 ),
                 child: ClipOval(
                   child: buildProfileImage(
@@ -182,9 +188,13 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                     width: 32,
                     height: 32,
                     fit: BoxFit.cover,
-                    fallback: const CircleAvatar(
-                      backgroundColor: Color(0xFFF5EBE6),
-                      child: Icon(Icons.person, size: 18, color: primaryColor),
+                    fallback: CircleAvatar(
+                      backgroundColor: isDark ? const Color(0xFF2A2422) : const Color(0xFFF5EBE6),
+                      child: Icon(
+                        Icons.person,
+                        size: 18,
+                        color: isDark ? const Color(0xFFE07A5F) : primaryColor,
+                      ),
                     ),
                   ),
                 ),
@@ -226,7 +236,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFFF0DCD5),
+                            color: isDark ? const Color(0xFF333333) : const Color(0xFFF0DCD5),
                             width: 2,
                           ),
                         ),
@@ -236,12 +246,12 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                             width: 96,
                             height: 96,
                             fit: BoxFit.cover,
-                            fallback: const CircleAvatar(
-                              backgroundColor: Color(0xFFF5EBE6),
+                            fallback: CircleAvatar(
+                              backgroundColor: isDark ? const Color(0xFF2A2422) : const Color(0xFFF5EBE6),
                               child: Icon(
                                 Icons.person,
                                 size: 48,
-                                color: primaryColor,
+                                color: isDark ? const Color(0xFFE07A5F) : primaryColor,
                               ),
                             ),
                           ),
@@ -270,10 +280,10 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
               const SizedBox(height: 14),
               Text(
                 displayName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: _titleDark,
+                  color: isDark ? Colors.white : _titleDark,
                 ),
               ),
               const SizedBox(height: 4),
@@ -281,7 +291,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                 displayEmail,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
               const SizedBox(height: 28),
@@ -295,7 +305,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                     title: 'Profile Information',
                     onTap: _openEditProfile,
                   ),
-                  const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
+                  Divider(height: 1, thickness: 1, color: dividerColor),
                   SettingTile(
                     icon: Icons.shield_outlined,
                     title: 'Security & Password',
@@ -316,7 +326,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                     value: _pushNotifications,
                     onChanged: (v) => setState(() => _pushNotifications = v),
                   ),
-                  const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
+                  Divider(height: 1, thickness: 1, color: dividerColor),
                   SettingSwitchTile(
                     icon: Icons.mail_outline,
                     title: 'Email Reports',
@@ -338,12 +348,20 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                     subtitle: 'English (US)',
                     onTap: () {},
                   ),
-                  const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
-                  SettingTile(
-                    icon: Icons.palette_outlined,
-                    title: 'Theme',
-                    subtitle: 'Light Mode',
-                    onTap: () {},
+                  Divider(height: 1, thickness: 1, color: dividerColor),
+                  ValueListenableBuilder<ThemeMode>(
+                    valueListenable: ThemeService.instance.themeModeNotifier,
+                    builder: (context, themeMode, _) {
+                      final isDarkMode = themeMode == ThemeMode.dark;
+                      return SettingTile(
+                        icon: Icons.palette_outlined,
+                        title: 'Theme',
+                        subtitle: isDarkMode ? 'Dark Mode' : 'Light Mode',
+                        onTap: () {
+                          ThemeService.instance.toggleTheme();
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -361,7 +379,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                       _showInfoDialog('Help Center', 'Reach out to support@ripaldesign.com or call +91 94267 89012 for assistance.');
                     },
                   ),
-                  const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
+                  Divider(height: 1, thickness: 1, color: dividerColor),
                   SettingTile(
                     icon: Icons.security,
                     title: 'Privacy Policy',
@@ -370,7 +388,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                       _showInfoDialog('Privacy Policy', 'Your data is handled securely under Ripal Design Candidate & User Privacy terms.');
                     },
                   ),
-                  const Divider(height: 1, thickness: 1, color: Color(0xFFF7EBE8)),
+                  Divider(height: 1, thickness: 1, color: dividerColor),
                   SettingTile(
                     icon: Icons.info_outline,
                     title: 'About Ripal Design',
@@ -400,21 +418,23 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                       (route) => false,
                     );
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.logout,
-                    color: Color(0xFF333333),
+                    color: isDark ? Colors.red.shade300 : const Color(0xFF333333),
                     size: 18,
                   ),
-                  label: const Text(
+                  label: Text(
                     'Log Out',
                     style: TextStyle(
-                      color: Color(0xFF333333),
+                      color: isDark ? Colors.red.shade300 : const Color(0xFF333333),
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFD0D0D0)),
+                    side: BorderSide(
+                      color: isDark ? Colors.grey.shade700 : const Color(0xFFD0D0D0),
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -428,7 +448,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
                 loggedInText,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.grey.shade500,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 ),
               ),
               const SizedBox(height: 40),

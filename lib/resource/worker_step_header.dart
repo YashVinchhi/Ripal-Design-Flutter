@@ -28,20 +28,26 @@ class WorkerStepHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _buildStep(1, 'Details', 'DETAILS'),
+          _buildStep(context, 1, 'Details', 'DETAILS'),
           _buildDottedDivider(),
-          _buildStep(2, 'Team', 'TEAM'),
+          _buildStep(context, 2, 'Team', 'TEAM'),
           _buildDottedDivider(),
-          _buildStep(3, 'Files', 'FILES'),
+          _buildStep(context, 3, 'Files', 'FILES'),
           _buildDottedDivider(),
-          _buildStep(4, 'Activity', 'ACTIVITY'),
+          _buildStep(context, 4, 'Activity', 'ACTIVITY'),
         ],
       ),
     );
   }
 
-  Widget _buildStep(int number, String inactiveLabel, String activeLabel) {
+  Widget _buildStep(BuildContext context, int number, String inactiveLabel, String activeLabel) {
     final bool isActive = currentStep == number;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final primary = isDark ? const Color(0xFFE07A5F) : _primaryColor;
+    final inactiveBg = isDark ? const Color(0xFF2A2020) : _inactiveBg;
+    final inactiveText = isDark ? Colors.grey.shade400 : _inactiveTextColor;
+    final inactiveLabelColor = isDark ? Colors.grey.shade400 : _inactiveLabelColor;
 
     return GestureDetector(
       onTap: () => onStepTap(number),
@@ -53,14 +59,14 @@ class WorkerStepHeader extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: isActive ? _primaryColor : _inactiveBg,
+              color: isActive ? primary : inactiveBg,
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
             child: Text(
               '$number',
               style: TextStyle(
-                color: isActive ? Colors.white : _inactiveTextColor,
+                color: isActive ? Colors.white : inactiveText,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -72,7 +78,7 @@ class WorkerStepHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-              color: isActive ? _primaryColor : _inactiveLabelColor,
+              color: isActive ? primary : inactiveLabelColor,
               letterSpacing: isActive ? 0.8 : 0.2,
             ),
           ),

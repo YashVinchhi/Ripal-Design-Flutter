@@ -88,24 +88,25 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
   }
 
   void _showApprovalDialog(String imagePath) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return Dialog(
-          backgroundColor: const Color(0xFFFFF7F2),
+          backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFF7F2),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Profile Photo Preview',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: _titleDark,
+                    color: isDark ? Colors.white : _titleDark,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -121,12 +122,12 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const Text(
+                Text(
                   'Would you like to use this photo for your profile?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.black87,
+                    color: isDark ? Colors.grey.shade300 : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -139,11 +140,11 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                           Navigator.pop(dialogContext); // Discard & Retake
                         },
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFFE5CCC9)),
+                          side: BorderSide(color: isDark ? const Color(0xFF333333) : const Color(0xFFE5CCC9)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text('Retake', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                        child: Text('Retake', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -169,7 +170,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                           navigator.pop(imagePath); // Pass approved image path back to caller
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
+                          backgroundColor: isDark ? const Color(0xFFE07A5F) : primaryColor,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
@@ -196,13 +197,14 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: 'Profile Photo',
       appBarLeading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
+        icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : const Color(0xFF5A0000)),
         onPressed: () => Navigator.pop(context),
       ),
       body: SafeArea(
@@ -225,7 +227,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                       CustomPaint(
                         size: const Size(220, 220),
                         painter: _DashedCirclePainter(
-                          color: const Color(0xFFE0C0B0),
+                          color: isDark ? const Color(0xFF503A3A) : const Color(0xFFE0C0B0),
                           strokeWidth: 1.5,
                           gap: 4.0,
                         ),
@@ -234,8 +236,8 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                       Container(
                         width: 170,
                         height: 170,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFFFF0EA),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF2A2020) : const Color(0xFFFFF0EA),
                           shape: BoxShape.circle,
                         ),
                         child: ClipOval(
@@ -248,7 +250,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                               child: Icon(
                                 Icons.person_outline,
                                 size: 72,
-                                color: Colors.brown.shade300,
+                                color: isDark ? const Color(0xFFE07A5F) : Colors.brown.shade300,
                               ),
                             ),
                           ),
@@ -261,13 +263,13 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
               const SizedBox(height: 36),
 
               // Title & Description
-              const Text(
+              Text(
                 'Refine Your Identity',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
-                  color: _titleDark,
+                  color: isDark ? Colors.white : _titleDark,
                 ),
               ),
               const SizedBox(height: 10),
@@ -278,7 +280,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                     height: 1.4,
                   ),
                 ),
@@ -292,7 +294,7 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _onUploadPhoto,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _brownBtn,
+                    backgroundColor: isDark ? const Color(0xFFE07A5F) : _brownBtn,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -318,17 +320,17 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _onTakePhoto,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _cardPink,
+                    backgroundColor: isDark ? const Color(0xFF2A2020) : _cardPink,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  icon: const Icon(Icons.camera_alt_outlined, color: _brownBtn, size: 20),
-                  label: const Text(
+                  icon: Icon(Icons.camera_alt_outlined, color: isDark ? const Color(0xFFE07A5F) : _brownBtn, size: 20),
+                  label: Text(
                     'Take Photo',
                     style: TextStyle(
-                      color: _brownBtn,
+                      color: isDark ? const Color(0xFFE07A5F) : _brownBtn,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -342,9 +344,9 @@ class _UploadProfilePhotoScreenState extends State<UploadProfilePhotoScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFF2E6E3)),
+                  border: Border.all(color: isDark ? const Color(0xFF2E2E2E) : const Color(0xFFF2E6E3)),
                 ),
                 child: Row(
                   children: [

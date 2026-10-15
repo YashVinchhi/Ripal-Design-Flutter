@@ -24,16 +24,19 @@ class PortfolioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -52,9 +55,8 @@ class PortfolioCard extends StatelessWidget {
                   child: Container(
                     height: 140,
                     width: double.infinity,
-                    color: Colors.grey.shade100, // Placeholder background
+                    color: isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade100,
                     child: _buildImageWidget(imageUrl),
-
                   ),
                 ),
                 Positioned(
@@ -94,18 +96,18 @@ class PortfolioCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF222222),
+                          color: isDark ? Colors.white : const Color(0xFF222222),
                         ),
                       ),
                       Text(
                         value,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFFA0604A), // Rusty brown color
+                          color: isDark ? const Color(0xFFE07A5F) : const Color(0xFFA0604A),
                         ),
                       ),
                     ],
@@ -117,9 +119,9 @@ class PortfolioCard extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 6,
-                      backgroundColor: const Color(0xFFFDECE9),
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color(0xFFA0604A),
+                      backgroundColor: isDark ? const Color(0xFF2E2A28) : const Color(0xFFFDECE9),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        isDark ? const Color(0xFFE07A5F) : const Color(0xFFA0604A),
                       ),
                     ),
                   ),
@@ -128,7 +130,7 @@ class PortfolioCard extends StatelessWidget {
                     progressText,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

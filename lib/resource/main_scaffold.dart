@@ -64,11 +64,12 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveRole = (widget.role != null && widget.role!.isNotEmpty)
         ? widget.role!
         : role;
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F2),
+      backgroundColor: isDark ? const Color(0xFF141212) : const Color(0xFFFFF7F2),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -76,7 +77,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         leading:
             widget.appBarLeading ??
             IconButton(
-              icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
+              icon: Icon(Icons.grid_view_outlined, color: isDark ? Colors.white : _titleColor),
               onPressed: () => Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (_) => const DashboardScreen()),
@@ -86,7 +87,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',
           style: TextStyle(
-            color: _titleColor,
+            color: isDark ? Colors.white : _titleColor,
             fontWeight: FontWeight.bold,
             fontSize: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 22 : 24,
           ),
@@ -109,7 +110,10 @@ class _MainScaffoldState extends State<MainScaffold> {
                 height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1.5),
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF333333) : const Color(0xFFE2C4BD),
+                    width: 1.5,
+                  ),
                 ),
                 child: ClipOval(
                   child: buildProfileImage(
@@ -117,9 +121,13 @@ class _MainScaffoldState extends State<MainScaffold> {
                     width: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                     height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                     fit: BoxFit.cover,
-                    fallback: const CircleAvatar(
-                      backgroundColor: Color(0xFFF5EBE6),
-                      child: Icon(Icons.person, size: 18, color: _titleColor),
+                    fallback: CircleAvatar(
+                      backgroundColor: isDark ? const Color(0xFF2A2422) : const Color(0xFFF5EBE6),
+                      child: Icon(
+                        Icons.person,
+                        size: 18,
+                        color: isDark ? const Color(0xFFE07A5F) : _titleColor,
+                      ),
                     ),
                   ),
                 ),
@@ -132,7 +140,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       floatingActionButton: widget.onFabPressed != null
           ? FloatingActionButton(
               onPressed: widget.onFabPressed,
-              backgroundColor: _titleColor,
+              backgroundColor: isDark ? const Color(0xFFE07A5F) : _titleColor,
               shape: const CircleBorder(),
               elevation: 4,
               child: const Icon(Icons.add, color: Colors.white, size: 32),

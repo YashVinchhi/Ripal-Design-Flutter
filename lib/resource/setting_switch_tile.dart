@@ -19,6 +19,7 @@ class SettingSwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SettingTile(
       icon: icon,
       title: title,
@@ -27,9 +28,9 @@ class SettingSwitchTile extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         activeThumbColor: Colors.white,
-        activeTrackColor: const Color(0xFF9E4723),
-        inactiveThumbColor: Colors.grey.shade400,
-        inactiveTrackColor: Colors.grey.shade200,
+        activeTrackColor: isDark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723),
+        inactiveThumbColor: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+        inactiveTrackColor: isDark ? const Color(0xFF333333) : Colors.grey.shade200,
         trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
       onTap: () => onChanged(!value),

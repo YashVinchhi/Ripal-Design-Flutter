@@ -15,14 +15,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF141212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -30,7 +33,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         title: Text(
           'Ripal Design',
           style: TextStyle(
-            color: titleColor,
+            color: effectiveTitle,
             fontSize: 24,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
@@ -59,7 +62,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.w800,
-                            color: titleColor,
+                            color: effectiveTitle,
                             letterSpacing: -0.5,
                           ),
                         ),
@@ -70,7 +73,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           "Enter your email address and we'll send you instructions to reset your password.",
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey.shade600,
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             height: 1.5,
                           ),
                         ),
@@ -102,13 +105,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             },
                             icon: Icon(
                               Icons.arrow_back,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               size: 16,
                             ),
                             label: Text(
                               'Back to Login',
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),

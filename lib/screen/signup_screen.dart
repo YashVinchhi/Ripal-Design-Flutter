@@ -25,20 +25,24 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF141212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Ripal Design',
           style: TextStyle(
-            color: titleColor,
+            color: effectiveTitle,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -57,13 +61,13 @@ class _SignupScreenState extends State<SignupScreen> {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: titleColor,
+                  color: effectiveTitle,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Choose your role and set up your professional profile.',
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade700),
               ),
               const SizedBox(height: 32),
 
@@ -149,8 +153,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           _agreeTerms = value ?? false;
                         });
                       },
-                      activeColor: primaryColor,
-                      side: BorderSide(color: Colors.grey.shade400, width: 1.5),
+                      activeColor: effectivePrimary,
+                      side: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade400, width: 1.5),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -158,7 +162,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: RichText(
                       text: TextSpan(
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                           fontSize: 13,
                         ),
                         children: [
@@ -190,7 +194,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   Text(
                     'Already have an account? ',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                    style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600, fontSize: 14),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -199,7 +203,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Text(
                       'Sign In',
                       style: TextStyle(
-                        color: primaryColor,
+                        color: effectivePrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),

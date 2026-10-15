@@ -39,22 +39,24 @@ class ClientProjectDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final heroImage = imageUrl ?? _galleryImages.first;
+    final primaryColor = isDark ? Colors.white : _primary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F2),
+      backgroundColor: isDark ? const Color(0xFF141212) : const Color(0xFFFFF7F2),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: _primary),
+          icon: Icon(Icons.arrow_back, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           projectName.toUpperCase(),
-          style: const TextStyle(
-            color: _primary,
+          style: TextStyle(
+            color: primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,
             letterSpacing: 0.5,
@@ -295,14 +297,16 @@ class _ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -314,13 +318,13 @@ class _ProgressCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Overall Completion',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF2D2D2D)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white : const Color(0xFF2D2D2D)),
               ),
               Text(
                 label,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF5A0000)),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000)),
               ),
             ],
           ),
@@ -330,8 +334,8 @@ class _ProgressCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: const Color(0xFFFDECE9),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF5A0000)),
+              backgroundColor: isDark ? const Color(0xFF332222) : const Color(0xFFFDECE9),
+              valueColor: AlwaysStoppedAnimation<Color>(isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000)),
             ),
           ),
         ],
@@ -346,14 +350,16 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -369,7 +375,7 @@ class _InfoCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
-                    Icon(item.icon, size: 20, color: const Color(0xFF5A0000)),
+                    Icon(item.icon, size: 20, color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000)),
                     const SizedBox(width: 14),
                     Text(
                       item.label,
@@ -383,16 +389,16 @@ class _InfoCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       item.value,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF2D2D2D),
+                        color: isDark ? Colors.white : const Color(0xFF2D2D2D),
                       ),
                     ),
                   ],
                 ),
               ),
-              if (!isLast) Divider(color: Colors.grey.shade100, height: 1),
+              if (!isLast) Divider(color: isDark ? const Color(0xFF2E2E2E) : Colors.grey.shade100, height: 1),
             ],
           );
         }).toList(),
@@ -414,6 +420,9 @@ class _MilestoneTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeColor = isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000);
+
     final milestones = [
       _Milestone(title: 'Schematic Design', completed: progress >= 0.25),
       _Milestone(title: 'Design Development', completed: progress >= 0.50),
@@ -424,11 +433,12 @@ class _MilestoneTimeline extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -446,18 +456,35 @@ class _MilestoneTimeline extends StatelessWidget {
                   Icon(
                     m.completed ? Icons.check_circle : Icons.radio_button_unchecked,
                     size: 20,
-                    color: m.completed ? const Color(0xFF5A0000) : Colors.grey.shade400,
+                    color: m.completed ? activeColor : Colors.grey.shade400,
                   ),
                   if (!isLast)
                     Container(
                       width: 2,
                       height: 24,
-                      color: m.completed ? const Color(0xFF5A0000) : Colors.grey.shade200,
+                      color: m.completed ? activeColor : (isDark ? const Color(0xFF333333) : Colors.grey.shade200),
                     ),
                 ],
               ),
               const SizedBox(width: 14),
               Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  m.title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: m.completed ? FontWeight.bold : FontWeight.normal,
+                    color: m.completed ? (isDark ? Colors.white : const Color(0xFF2D2D2D)) : Colors.grey.shade600,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(
                   m.title,

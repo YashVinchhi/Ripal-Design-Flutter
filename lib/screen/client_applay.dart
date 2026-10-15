@@ -134,12 +134,16 @@ class _ClientApplayState extends State<ClientApplay> {
   }
 
   void _showSuccessDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          backgroundColor: const Color(0xFFFFF7F2),
+          backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFF7F2),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -149,14 +153,14 @@ class _ClientApplayState extends State<ClientApplay> {
                 Container(
                   width: 72,
                   height: 72,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE5DDD5),
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF2A2020) : const Color(0xFFE5DDD5),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.check_circle,
                     size: 72,
-                    color: primaryColor,
+                    color: effectivePrimary,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -166,7 +170,7 @@ class _ClientApplayState extends State<ClientApplay> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: titleColor,
+                    color: effectiveTitle,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -175,7 +179,7 @@ class _ClientApplayState extends State<ClientApplay> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                     height: 1.4,
                   ),
                 ),
@@ -183,21 +187,21 @@ class _ClientApplayState extends State<ClientApplay> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.badge_outlined, size: 18, color: primaryColor),
+                      Icon(Icons.badge_outlined, size: 18, color: effectivePrimary),
                       const SizedBox(width: 8),
                       Text(
                         'Application Ref: #RD-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                     ],
@@ -247,6 +251,10 @@ class _ClientApplayState extends State<ClientApplay> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return MainScaffold(
       currentIndex: _currentIndex,
       onFabPressed: () {},
@@ -293,7 +301,7 @@ class _ClientApplayState extends State<ClientApplay> {
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w800,
-                    color: titleColor,
+                    color: effectiveTitle,
                     height: 1.05,
                     letterSpacing: -1,
                   ),
@@ -303,7 +311,7 @@ class _ClientApplayState extends State<ClientApplay> {
                   'We are looking for visionary minds to join our collective pursuit of architectural excellence.',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                     height: 1.5,
                   ),
                 ),
@@ -391,13 +399,13 @@ class _ClientApplayState extends State<ClientApplay> {
                 const SectionHeader(title: 'CREDENTIALS & WORK'),
 
                 // CV Upload label
-                const Text(
+                Text(
                   'CURRICULUM VITAE',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
-                    color: Colors.black87,
+                    color: isDark ? Colors.grey.shade300 : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -409,9 +417,13 @@ class _ClientApplayState extends State<ClientApplay> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: _cvUploaded ? const Color(0xFFFFF0EA) : Colors.white,
+                      color: _cvUploaded
+                          ? (isDark ? const Color(0xFF2A2020) : const Color(0xFFFFF0EA))
+                          : (isDark ? const Color(0xFF1E1E1E) : Colors.white),
                       border: Border.all(
-                        color: _cvUploaded ? primaryColor : Colors.grey.shade300,
+                        color: _cvUploaded
+                            ? effectivePrimary
+                            : (isDark ? const Color(0xFF333333) : Colors.grey.shade300),
                         width: _cvUploaded ? 1.5 : 1.0,
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -419,7 +431,7 @@ class _ClientApplayState extends State<ClientApplay> {
                     child: _cvUploaded
                         ? Row(
                             children: [
-                              Icon(Icons.insert_drive_file, color: primaryColor, size: 36),
+                              Icon(Icons.insert_drive_file, color: effectivePrimary, size: 36),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
@@ -432,7 +444,7 @@ class _ClientApplayState extends State<ClientApplay> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: primaryColor,
+                                        color: effectivePrimary,
                                       ),
                                     ),
                                     const SizedBox(height: 2),
@@ -442,7 +454,7 @@ class _ClientApplayState extends State<ClientApplay> {
                                           : 'Uploaded ✓',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.grey.shade600,
+                                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                                       ),
                                     ),
                                   ],
@@ -469,7 +481,7 @@ class _ClientApplayState extends State<ClientApplay> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.grey.shade700,
+                                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -502,13 +514,13 @@ class _ClientApplayState extends State<ClientApplay> {
                 const SizedBox(height: 20),
 
                 // About You
-                const Text(
+                Text(
                   'ABOUT YOU',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
-                    color: Colors.black87,
+                    color: isDark ? Colors.grey.shade300 : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -516,8 +528,33 @@ class _ClientApplayState extends State<ClientApplay> {
                   controller: _aboutController,
                   maxLines: 5,
                   keyboardType: TextInputType.multiline,
+                  style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
                   validator: (value) {
                     if (value == null || value.trim().length < 10) {
+                      return 'Please tell us about yourself (min 10 characters)';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Tell us about your architectural philosophy...',
+                    hintStyle: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 14,
+                    ),
+                    filled: isDark,
+                    fillColor: isDark ? const Color(0xFF1E1E1E) : null,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: effectivePrimary),
+                    ),
+                    contentPadding: const EdgeInsets.all(16),
+                  ),
+                ),
                       return 'Please tell us about yourself (min 10 characters)';
                     }
                     return null;

@@ -104,12 +104,16 @@ class _ClientContactusState extends State<ClientContactus> {
   }
 
   void _showSuccessDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return Dialog(
-          backgroundColor: const Color(0xFFFFF7F2),
+          backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFF7F2),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -119,14 +123,14 @@ class _ClientContactusState extends State<ClientContactus> {
                 Container(
                   width: 72,
                   height: 72,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE5DDD5),
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF2A2020) : const Color(0xFFE5DDD5),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.mark_email_read_outlined,
                     size: 40,
-                    color: primaryColor,
+                    color: effectivePrimary,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -136,7 +140,7 @@ class _ClientContactusState extends State<ClientContactus> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: titleColor,
+                    color: effectiveTitle,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -145,7 +149,7 @@ class _ClientContactusState extends State<ClientContactus> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                     height: 1.4,
                   ),
                 ),
@@ -153,21 +157,21 @@ class _ClientContactusState extends State<ClientContactus> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.confirmation_number_outlined, size: 18, color: primaryColor),
+                      Icon(Icons.confirmation_number_outlined, size: 18, color: effectivePrimary),
                       const SizedBox(width: 8),
                       Text(
                         'Ticket Ref: #INQ-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                     ],
@@ -252,6 +256,9 @@ class _ClientContactusState extends State<ClientContactus> {
   }
 
   Widget _buildBody() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
       child: Form(
@@ -266,7 +273,7 @@ class _ClientContactusState extends State<ClientContactus> {
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.w800,
-                color: titleColor,
+                color: effectiveTitle,
                 height: 1.05,
                 letterSpacing: -1,
               ),
@@ -276,7 +283,7 @@ class _ClientContactusState extends State<ClientContactus> {
               'We believe in the power of meaningful collaboration. Let\'s discuss how we can bring architectural precision and tactile luxury to your next project.',
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.grey.shade700,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                 height: 1.5,
               ),
             ),
@@ -368,21 +375,25 @@ class _ClientContactusState extends State<ClientContactus> {
   }
 
   Widget _buildDropdownField() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'PROJECT TYPE',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
-            color: Colors.black87,
+            color: isDark ? Colors.grey.shade300 : Colors.black87,
           ),
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: _selectedProjectType,
+          dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           hint: Text(
             'Select Project Type',
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
@@ -395,14 +406,16 @@ class _ClientContactusState extends State<ClientContactus> {
           },
           icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade500),
           decoration: InputDecoration(
+            filled: isDark,
+            fillColor: isDark ? const Color(0xFF1E1E1E) : null,
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryColor),
+              borderSide: BorderSide(color: effectivePrimary),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -412,7 +425,10 @@ class _ClientContactusState extends State<ClientContactus> {
           items: _projectTypes.map((type) {
             return DropdownMenuItem<String>(
               value: type,
-              child: Text(type, style: const TextStyle(fontSize: 14)),
+              child: Text(
+                type,
+                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
+              ),
             );
           }).toList(),
           onChanged: (value) {
@@ -426,16 +442,19 @@ class _ClientContactusState extends State<ClientContactus> {
   }
 
   Widget _buildMessageField() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'MESSAGE',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
-            color: Colors.black87,
+            color: isDark ? Colors.grey.shade300 : Colors.black87,
           ),
         ),
         const SizedBox(height: 8),
@@ -443,6 +462,7 @@ class _ClientContactusState extends State<ClientContactus> {
           controller: _messageController,
           maxLines: 5,
           keyboardType: TextInputType.multiline,
+          style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
           validator: (value) {
             if (value == null || value.trim().length < 10) {
               return 'Please enter a message (min 10 characters)';
@@ -452,14 +472,16 @@ class _ClientContactusState extends State<ClientContactus> {
           decoration: InputDecoration(
             hintText: 'Tell us about your vision...',
             hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+            filled: isDark,
+            fillColor: isDark ? const Color(0xFF1E1E1E) : null,
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryColor),
+              borderSide: BorderSide(color: effectivePrimary),
             ),
             contentPadding: const EdgeInsets.all(16),
           ),

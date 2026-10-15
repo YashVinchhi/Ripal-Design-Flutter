@@ -37,8 +37,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final Color titleColor = const Color(0xFF5A0000);
-  final Color primaryColor = const Color(0xFF9E4723);
+  Color get titleColor => Theme.of(context).brightness == Brightness.dark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000);
+  Color get primaryColor => Theme.of(context).brightness == Brightness.dark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723);
   int _currentIndex = 0;
   String role = '';
   String userName = '';
@@ -563,16 +563,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color topRightColor,
     VoidCallback? onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
+            BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Stack(
@@ -593,9 +595,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Icon(iconData, color: Colors.black87, size: 24),
                 ),
                 const SizedBox(height: 20),
-                Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.0)),
+                Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isDark ? Colors.grey.shade400 : Colors.grey, letterSpacing: 1.0)),
                 const SizedBox(height: 8),
-                Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: titleColor)),
+                Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: isDark ? Colors.white : titleColor)),
               ],
             ),
           ],
@@ -613,16 +615,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Color badgeColor = Colors.black87,
     VoidCallback? onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         width: 240,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
+            BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -666,19 +670,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isDark ? Colors.white : titleColor),
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Text(progressText, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                      Text(progressText, style: TextStyle(fontSize: 10, color: isDark ? Colors.grey.shade400 : Colors.grey)),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+                  Text(subtitle, style: TextStyle(fontSize: 12, color: isDark ? Colors.grey.shade400 : Colors.grey.shade700)),
                   const SizedBox(height: 12),
                   LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: const Color(0xFFFADCDC),
+                    backgroundColor: isDark ? const Color(0xFF332222) : const Color(0xFFFADCDC),
                     valueColor: AlwaysStoppedAnimation<Color>(titleColor),
                     minHeight: 6,
                     borderRadius: BorderRadius.circular(3),
@@ -693,14 +697,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildQuickAction(IconData icon, String title, {VoidCallback? onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: isDark ? Border.all(color: const Color(0xFF2E2E2E)) : null,
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
+            BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -710,12 +716,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFFADCDC), width: 1.5),
+                color: isDark ? const Color(0xFF2A2020) : null,
+                border: Border.all(color: isDark ? const Color(0xFF3E2A2A) : const Color(0xFFFADCDC), width: 1.5),
               ),
               child: Icon(icon, color: titleColor, size: 24),
             ),
             const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+            Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: isDark ? Colors.white : Colors.black87)),
           ],
         ),
       ),
@@ -727,47 +734,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ═════════════════════════════════════════════════════════════════
   Widget _buildWorkerBody() {
     final displayName = userName.isNotEmpty ? userName : 'Niku';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final cardBorder = isDark ? const Color(0xFF2E2E2E) : const Color(0xFFF2DED7);
+    final textDark = isDark ? Colors.white : const Color(0xFF1E1E1E);
+    final textSub = isDark ? Colors.grey.shade400 : const Color(0xFF7A6666);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ─── DASHBOARD OVERVIEW HEADER ──────────────────────
-        const Text(
+        Text(
           'DASHBOARD OVERVIEW',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
-            color: Color(0xFF7A6666),
+            color: textSub,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Welcome, $displayName',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1E1E1E),
+            color: textDark,
             height: 1.15,
           ),
         ),
         const SizedBox(height: 6),
         RichText(
-          text: const TextSpan(
+          text: TextSpan(
             style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF555555),
+              color: isDark ? Colors.grey.shade300 : const Color(0xFF555555),
               height: 1.35,
             ),
             children: [
-              TextSpan(text: 'You have '),
+              const TextSpan(text: 'You have '),
               TextSpan(
                 text: '12 Active Projects',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF9E4723),
+                  color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723),
                 ),
               ),
-              TextSpan(text: '\nrequiring your attention today.'),
+              const TextSpan(text: '\nrequiring your attention today.'),
             ],
           ),
         ),
@@ -778,12 +791,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardBg,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFF2DED7)),
+            border: Border.all(color: cardBorder),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -796,32 +809,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEBEFFC),
+                  color: isDark ? const Color(0xFF232B45) : const Color(0xFFEBEFFC),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.architecture,
-                  color: Color(0xFF5B78E6),
+                  color: isDark ? const Color(0xFF7A94FF) : const Color(0xFF5B78E6),
                   size: 20,
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'ACTIVE PROJECTS',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.8,
-                  color: Color(0xFF7A6666),
+                  color: textSub,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 '15',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: textDark,
                 ),
               ),
             ],
@@ -834,12 +847,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardBg,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFF2DED7)),
+            border: Border.all(color: cardBorder),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -855,42 +868,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFBECEB),
+                      color: isDark ? const Color(0xFF332222) : const Color(0xFFFBECEB),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.groups_outlined,
-                      color: Color(0xFF5A0000),
+                      color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000),
                       size: 20,
                     ),
                   ),
-                  const Text(
+                  Text(
                     '8 New',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF7A6666),
+                      color: textSub,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'TEAM VELOCITY',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.8,
-                  color: Color(0xFF7A6666),
+                  color: textSub,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 '30',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: textDark,
                 ),
               ),
             ],
@@ -902,13 +915,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
                 'Assigned Projects',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: textDark,
                 ),
               ),
             ),
@@ -930,20 +943,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               child: Row(
-                children: const [
+                children: [
                   Text(
                     'EXPLORE PROJECTS',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.8,
-                      color: Color(0xFF8B3A1C),
+                      color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                     ),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Icon(
                     Icons.arrow_forward,
-                    color: Color(0xFF8B3A1C),
+                    color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                     size: 14,
                   ),
                 ],
@@ -986,8 +999,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 progress: 0.40,
                 progressText: '40% Done',
                 badgeText: 'REVIEW',
-                badgeColor: const Color(0xFF8B3A1C),
-                progressColor: const Color(0xFF8B3A1C),
+                badgeColor: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
+                progressColor: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -1005,12 +1018,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(height: 28),
 
         // ─── SECTION: Quick Actions ─────────────────────────
-        const Text(
+        Text(
           'Quick Actions',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1E1E1E),
+            color: textDark,
           ),
         ),
         const SizedBox(height: 16),
@@ -1112,17 +1125,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color progressColor,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 255,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF2DED7)),
+          border: Border.all(color: isDark ? const Color(0xFF2E2E2E) : const Color(0xFFF2DED7)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -1181,10 +1195,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Expanded(
                           child: Text(
                             title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E1E1E),
+                              color: isDark ? Colors.white : const Color(0xFF1E1E1E),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1195,7 +1209,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade600,
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                           ),
                         ),
                       ],
@@ -1205,7 +1219,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       subtitle,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade700,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -1215,7 +1229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
                         value: progress,
-                        backgroundColor: const Color(0xFFFBECEB),
+                        backgroundColor: isDark ? const Color(0xFF332222) : const Color(0xFFFBECEB),
                         valueColor: AlwaysStoppedAnimation(progressColor),
                         minHeight: 5,
                       ),
@@ -1235,17 +1249,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String title,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFF2DED7)),
+          border: Border.all(color: isDark ? const Color(0xFF2E2E2E) : const Color(0xFFF2DED7)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -1259,19 +1274,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFFFF9F6),
-                border: Border.all(color: const Color(0xFFF0DCD5), width: 1.5),
+                color: isDark ? const Color(0xFF2A2020) : const Color(0xFFFFF9F6),
+                border: Border.all(color: isDark ? const Color(0xFF3E2A2A) : const Color(0xFFF0DCD5), width: 1.5),
               ),
               child: Icon(icon, color: titleColor, size: 24),
             ),
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
+              textAlign: TextAlign.center,
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.6,
-                color: Color(0xFF1E1E1E),
+                color: isDark ? Colors.white : const Color(0xFF1E1E1E),
               ),
             ),
           ],
@@ -1285,47 +1301,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ═════════════════════════════════════════════════════════════════
   Widget _buildEmployeeBody() {
     final displayName = userName.isNotEmpty ? userName : 'Rachit';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final cardBorder = isDark ? const Color(0xFF2E2E2E) : const Color(0xFFF2DED7);
+    final textDark = isDark ? Colors.white : const Color(0xFF1E1E1E);
+    final textSub = isDark ? Colors.grey.shade400 : const Color(0xFF7A6666);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ─── DASHBOARD OVERVIEW HEADER ──────────────────────
-        const Text(
+        Text(
           'DASHBOARD OVERVIEW',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
-            color: Color(0xFF7A6666),
+            color: textSub,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Welcome, $displayName',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1E1E1E),
+            color: textDark,
             height: 1.15,
           ),
         ),
         const SizedBox(height: 6),
         RichText(
-          text: const TextSpan(
+          text: TextSpan(
             style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF555555),
+              color: isDark ? Colors.grey.shade300 : const Color(0xFF555555),
               height: 1.35,
             ),
             children: [
-              TextSpan(text: 'You have '),
+              const TextSpan(text: 'You have '),
               TextSpan(
                 text: '12 Active Projects',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF9E4723),
+                  color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723),
                 ),
               ),
-              TextSpan(text: '\nrequiring your attention today.'),
+              const TextSpan(text: '\nrequiring your attention today.'),
             ],
           ),
         ),
@@ -1336,12 +1358,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardBg,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFF2DED7)),
+            border: Border.all(color: cardBorder),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -1354,32 +1376,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEBEFFC),
+                  color: isDark ? const Color(0xFF232B45) : const Color(0xFFEBEFFC),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.architecture,
-                  color: Color(0xFF5B78E6),
+                  color: isDark ? const Color(0xFF7A94FF) : const Color(0xFF5B78E6),
                   size: 20,
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'ACTIVE PROJECTS',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.8,
-                  color: Color(0xFF7A6666),
+                  color: textSub,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 '15',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: textDark,
                 ),
               ),
             ],
@@ -1391,13 +1413,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
                 'Assigned Projects',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: textDark,
                 ),
               ),
             ),
@@ -1419,20 +1441,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               child: Row(
-                children: const [
+                children: [
                   Text(
                     'EXPLORE PROJECTS',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.8,
-                      color: Color(0xFF8B3A1C),
+                      color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                     ),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Icon(
                     Icons.arrow_forward,
-                    color: Color(0xFF8B3A1C),
+                    color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                     size: 14,
                   ),
                 ],
@@ -1480,8 +1502,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 progress: 0.40,
                 progressText: '40% Done',
                 badgeText: 'REVIEW',
-                badgeColor: const Color(0xFF8B3A1C),
-                progressColor: const Color(0xFF8B3A1C),
+                badgeColor: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
+                progressColor: isDark ? const Color(0xFFE07A5F) : const Color(0xFF8B3A1C),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -1489,7 +1511,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       builder: (context) => const WorkerProjectViewScreen(
                         projectName: 'Azure Residence',
                         clientName: 'Azure Living Ltd',
-                        budget: '₹6,80,000',
+                        budget: '₹6,80,00,000',
                         timeline: 'Jan 2024 - Dec 2024',
                         type: 'Interior Finishing',
                         location: 'Harbor District',
@@ -1504,12 +1526,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(height: 28),
 
         // ─── SECTION: Actions (Matching Employee Dashborad.png exactly) ──────
-        const Text(
+        Text(
           'Actions',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1E1E1E),
+            color: textDark,
           ),
         ),
         const SizedBox(height: 16),
@@ -1598,4 +1620,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     );
   }
+}
 }
