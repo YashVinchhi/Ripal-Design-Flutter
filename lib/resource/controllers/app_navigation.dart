@@ -5,7 +5,6 @@ import 'package:ripal_design/screen/admin/admin_leave_history_screen.dart';
 import 'package:ripal_design/screen/admin/admin_finance_screen.dart';
 import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/admin/admin_create_project.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/client/client_project_view.dart';
 import 'package:ripal_design/screen/client/client_contactus.dart';
 import 'package:ripal_design/screen/client/client_applay.dart';

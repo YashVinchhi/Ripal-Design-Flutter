@@ -99,7 +99,7 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['admin', 'employee'],
+      allowedRoles: const ['admin'],
       child: MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,

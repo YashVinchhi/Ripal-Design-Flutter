@@ -18,7 +18,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['admin', 'employee'],
+      allowedRoles: const ['admin'],
       child: MainScaffold(
         appBarTitle: 'Management',
         appBarLeading: IconButton(

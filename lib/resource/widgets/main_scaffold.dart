@@ -3,7 +3,6 @@ import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/utils/app_image_helper.dart';
 import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
 import 'package:ripal_design/service/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -122,9 +121,14 @@ class _MainScaffoldState extends State<MainScaffold> {
                 ),
                 child: ClipOval(
                   child: buildProfileImage(
-                    avatarPath: _userAvatarPath,
-                    role: effectiveRole,
-                    size: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
+                    _userAvatarPath,
+                    width: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
+                    height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
+                    fit: BoxFit.cover,
+                    fallback: const CircleAvatar(
+                      backgroundColor: Color(0xFFF5EBE6),
+                      child: Icon(Icons.person, size: 18, color: _titleColor),
+                    ),
                   ),
                 ),
               ),
