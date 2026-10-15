@@ -42,7 +42,13 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
         appBarTitle: 'Finance',
         appBarLeading: IconButton(
           icon: const Icon(Icons.grid_view_outlined, color: Color(0xFF5A0000)),
-          onPressed: () {},
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              AppNavigation.handleNavTap(context, 0, role: 'admin');
+            }
+          },
         ),
       body: SafeArea(
         child: SingleChildScrollView(

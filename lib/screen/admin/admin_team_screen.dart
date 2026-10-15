@@ -5,6 +5,8 @@ import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/project_service.dart';
 import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
 import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminTeamScreen extends StatefulWidget {
   final String projectName;
@@ -88,11 +90,11 @@ class _AdminTeamScreenState extends State<AdminTeamScreen> {
   ];
 
   void _onNavTap(int index) {
-    AppNavigation.handleNavTap(context, index);
+    AppNavigation.handleNavTap(context, index, role: UserService.currentRole, currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    AppNavigation.handleFabPressed(context);
+    AppNavigation.handleFabPressed(context, role: UserService.currentRole);
   }
 
   bool _validateStep() {
@@ -463,13 +465,24 @@ class _AdminTeamScreenState extends State<AdminTeamScreen> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+      role: UserService.currentRole,
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: widget.projectName,
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.black87),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: UserService.currentRole)),
+              (route) => false,
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(

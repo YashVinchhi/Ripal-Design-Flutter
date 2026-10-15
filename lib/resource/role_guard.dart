@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 /// Centralizes role checks for screens to strictly enforce RBAC.
 class RoleGuard {
@@ -9,7 +10,7 @@ class RoleGuard {
     required List<String> allowedRoles,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    final currentRole = (prefs.getString('role') ?? '').trim().toLowerCase();
+    final currentRole = (prefs.getString('role') ?? UserService.currentRole).trim().toLowerCase();
     final isAllowed = allowedRoles
         .map((r) => r.trim().toLowerCase())
         .contains(currentRole);
@@ -24,7 +25,7 @@ class RoleGuard {
           ),
         );
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: currentRole)),
           (route) => false,
         );
       }
@@ -69,7 +70,7 @@ class _RoleGuardedScreenState extends State<RoleGuardedScreen> {
 
   Future<void> _verifyAccess() async {
     final prefs = await SharedPreferences.getInstance();
-    final currentRole = (prefs.getString('role') ?? '').trim().toLowerCase();
+    final currentRole = (prefs.getString('role') ?? UserService.currentRole).trim().toLowerCase();
     final normalizedAllowed = widget.allowedRoles
         .map((r) => r.trim().toLowerCase())
         .toList();
@@ -86,7 +87,7 @@ class _RoleGuardedScreenState extends State<RoleGuardedScreen> {
           ),
         );
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: currentRole)),
           (route) => false,
         );
       }

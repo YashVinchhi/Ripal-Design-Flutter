@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/FLUTTER_VIVA_GUIDE.md
+
+# Archives & build packages
+*.zip
+
+# AI assistant artifacts & cache
+.agents/
+.claude/
+memory/
+skills-lock.json
+

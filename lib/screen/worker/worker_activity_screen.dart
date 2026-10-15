@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker/worker_project_view_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 
@@ -27,42 +25,11 @@ class _WorkerActivityScreenState extends State<WorkerActivityScreen> {
   int _currentIndex = 0;
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
-      );
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    AppNavigation.handleFabPressed(context, role: 'worker');
   }
 
   void _onStepTap(int step) {
@@ -98,7 +65,13 @@ class _WorkerActivityScreenState extends State<WorkerActivityScreen> {
           scrolledUnderElevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: primaryColor),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                AppNavigation.handleNavTap(context, 0, role: 'worker');
+              }
+            },
           ),
           title: const Text(
             'SITE LOG',

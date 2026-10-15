@@ -21,6 +21,16 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen> {
       allowedRoles: const ['admin'],
       child: MainScaffold(
         appBarTitle: 'Management',
+        appBarLeading: IconButton(
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              AppNavigation.handleNavTap(context, 0, role: 'admin');
+            }
+          },
+        ),
         appBarActions: [
           Container(
             margin: const EdgeInsets.only(right: 8),

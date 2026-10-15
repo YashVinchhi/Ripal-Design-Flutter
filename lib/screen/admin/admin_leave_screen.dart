@@ -4,8 +4,9 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
-import 'package:ripal_design/screen/admin/admin_create_project.dart';
 import 'package:ripal_design/screen/admin/admin_leave_history_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminLeaveScreen extends StatefulWidget {
   const AdminLeaveScreen({super.key});
@@ -65,10 +66,21 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+        role: UserService.currentRole,
         appBarTitle: 'Leave Management',
         appBarLeading: IconButton(
-          icon: Icon(Icons.grid_view_outlined, color: primaryColor),
-          onPressed: () {},
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: UserService.currentRole)),
+                (route) => false,
+              );
+            }
+          },
         ),
         appBarActions: [
           IconButton(
@@ -84,10 +96,8 @@ class _AdminLeaveScreenState extends State<AdminLeaveScreen> {
           const AppNotificationIcon(),
         ],
         currentIndex: _currentIndex,
-        onNavTap: (index) => AppNavigation.handleNavTap(context, index, role: 'admin', currentIndex: _currentIndex),
-        onFabPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateProject()));
-        },
+        onNavTap: (index) => AppNavigation.handleNavTap(context, index, currentIndex: _currentIndex, role: UserService.currentRole),
+        onFabPressed: () => AppNavigation.handleFabPressed(context, role: UserService.currentRole),
         body: SafeArea(
           child: _isLoading
               ? Center(child: CircularProgressIndicator(color: primaryColor))

@@ -4,10 +4,11 @@ import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/service/user_service.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
-import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 
@@ -41,42 +42,11 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
   int _currentIndex = 0;
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
-      );
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    AppNavigation.handleFabPressed(context);
   }
 
   void _onStepTap(int step) {
@@ -102,8 +72,9 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final activeRole = UserService.currentRole;
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(
@@ -112,7 +83,17 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
           scrolledUnderElevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: primaryColor),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: activeRole)),
+                  (route) => false,
+                );
+              }
+            },
           ),
           title: Text(
             widget.projectName.toUpperCase(),
@@ -139,7 +120,7 @@ class _WorkerProjectViewScreenState extends State<WorkerProjectViewScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onNavTap,
-        role: 'worker',
+        role: activeRole,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

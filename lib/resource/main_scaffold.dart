@@ -5,6 +5,7 @@ import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.
@@ -56,7 +57,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        role = widget.role ?? prefs.getString('role') ?? '';
+        role = widget.role ?? prefs.getString('role') ?? UserService.currentRole;
         _userAvatarPath = prefs.getString('userAvatarPath');
       });
     }
@@ -66,7 +67,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     final effectiveRole = (widget.role != null && widget.role!.isNotEmpty)
         ? widget.role!
-        : role;
+        : (role.isNotEmpty ? role : UserService.currentRole);
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F2),
       appBar: AppBar(
@@ -77,11 +78,19 @@ class _MainScaffoldState extends State<MainScaffold> {
             widget.appBarLeading ??
             IconButton(
               icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
-              onPressed: () => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const DashboardScreen()),
-                (route) => false,
-              ),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DashboardScreen(initialRole: effectiveRole),
+                    ),
+                    (route) => false,
+                  );
+                }
+              },
             ),
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',

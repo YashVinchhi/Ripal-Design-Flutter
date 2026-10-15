@@ -146,9 +146,20 @@ flutter build appbundle --release
 ```
 
 ### Web Release
+To build an optimized production web release with generated source maps and tree-shaken icons:
+
 ```bash
-flutter build web --release
+# Recommended Web Release Build
+flutter build web --release --source-maps --tree-shake-icons
 ```
+
+> **Note on Modern Flutter (3.22+)**: The deprecated `--web-renderer` CLI flag was removed in newer Flutter versions. Web renderer behavior (HTML vs CanvasKit vs Auto) is configured directly in `web/index.html` via `window._flutter.buildConfig`.
+
+#### 💡 Web Optimization & Build Solutions
+- **`canvaskit.wasm` (1.6MB) & Unused JS Reduction**: `web/index.html` configures the web renderer (`window._flutter.buildConfig = { renderer: "html" }`) to bypass loading CanvasKit WASM (~1.6MB) and heavy Skia bridge JS.
+- **Missing Source Maps**: Building with `--source-maps` generates `main.dart.js.map` (verified generated) for browser DevTools debugging and stack trace mapping.
+- **`Intl.v8BreakIterator` Deprecation**: Polyfilled safely in `web/index.html` to prevent V8 break iterator deprecation errors on modern Chromium browsers.
+- **Tree-Shaking**: `--tree-shake-icons` strips unused icon fonts from `main.dart.js`.
 
 ---
 

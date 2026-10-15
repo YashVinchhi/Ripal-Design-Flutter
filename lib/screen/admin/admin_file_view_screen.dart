@@ -4,6 +4,8 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminFileViewScreen extends StatefulWidget {
   const AdminFileViewScreen({super.key});
@@ -24,11 +26,11 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
   final int _currentIndex = 0;
 
   void _onNavTap(int index) {
-    AppNavigation.handleNavTap(context, index);
+    AppNavigation.handleNavTap(context, index, role: UserService.currentRole, currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    AppNavigation.handleFabPressed(context);
+    AppNavigation.handleFabPressed(context, role: UserService.currentRole);
   }
 
   @override
@@ -36,13 +38,24 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+      role: UserService.currentRole,
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: 'File View',
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: UserService.currentRole)),
+              (route) => false,
+            );
+          }
+        },
       ),
       appBarActions: const [
         AppNotificationIcon(),

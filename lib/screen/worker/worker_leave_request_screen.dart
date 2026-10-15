@@ -5,9 +5,9 @@ import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
-import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
+
 
 class WorkerLeaveRequestScreen extends StatefulWidget {
   final bool initialSubmitted;
@@ -124,46 +124,17 @@ class _WorkerLeaveRequestScreenState extends State<WorkerLeaveRequestScreen> {
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
+    if (index == 1 && _isSubmitted) {
+      setState(() => _isSubmitted = false);
       return;
     }
-    if (index == 1) {
-      if (_isSubmitted) {
-        setState(() => _isSubmitted = false);
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-        );
-      }
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
-      );
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    if (_isSubmitted) {
+      setState(() => _isSubmitted = false);
+    }
   }
 
   Future<void> _submitRequest() async {
@@ -221,8 +192,14 @@ class _WorkerLeaveRequestScreenState extends State<WorkerLeaveRequestScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.grid_view_outlined, color: primaryColor),
-            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: primaryColor),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                AppNavigation.handleNavTap(context, 0, role: 'worker');
+              }
+            },
           ),
           title: Text(
             _isSubmitted ? 'Leave Request' : 'Leave Request',
@@ -654,7 +631,7 @@ class _WorkerLeaveRequestScreenState extends State<WorkerLeaveRequestScreen> {
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                MaterialPageRoute(builder: (context) => const DashboardScreen(initialRole: 'worker')),
               );
             },
             style: ElevatedButton.styleFrom(

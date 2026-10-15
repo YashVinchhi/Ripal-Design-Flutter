@@ -1,15 +1,13 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/worker_step_header.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
-import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
 import 'package:ripal_design/screen/worker/worker_project_files_screen.dart';
 import 'package:ripal_design/screen/worker/worker_project_view_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
 import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 
 class WorkerUploadFilesScreen extends StatefulWidget {
@@ -65,35 +63,11 @@ class _WorkerUploadFilesScreenState extends State<WorkerUploadFilesScreen> {
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      return; // Already on upload tab
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
-      );
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    _pickFiles();
+    AppNavigation.handleFabPressed(context, role: 'worker');
   }
 
   void _onStepTap(int step) {
@@ -129,7 +103,13 @@ class _WorkerUploadFilesScreenState extends State<WorkerUploadFilesScreen> {
           scrolledUnderElevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: primaryColor),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                AppNavigation.handleNavTap(context, 0, role: 'worker');
+              }
+            },
           ),
           title: const Text(
             'Upload Files',

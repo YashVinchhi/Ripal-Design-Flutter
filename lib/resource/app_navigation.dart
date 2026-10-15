@@ -10,8 +10,10 @@ import 'package:ripal_design/screen/client/client_project_view.dart';
 import 'package:ripal_design/screen/client/client_contactus.dart';
 import 'package:ripal_design/screen/client/client_applay.dart';
 import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/screen/worker/worker_leave_request_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AppNavigation {
   static void handleNavTap(
@@ -22,14 +24,14 @@ class AppNavigation {
     int? currentIndex,
   }) {
     if (currentIndex != null && currentIndex == index) return;
-    final r = (role ?? currentRole ?? 'admin').toLowerCase().trim();
+    final r = (role ?? currentRole ?? UserService.currentRole).toLowerCase().trim();
 
     if (r == 'worker') {
       switch (index) {
         case 0:
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            MaterialPageRoute(builder: (_) => const DashboardScreen(initialRole: 'worker')),
             (route) => false,
           );
           break;
@@ -57,7 +59,7 @@ class AppNavigation {
         case 0:
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            MaterialPageRoute(builder: (_) => const DashboardScreen(initialRole: 'employee')),
             (route) => false,
           );
           break;
@@ -85,7 +87,7 @@ class AppNavigation {
         case 0:
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            MaterialPageRoute(builder: (_) => const DashboardScreen(initialRole: 'admin')),
             (route) => false,
           );
           break;
@@ -114,7 +116,7 @@ class AppNavigation {
         case 0:
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            MaterialPageRoute(builder: (_) => const DashboardScreen(initialRole: 'client')),
             (route) => false,
           );
           break;
@@ -142,14 +144,14 @@ class AppNavigation {
 
   static void handleFabPress(
     BuildContext context, [
-    String role = 'admin',
+    String? role,
     String? currentRole,
   ]) {
-    final r = (currentRole ?? role).toLowerCase().trim();
+    final r = (currentRole ?? role ?? UserService.currentRole).toLowerCase().trim();
     if (r == 'worker') {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const WorkerUploadFilesScreen()),
+        MaterialPageRoute(builder: (_) => const WorkerLeaveRequestScreen()),
       );
     } else if (r == 'employee' || r == 'admin') {
       Navigator.push(
@@ -169,6 +171,6 @@ class AppNavigation {
     String? role,
     String? currentRole,
   }) {
-    handleFabPress(context, role ?? currentRole ?? 'admin');
+    handleFabPress(context, role, currentRole);
   }
 }

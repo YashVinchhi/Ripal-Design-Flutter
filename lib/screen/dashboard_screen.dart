@@ -30,7 +30,8 @@ import 'package:ripal_design/screen/worker/worker_view_member_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final String? initialRole;
+  const DashboardScreen({super.key, this.initialRole});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -40,12 +41,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final Color titleColor = const Color(0xFF5A0000);
   final Color primaryColor = const Color(0xFF9E4723);
   int _currentIndex = 0;
-  String role = '';
+  late String role;
   String userName = '';
 
   @override
   void initState() {
     super.initState();
+    role = widget.initialRole ?? UserService.currentRole;
+    userName = UserService.currentUserName;
     _loadUserData();
   }
 
@@ -96,15 +99,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final normalizedRole = role.toLowerCase().trim();
-    if (normalizedRole == 'client') {
+    final effectiveRole = (role.isNotEmpty ? role : (widget.initialRole ?? UserService.currentRole)).toLowerCase().trim();
+    if (effectiveRole == 'client') {
       return _buildClientShell();
-    } else if (normalizedRole == 'worker') {
+    } else if (effectiveRole == 'worker') {
       return _buildWorkerShell();
-    } else if (normalizedRole == 'employee') {
+    } else if (effectiveRole == 'employee') {
       return _buildEmployeeShell();
+    } else if (effectiveRole == 'admin') {
+      return _buildAdminShell();
     }
-    return _buildAdminShell();
+    return const Scaffold(
+      backgroundColor: Color(0xFFFFF7F2),
+      body: Center(
+        child: CircularProgressIndicator(color: Color(0xFF5A0000)),
+      ),
+    );
   }
 
   // ─── Client Shell: IndexedStack tab navigation ────────────────────────────
@@ -1019,7 +1029,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisCount: 2,
           crossAxisSpacing: 14,
           mainAxisSpacing: 14,
-          childAspectRatio: 1.15,
+          childAspectRatio: 1.05,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [

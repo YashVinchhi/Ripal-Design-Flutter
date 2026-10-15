@@ -113,6 +113,8 @@ class _AdminInvoiceScreenState extends State<AdminInvoiceScreen> {
         onPressed: () {
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
+          } else {
+            AppNavigation.handleNavTap(context, 0, role: 'admin');
           }
         },
       ),

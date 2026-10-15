@@ -7,13 +7,11 @@ import 'package:ripal_design/resource/app_notification_icon.dart';
 import 'package:ripal_design/resource/setting_group.dart';
 import 'package:ripal_design/resource/setting_switch_tile.dart';
 import 'package:ripal_design/resource/setting_tile.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/screen/edit_profile_screen.dart';
 import 'package:ripal_design/screen/auth/login_screen.dart';
 import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
-import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/screen/worker/worker_password_update_screen.dart';
-import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 class WorkerSettingsScreen extends StatefulWidget {
@@ -69,38 +67,11 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
   }
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      return; // Already on settings
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    AppNavigation.handleFabPressed(context, role: 'worker');
   }
 
   void _openEditProfile() async {
@@ -148,10 +119,7 @@ class _WorkerSettingsScreenState extends State<WorkerSettingsScreen> {
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
               } else {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DashboardScreen()),
-                );
+                AppNavigation.handleNavTap(context, 0, role: 'worker');
               }
             },
           ),

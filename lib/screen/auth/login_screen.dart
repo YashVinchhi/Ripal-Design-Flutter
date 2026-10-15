@@ -5,6 +5,7 @@ import 'package:ripal_design/screen/auth/forgot_password_screen.dart';
 import 'package:ripal_design/resource/custom_text_field.dart';
 import 'package:ripal_design/resource/custom_button.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -246,17 +247,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
 
                             if (isValidUser && userData != null) {
+                              final userRole = userData['role']!;
+                              final userName = userData['name']!;
+                              UserService.currentRole = userRole;
+                              UserService.currentUserName = userName;
+                              UserService.currentUserEmail = email;
+
                               await prefs.setBool('isLoggedIn', true);
-                              await prefs.setString('userName', userData['name']!);
+                              await prefs.setString('userName', userName);
                               await prefs.setString('userEmail', email);
-                              await prefs.setString('role', userData['role']!);
+                              await prefs.setString('role', userRole);
                               await prefs.setString('userPassword', password);
 
                               if (!context.mounted) return;
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const DashboardScreen(),
+                                  builder: (context) => DashboardScreen(initialRole: userRole),
                                 ),
                               );
                             } else {

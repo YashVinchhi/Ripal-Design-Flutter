@@ -17,8 +17,9 @@ class SettingsScreen extends StatefulWidget {
   /// (no MainScaffold/AppBar/BottomNav) so it can be embedded inside an
   /// IndexedStack in the client shell.
   final bool embeddedMode;
+  final String? initialRole;
 
-  const SettingsScreen({super.key, this.embeddedMode = false});
+  const SettingsScreen({super.key, this.embeddedMode = false, this.initialRole});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -30,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _pushNotifications = true;
   bool _emailReports = false;
-  String role = 'admin';
+  late String role;
   String userName = '';
   String userEmail = '';
   String? avatarPath;
@@ -38,6 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    role = (widget.initialRole ?? UserService.currentRole).toLowerCase().trim();
+    if (role.isEmpty) role = 'admin';
+    userName = UserService.currentUserName;
+    userEmail = UserService.currentUserEmail;
     _loadRole();
   }
 
@@ -45,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final user = await UserService.getCurrentUser();
     if (!mounted) return;
     setState(() {
-      role = user.role;
+      role = user.role.isNotEmpty ? user.role : (widget.initialRole ?? UserService.currentRole);
       userName = user.name;
       userEmail = user.email;
       avatarPath = user.avatarPath;
@@ -106,6 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     // Standalone: full scaffold with nav bar
     return MainScaffold(
+      role: role,
       currentIndex: 3,
       appBarTitle: 'Settings',
       onNavTap: _onNavTap,
@@ -177,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 children: [
                     Text(
-                      userName.isNotEmpty ? userName : (role == 'admin' ? 'Ar. Ripal Patel' : 'Client User'),
+                      userName.isNotEmpty ? userName : (role == 'admin' ? 'Ar. Ripal Patel' : (role == 'employee' ? 'Rachit' : (role == 'worker' ? 'Niku' : 'Client User'))),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
@@ -186,7 +192,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      userEmail.isNotEmpty ? userEmail : (role == 'admin' ? 'admin@gmail.com' : 'client@gmail.com'),
+                      userEmail.isNotEmpty ? userEmail : (role == 'admin' ? 'admin@gmail.com' : (role == 'employee' ? 'rachit@gmail.com' : (role == 'worker' ? 'niku@gmail.com' : 'client@gmail.com'))),
                       style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                     ),
                   ],

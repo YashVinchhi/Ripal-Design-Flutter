@@ -18,7 +18,7 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   static const Color _titleDark = Color(0xFF1E1E1E);
 
   final int _currentIndex = 3;
-  String _currentRole = 'worker';
+  late String _currentRole;
 
   bool _obscureCurrent = true;
   bool _obscureNew = true;
@@ -32,6 +32,7 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
   @override
   void initState() {
     super.initState();
+    _currentRole = UserService.currentRole.isNotEmpty ? UserService.currentRole : 'worker';
     _loadRole();
   }
 
@@ -141,7 +142,13 @@ class _WorkerPasswordUpdateScreenState extends State<WorkerPasswordUpdateScreen>
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              AppNavigation.handleNavTap(context, 0, currentRole: _currentRole);
+            }
+          },
         ),
         title: const Text(
           'Security Settings',

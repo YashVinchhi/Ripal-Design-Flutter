@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/resource/checkered_placeholder.dart';
 import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/role_guard.dart';
 import 'package:ripal_design/resource/app_notification_icon.dart';
-import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker/worker_leave_history_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
+
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class WorkerProjectFilesScreen extends StatefulWidget {
@@ -30,42 +29,11 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
   int _selectedFilter = 1; // 0: Contracts, 1: All Assets, 2: Blueprint
 
   void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      return;
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerLeaveHistoryScreen()),
-      );
-      return;
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-      );
-      return;
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkerSettingsScreen()),
-      );
-      return;
-    }
-    setState(() => _currentIndex = index);
+    AppNavigation.handleNavTap(context, index, role: 'worker', currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WorkerUploadFilesScreen()),
-    );
+    AppNavigation.handleFabPressed(context, role: 'worker');
   }
 
   @override
@@ -81,11 +49,17 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
           leading: widget.showBackButton
               ? IconButton(
                   icon: const Icon(Icons.arrow_back, color: primaryColor),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      AppNavigation.handleNavTap(context, 0, role: 'worker');
+                    }
+                  },
                 )
               : IconButton(
                   icon: const Icon(Icons.grid_view_outlined, color: primaryColor),
-                  onPressed: () {},
+                  onPressed: () => AppNavigation.handleNavTap(context, 0, role: 'worker'),
                 ),
           title: const Text(
             'File View',

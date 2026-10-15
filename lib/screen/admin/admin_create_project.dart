@@ -7,6 +7,7 @@ import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
 import 'package:ripal_design/screen/admin/admin_team_screen.dart';
 import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminCreateProject extends StatefulWidget {
   const AdminCreateProject({super.key});
@@ -151,6 +152,7 @@ class _AdminCreateProjectState extends State<AdminCreateProject> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+        role: UserService.currentRole,
         appBarTitle: 'New Project',
         appBarLeading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black87),
@@ -160,13 +162,13 @@ class _AdminCreateProjectState extends State<AdminCreateProject> {
             } else {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                MaterialPageRoute(builder: (context) => DashboardScreen(initialRole: UserService.currentRole)),
               );
             }
           },
         ),
         currentIndex: 0,
-        onNavTap: (index) => AppNavigation.handleNavTap(context, index),
+        onNavTap: (index) => AppNavigation.handleNavTap(context, index, currentIndex: 0, role: UserService.currentRole),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),

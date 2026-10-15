@@ -6,6 +6,8 @@ import 'package:ripal_design/resource/app_navigation.dart';
 import 'package:ripal_design/service/project_service.dart';
 import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
 import 'package:ripal_design/screen/admin/admin_file_view_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminUploadFileScreen extends StatefulWidget {
   const AdminUploadFileScreen({super.key});
@@ -38,11 +40,11 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
   ];
 
   void _onNavTap(int index) {
-    AppNavigation.handleNavTap(context, index);
+    AppNavigation.handleNavTap(context, index, role: UserService.currentRole, currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    AppNavigation.handleFabPressed(context);
+    AppNavigation.handleFabPressed(context, role: UserService.currentRole);
   }
 
   bool _validateStep() {
@@ -147,13 +149,24 @@ class _AdminUploadFileScreenState extends State<AdminUploadFileScreen> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+      role: UserService.currentRole,
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: 'Upload Files',
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new, color: primaryColor, size: 20),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: UserService.currentRole)),
+              (route) => false,
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(

@@ -7,6 +7,8 @@ import 'package:ripal_design/screen/admin/admin_activity_screen.dart';
 import 'package:ripal_design/screen/admin/admin_create_project.dart';
 import 'package:ripal_design/screen/admin/admin_team_screen.dart';
 import 'package:ripal_design/screen/admin/admin_upload_file_screen.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 
 class AdminProjectDetailScreen extends StatefulWidget {
   final String projectName;
@@ -39,11 +41,11 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
   final int _currentStep = 1; // Step indicator default
 
   void _onNavTap(int index) {
-    AppNavigation.handleNavTap(context, index);
+    AppNavigation.handleNavTap(context, index, role: UserService.currentRole, currentIndex: _currentIndex);
   }
 
   void _onFabPressed() {
-    AppNavigation.handleFabPressed(context);
+    AppNavigation.handleFabPressed(context, role: UserService.currentRole);
   }
 
   void _onStepTap(int step) {
@@ -63,6 +65,7 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
     return RoleGuardedScreen(
       allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
+      role: UserService.currentRole,
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
@@ -70,7 +73,17 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
       appBarActions: const [AppNotificationIcon(iconColor: primaryColor)],
       appBarLeading: IconButton(
         icon: const Icon(Icons.arrow_back, color: primaryColor),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: UserService.currentRole)),
+              (route) => false,
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(

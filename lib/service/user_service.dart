@@ -25,15 +25,24 @@ class UserProfile {
 }
 
 class UserService {
+  static String currentRole = 'admin';
+  static String currentUserName = '';
+  static String currentUserEmail = '';
+
   static Future<UserProfile> getCurrentProfile() async {
     final prefs = await SharedPreferences.getInstance();
-    final role = (prefs.getString('role') ?? 'admin').trim().toLowerCase();
+    final role = (prefs.getString('role') ?? currentRole).trim().toLowerCase();
+    currentRole = role;
     final defaultName = _getDefaultName(role);
     final defaultEmail = _getDefaultEmail(role);
+    final name = prefs.getString('userName') ?? defaultName;
+    final email = prefs.getString('userEmail') ?? defaultEmail;
+    currentUserName = name;
+    currentUserEmail = email;
 
     return UserProfile(
-      name: prefs.getString('userName') ?? defaultName,
-      email: prefs.getString('userEmail') ?? defaultEmail,
+      name: name,
+      email: email,
       role: role,
       phone: prefs.getString('userPhone') ?? '9876543210',
       address: prefs.getString('userAddress') ?? '101 Design Studio Tower, Off Ring Road',
@@ -83,6 +92,8 @@ class UserService {
     String? avatarPath,
   }) async {
     final prefs = await SharedPreferences.getInstance();
+    currentUserName = name;
+    currentUserEmail = email;
     await prefs.setString('userName', name);
     await prefs.setString('userEmail', email);
     await prefs.setString('userPhone', phone);
