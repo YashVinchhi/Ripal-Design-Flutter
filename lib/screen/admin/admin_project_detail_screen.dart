@@ -127,8 +127,12 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: CustomPaint(
-                          painter: _CheckeredPatternPainter(),
+                        child: Image.asset(
+                          'assets/project/behance_239114219_04.webp',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => CustomPaint(
+                            painter: _CheckeredPatternPainter(),
+                          ),
                         ),
                       ),
                     ),
@@ -287,9 +291,17 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
               ),
               const SizedBox(height: 12),
 
-              _buildTeamMemberCard('Rajibul Sheikh', 'Lead Architect'),
+              _buildTeamMemberCard(
+                'Rajibul Sheikh',
+                'Lead Architect',
+                avatarUrl: 'assets/project/behance_239114219_14.webp',
+              ),
               const SizedBox(height: 12),
-              _buildTeamMemberCard('Yash Vinchhi', 'Structural Lead'),
+              _buildTeamMemberCard(
+                'Yash Vinchhi',
+                'Structural Lead',
+                avatarUrl: 'assets/project/behance_239114219_13.webp',
+              ),
               const SizedBox(height: 32),
 
               // Site Gallery Section
@@ -320,11 +332,11 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
 
               Row(
                 children: [
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_05.webp')),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_12.webp')),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildGallerySquare()),
+                  Expanded(child: _buildGallerySquare('assets/project/behance_239114219_13.webp')),
                 ],
               ),
               const SizedBox(height: 40),
@@ -508,7 +520,8 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
     );
   }
 
-  Widget _buildTeamMemberCard(String name, String role) {
+  Widget _buildTeamMemberCard(String name, String role, {String? avatarUrl}) {
+    final initials = name.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -527,9 +540,40 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: CustomPaint(
-                painter: _CheckeredPatternPainter(),
-              ),
+              child: avatarUrl != null && avatarUrl.isNotEmpty
+                  ? (avatarUrl.startsWith('assets/')
+                      ? Image.asset(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              initials,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ),
+                        )
+                      : Image.network(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              initials,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ),
+                        ))
+                  : Container(
+                      color: primaryColor,
+                      alignment: Alignment.center,
+                      child: Text(
+                        initials,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 14),
@@ -559,7 +603,7 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
     );
   }
 
-  Widget _buildGallerySquare() {
+  Widget _buildGallerySquare(String imagePath) {
     return AspectRatio(
       aspectRatio: 1.0,
       child: Container(
@@ -570,8 +614,12 @@ class _AdminProjectDetailScreenState extends State<AdminProjectDetailScreen> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: CustomPaint(
-            painter: _CheckeredPatternPainter(),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => CustomPaint(
+              painter: _CheckeredPatternPainter(),
+            ),
           ),
         ),
       ),

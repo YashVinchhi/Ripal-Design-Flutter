@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/role_guard.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
-import 'package:ripal_design/resource/worker_step_header.dart';
+import 'package:ripal_design/resource/controllers/app_navigation.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/role_guard.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
+import 'package:ripal_design/resource/widgets/worker_step_header.dart';
 import 'package:ripal_design/screen/worker/worker_activity_screen.dart';
 import 'package:ripal_design/screen/worker/worker_project_view_screen.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
@@ -98,7 +98,7 @@ class _WorkerViewMemberScreenState extends State<WorkerViewMemberScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(

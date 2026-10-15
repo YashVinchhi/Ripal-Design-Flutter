@@ -179,6 +179,38 @@ dart run flutter_native_splash:create
 
 ---
 
+<h2 align="center">🤝 Contributors</h2>
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/YashVinchhi">
+          <img src="https://github.com/YashVinchhi.png" width="100px;" alt="Yash Vinchhi"/><br />
+          <sub><b>Yash Vinchhi</b></sub>
+        </a><br />
+        <sub>Owner · Admin & Employee Roles</sub>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Rachit-Dudhaiya">
+          <img src="https://github.com/Rachit-Dudhaiya.png" width="100px;" alt="Rachit Dudhaiya"/><br />
+          <sub><b>Rachit Dudhaiya</b></sub>
+        </a><br />
+        <sub>Collaborator · Authentication & Client Role</sub>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Rajib-AFK">
+          <img src="https://ui-avatars.com/api/?name=Rohan&background=21262d&color=58a6ff&size=100&bold=true" width="100px;" alt="Rohan"/><br />
+          <sub><b>Rohan</b></sub>
+        </a><br />
+        <sub>Collaborator · Worker Role & UI</sub>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
 ## 📄 License
 
 This project is proprietary software developed for **Ripal Design**. All rights reserved.
@@ -186,6 +218,7 @@ This project is proprietary software developed for **Ripal Design**. All rights 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ using Flutter by <b>Yash Vinchhi</b></sub>
+  <sub>Built with ❤️ using Flutter by <b>Rachit</b>, <b>Rohan</b>, and <b>Yash Vinchhi</b></sub>
 </div>
+
 

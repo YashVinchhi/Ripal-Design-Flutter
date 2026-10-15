@@ -34,7 +34,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['admin'],
+      allowedRoles: const ['admin', 'employee'],
       child: MainScaffold(
         currentIndex: _currentIndex,
         onNavTap: _onNavTap,

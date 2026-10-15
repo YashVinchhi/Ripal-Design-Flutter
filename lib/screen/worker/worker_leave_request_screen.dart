@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/role_guard.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/role_guard.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
 import 'package:ripal_design/service/leave_service.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
@@ -184,7 +184,7 @@ class _WorkerLeaveRequestScreenState extends State<WorkerLeaveRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(

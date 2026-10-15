@@ -42,7 +42,7 @@ class _AdminCreateInvoiceScreenState extends State<AdminCreateInvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['admin'],
+      allowedRoles: const ['admin', 'employee'],
       child: Scaffold(
       backgroundColor: _bgWarm,
       appBar: AppBar(

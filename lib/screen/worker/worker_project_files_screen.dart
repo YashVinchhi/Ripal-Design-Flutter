@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/app_navigation.dart';
-import 'package:ripal_design/resource/checkered_placeholder.dart';
-import 'package:ripal_design/resource/custom_bottom_nav_bar.dart';
-import 'package:ripal_design/resource/role_guard.dart';
-import 'package:ripal_design/resource/app_notification_icon.dart';
-
+import 'package:ripal_design/resource/controllers/app_navigation.dart';
+import 'package:ripal_design/resource/widgets/checkered_placeholder.dart';
+import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
+import 'package:ripal_design/resource/controllers/role_guard.dart';
+import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
 import 'package:ripal_design/screen/worker/worker_upload_files_screen.dart';
 
 class WorkerProjectFilesScreen extends StatefulWidget {
@@ -39,7 +38,7 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['worker'],
+      allowedRoles: const ['worker', 'employee', 'admin'],
       child: Scaffold(
         backgroundColor: _bgCream,
         appBar: AppBar(
@@ -364,10 +363,16 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: const CheckeredPlaceholder(
+            child: Image.asset(
+              'assets/project/behance_239114219_12.webp',
               height: 110,
               width: double.infinity,
-              squareSize: 12,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(
+                height: 110,
+                width: double.infinity,
+                squareSize: 12,
+              ),
             ),
           ),
           Padding(
@@ -506,10 +511,16 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const CheckeredPlaceholder(
-              color1: Color(0xFF6B7176),
-              color2: Color(0xFF5F656A),
-              squareSize: 14,
+            Image.asset(
+              'assets/project/behance_239114219_14.webp',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(
+                color1: Color(0xFF6B7176),
+                color2: Color(0xFF5F656A),
+                squareSize: 14,
+              ),
             ),
             Container(
               decoration: BoxDecoration(
