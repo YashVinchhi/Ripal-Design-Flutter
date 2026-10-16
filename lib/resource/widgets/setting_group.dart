@@ -8,6 +8,7 @@ class SettingGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -15,19 +16,22 @@ class SettingGroup extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
-              color: Colors.grey,
+              color: isDark ? Colors.grey.shade400 : Colors.grey,
               letterSpacing: 1.2,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200, width: 1),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2E2E2E) : Colors.grey.shade200,
+              width: 1,
+            ),
           ),
           child: Column(children: children),
         ),

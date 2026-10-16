@@ -3,8 +3,8 @@ import 'package:ripal_design/resource/widgets/custom_bottom_nav_bar.dart';
 import 'package:ripal_design/resource/utils/app_image_helper.dart';
 import 'package:ripal_design/resource/widgets/app_notification_icon.dart';
 import 'package:ripal_design/screen/dashboard_screen.dart';
-import 'package:ripal_design/screen/worker/worker_settings_screen.dart';
-import 'package:ripal_design/service/user_service.dart';
+import 'package:ripal_design/screen/settings_screen.dart';
+import 'package:ripal_design/screen/worker_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A shared Scaffold wrapper used across screens.
@@ -56,7 +56,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        role = widget.role ?? prefs.getString('role') ?? UserService.currentRole;
+        role = widget.role ?? prefs.getString('role') ?? '';
         _userAvatarPath = prefs.getString('userAvatarPath');
       });
     }
@@ -64,11 +64,12 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveRole = (widget.role != null && widget.role!.isNotEmpty)
         ? widget.role!
-        : (role.isNotEmpty ? role : UserService.currentRole);
+        : role;
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F2),
+      backgroundColor: isDark ? const Color(0xFF141212) : const Color(0xFFFFF7F2),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -76,25 +77,17 @@ class _MainScaffoldState extends State<MainScaffold> {
         leading:
             widget.appBarLeading ??
             IconButton(
-              icon: const Icon(Icons.grid_view_outlined, color: _titleColor),
-              onPressed: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => DashboardScreen(initialRole: effectiveRole),
-                    ),
-                    (route) => false,
-                  );
-                }
-              },
+              icon: Icon(Icons.grid_view_outlined, color: isDark ? Colors.white : _titleColor),
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                (route) => false,
+              ),
             ),
         title: Text(
           widget.appBarTitle ?? 'Ripal Design',
           style: TextStyle(
-            color: _titleColor,
+            color: isDark ? Colors.white : _titleColor,
             fontWeight: FontWeight.bold,
             fontSize: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 22 : 24,
           ),
@@ -117,7 +110,10 @@ class _MainScaffoldState extends State<MainScaffold> {
                 height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE2C4BD), width: 1.5),
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF333333) : const Color(0xFFE2C4BD),
+                    width: 1.5,
+                  ),
                 ),
                 child: ClipOval(
                   child: buildProfileImage(
@@ -125,9 +121,13 @@ class _MainScaffoldState extends State<MainScaffold> {
                     width: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                     height: (effectiveRole == 'admin' || effectiveRole == 'worker') ? 32 : 36,
                     fit: BoxFit.cover,
-                    fallback: const CircleAvatar(
-                      backgroundColor: Color(0xFFF5EBE6),
-                      child: Icon(Icons.person, size: 18, color: _titleColor),
+                    fallback: CircleAvatar(
+                      backgroundColor: isDark ? const Color(0xFF2A2422) : const Color(0xFFF5EBE6),
+                      child: Icon(
+                        Icons.person,
+                        size: 18,
+                        color: isDark ? const Color(0xFFE07A5F) : _titleColor,
+                      ),
                     ),
                   ),
                 ),
@@ -137,13 +137,13 @@ class _MainScaffoldState extends State<MainScaffold> {
         ],
       ),
       body: widget.body,
-      floatingActionButton: (widget.onFabPressed != null)
+      floatingActionButton: widget.onFabPressed != null
           ? FloatingActionButton(
               onPressed: widget.onFabPressed,
-              backgroundColor: const Color(0xFF8B3A1C),
-              elevation: 4,
+              backgroundColor: isDark ? const Color(0xFFE07A5F) : _titleColor,
               shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: Colors.white, size: 28),
+              elevation: 4,
+              child: const Icon(Icons.add, color: Colors.white, size: 32),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

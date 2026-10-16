@@ -38,16 +38,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
-            color: Colors.black87,
+            color: isDark ? Colors.grey.shade300 : Colors.black87,
           ),
         ),
         const SizedBox(height: 8),
@@ -57,23 +60,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           maxLength: widget.maxLength,
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontSize: 14,
+          ),
           buildCounter: widget.maxLength != null
               ? (context, {required currentLength, required isFocused, maxLength}) => null
               : null,
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: TextStyle(
-              color: Colors.grey.shade500,
+              color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
               letterSpacing: widget.isPassword ? 2 : null,
             ),
+            filled: isDark,
+            fillColor: isDark ? const Color(0xFF1E1E1E) : null,
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF333333) : Colors.grey.shade300,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF333333) : Colors.grey.shade300,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryColor),
+              borderSide: BorderSide(color: effectivePrimary),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -85,7 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       _obscureText
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      color: Colors.grey.shade500,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                     ),
                     onPressed: () {
                       setState(() {

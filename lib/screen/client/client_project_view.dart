@@ -182,6 +182,9 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   Widget _buildBody() {
     final filtered = _filteredProjects;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : primaryColor;
+
     return Column(
       children: [
         // ─── Search Bar ─────────────────────────────
@@ -190,35 +193,35 @@ class _ClientProjectViewState extends State<ClientProjectView> {
           child: TextField(
             controller: _searchController,
             onChanged: (val) => setState(() => _searchQuery = val),
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
             decoration: InputDecoration(
               hintText: 'Search projects...',
               hintStyle: TextStyle(
-                color: Colors.grey.shade500,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 fontSize: 14,
               ),
               prefixIcon: Icon(
                 Icons.search,
-                color: Colors.grey.shade500,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                 size: 20,
               ),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 12,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
+                borderSide: isDark ? const BorderSide(color: Color(0xFF333333)) : BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
+                borderSide: isDark ? const BorderSide(color: Color(0xFF333333)) : BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: primaryColor, width: 1.5),
+                borderSide: BorderSide(color: effectivePrimary, width: 1.5),
               ),
             ),
           ),
@@ -239,14 +242,14 @@ class _ClientProjectViewState extends State<ClientProjectView> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: isDark ? const Color(0xFF333333) : Colors.grey.shade300),
                 ),
                 child: Text(
                   '${filtered.length}',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -374,22 +377,25 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   Widget _buildFilterChip(String label) {
     final bool isSelected = _selectedFilter == label;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeColor = isDark ? const Color(0xFFE07A5F) : titleColor;
+
     return GestureDetector(
       onTap: () => setState(() => _selectedFilter = label),
       child: Container(
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? titleColor : Colors.white,
+          color: isSelected ? activeColor : (isDark ? const Color(0xFF1E1E1E) : Colors.white),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? titleColor : Colors.grey.shade300,
+            color: isSelected ? activeColor : (isDark ? const Color(0xFF333333) : Colors.grey.shade300),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey.shade700,
+            color: isSelected ? Colors.white : (isDark ? Colors.grey.shade300 : Colors.grey.shade700),
             fontSize: 11,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,

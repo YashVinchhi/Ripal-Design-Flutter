@@ -10,6 +10,7 @@ import 'package:ripal_design/screen/auth/login_screen.dart';
 import 'package:ripal_design/screen/worker/worker_password_update_screen.dart';
 import 'package:ripal_design/screen/auth/upload_profile_photo_screen.dart';
 import 'package:ripal_design/resource/controllers/app_navigation.dart';
+import 'package:ripal_design/service/theme_service.dart';
 import 'package:ripal_design/service/user_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -154,6 +155,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildSettingsContent() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dividerColor = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFF5F5F5);
+
     return Column(
       children: [
         // ─── PROFILE HEADER ─────────────────────────────────
@@ -169,17 +173,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       backgroundColor: salmonColor.withValues(alpha: 0.2),
                       child: CircleAvatar(
                         radius: 40,
-                        backgroundColor: const Color(0xFFF5EBE6),
+                        backgroundColor: isDark ? const Color(0xFF2A2422) : const Color(0xFFF5EBE6),
                         child: ClipOval(
                           child: buildProfileImage(
                             avatarPath,
                             width: 80,
                             height: 80,
                             fit: BoxFit.cover,
-                            fallback: const Icon(
+                            fallback: Icon(
                               Icons.person,
                               size: 48,
-                              color: Color(0xFF5A0000),
+                              color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000),
                             ),
                           ),
                         ),
@@ -190,8 +194,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       right: 0,
                       child: Container(
                         padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF5A0000),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -210,153 +214,166 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: _openEditProfile,
               child: Column(
                 children: [
-                    Text(
-                      userName.isNotEmpty
-                          ? userName
-                          : _getDefaultName(role),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF2D2D2D),
-                      ),
+                  Text(
+                    userName.isNotEmpty
+                        ? userName
+                        : _getDefaultName(role),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : const Color(0xFF2D2D2D),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      userEmail.isNotEmpty
-                          ? userEmail
-                          : _getDefaultEmail(role),
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    userEmail.isNotEmpty
+                        ? userEmail
+                        : _getDefaultEmail(role),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-              // ─── ACCOUNT ─────────────────────────────────────────
-              SettingGroup(
-                title: 'ACCOUNT',
-                children: [
-                  SettingTile(
-                    icon: Icons.person_outline,
-                    title: 'Profile Information',
-                    onTap: _openEditProfile,
                   ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingTile(
-                    icon: Icons.shield_outlined,
-                    title: 'Security & Password',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WorkerPasswordUpdateScreen(),
-                        ),
-                      );
-                    },
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
 
-              // ─── NOTIFICATIONS ────────────────────────────────────
-              SettingGroup(
-                title: 'NOTIFICATIONS',
-                children: [
-                  SettingSwitchTile(
-                    icon: Icons.notifications_none,
-                    title: 'Push Notifications',
-                    subtitle: 'Alerts, updates and activities',
-                    value: _pushNotifications,
-                    onChanged: (v) => setState(() => _pushNotifications = v),
+        // ─── ACCOUNT ─────────────────────────────────────────
+        SettingGroup(
+          title: 'ACCOUNT',
+          children: [
+            SettingTile(
+              icon: Icons.person_outline,
+              title: 'Profile Information',
+              onTap: _openEditProfile,
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: dividerColor,
+            ),
+            SettingTile(
+              icon: Icons.shield_outlined,
+              title: 'Security & Password',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WorkerPasswordUpdateScreen(),
                   ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingSwitchTile(
-                    icon: Icons.mail_outline,
-                    title: 'Email Reports',
-                    subtitle: 'Weekly summaries and news',
-                    value: _emailReports,
-                    onChanged: (v) => setState(() => _emailReports = v),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
 
-              // ─── PREFERENCES ─────────────────────────────────────
-              SettingGroup(
-                title: 'PREFERENCES',
-                children: [
-                  SettingTile(
-                    icon: Icons.palette_outlined,
-                    title: 'Appearance',
-                    subtitle: 'Light theme',
-                    onTap: () {},
-                  ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingTile(
-                    icon: Icons.language_outlined,
-                    title: 'Language',
-                    subtitle: 'English (US)',
-                    onTap: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+        // ─── NOTIFICATIONS ────────────────────────────────────
+        SettingGroup(
+          title: 'NOTIFICATIONS',
+          children: [
+            SettingSwitchTile(
+              icon: Icons.notifications_none,
+              title: 'Push Notifications',
+              subtitle: 'Alerts, updates and activities',
+              value: _pushNotifications,
+              onChanged: (v) => setState(() => _pushNotifications = v),
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: dividerColor,
+            ),
+            SettingSwitchTile(
+              icon: Icons.mail_outline,
+              title: 'Email Reports',
+              subtitle: 'Weekly summaries and news',
+              value: _emailReports,
+              onChanged: (v) => setState(() => _emailReports = v),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
 
-              // ─── ABOUT & HELP ────────────────────────────────────
-              SettingGroup(
-                title: 'ABOUT & HELP',
-                children: [
-                  SettingTile(
-                    icon: Icons.help_outline,
-                    title: 'Help & Support',
-                    subtitle: 'FAQs and support center',
-                    onTap: () {
-                      _showInfoDialog('Help & Support', 'Reach out to support@ripaldesign.com or call +91 94267 89012 for assistance.');
-                    },
-                  ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingTile(
-                    icon: Icons.security,
-                    title: 'Privacy Policy',
-                    subtitle: 'Terms of service & privacy',
-                    onTap: () {
-                      _showInfoDialog('Privacy Policy', 'We process your data securely according to our privacy policy terms.');
-                    },
-                  ),
-                  const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFF5F5F5),
-                  ),
-                  SettingTile(
-                    icon: Icons.info_outline,
-                    title: 'About Ripal Design',
-                    subtitle: 'Version 1.0.0',
-                    onTap: () {
-                      _showInfoDialog('About Ripal Design', 'Ripal Design Architecture Studio\nVersion 1.0.0');
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
+        // ─── PREFERENCES ─────────────────────────────────────
+        SettingGroup(
+          title: 'PREFERENCES',
+          children: [
+            ValueListenableBuilder<ThemeMode>(
+              valueListenable: ThemeService.instance.themeModeNotifier,
+              builder: (context, themeMode, _) {
+                final isDarkMode = themeMode == ThemeMode.dark;
+                return SettingTile(
+                  icon: Icons.palette_outlined,
+                  title: 'Theme',
+                  subtitle: isDarkMode ? 'Dark Mode' : 'Light Mode',
+                  onTap: () {
+                    ThemeService.instance.toggleTheme();
+                  },
+                );
+              },
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: dividerColor,
+            ),
+            SettingTile(
+              icon: Icons.language_outlined,
+              title: 'Language',
+              subtitle: 'English (US)',
+              onTap: () {},
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        // ─── ABOUT & HELP ────────────────────────────────────
+        SettingGroup(
+          title: 'ABOUT & HELP',
+          children: [
+            SettingTile(
+              icon: Icons.help_outline,
+              title: 'Help & Support',
+              subtitle: 'FAQs and support center',
+              onTap: () {
+                _showInfoDialog('Help & Support', 'Reach out to support@ripaldesign.com or call +91 94267 89012 for assistance.');
+              },
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: dividerColor,
+            ),
+            SettingTile(
+              icon: Icons.security,
+              title: 'Privacy Policy',
+              subtitle: 'Terms of service & privacy',
+              onTap: () {
+                _showInfoDialog('Privacy Policy', 'We process your data securely according to our privacy policy terms.');
+              },
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: dividerColor,
+            ),
+            SettingTile(
+              icon: Icons.info_outline,
+              title: 'About Ripal Design',
+              subtitle: 'Version 1.0.0',
+              onTap: () {
+                _showInfoDialog('About Ripal Design', 'Ripal Design Architecture Studio\nVersion 1.0.0');
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
 
               // ─── LOGOUT BUTTON ────────────────────────────────────
               SizedBox(

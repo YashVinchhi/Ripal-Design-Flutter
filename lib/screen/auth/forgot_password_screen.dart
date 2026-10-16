@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ripal_design/resource/custom_text_field.dart';
-import 'package:ripal_design/resource/custom_button.dart';
+import 'package:ripal_design/resource/widgets/custom_text_field.dart';
+import 'package:ripal_design/resource/widgets/custom_button.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -15,14 +15,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveTitle = isDark ? Colors.white : titleColor;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF141212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -30,7 +33,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         title: Text(
           'Ripal Design',
           style: TextStyle(
-            color: titleColor,
+            color: effectiveTitle,
             fontSize: 24,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
@@ -39,85 +42,96 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         titleSpacing: 0,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24.0,
-            vertical: 24.0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Text(
-                'Reset Password',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  color: titleColor,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Subtitle
-              Text(
-                "Enter your email address and we'll send you instructions to reset your password.",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Email Field
-              CustomTextField(
-                label: 'EMAIL ADDRESS',
-                hintText: 'name@studio.com',
-                keyboardType: TextInputType.emailAddress,
-                suffixIcon: Icon(
-                  Icons.alternate_email,
-                  color: Colors.grey.shade400,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Send Reset Link Button
-              CustomButton(text: 'Send Reset Link', onPressed: () {}),
-
-              const SizedBox(height: 40),
-
-              // Back to Login Button
-              Center(
-                child: TextButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.grey.shade600,
-                    size: 16,
-                  ),
-                  label: Text(
-                    'Back to Login',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 24,
+                      horizontal: 24.0,
+                      vertical: 24.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Text(
+                          'Reset Password',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800,
+                            color: effectiveTitle,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Subtitle
+                        Text(
+                          "Enter your email address and we'll send you instructions to reset your password.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Email Field
+                        CustomTextField(
+                          label: 'EMAIL ADDRESS',
+                          hintText: 'name@studio.com',
+                          keyboardType: TextInputType.emailAddress,
+                          suffixIcon: Icon(
+                            Icons.alternate_email,
+                            color: Colors.grey.shade400,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Send Reset Link Button
+                        CustomButton(text: 'Send Reset Link', onPressed: () {}),
+
+                        const Spacer(),
+
+                        // Back to Login Button
+                        Center(
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              size: 16,
+                            ),
+                            label: Text(
+                              'Back to Login',
+                              style: TextStyle(
+                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

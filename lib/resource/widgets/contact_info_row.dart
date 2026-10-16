@@ -16,6 +16,8 @@ class ContactInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -23,10 +25,10 @@ class ContactInfoRow extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFFFDE8E4),
+            color: isDark ? const Color(0xFF2A2020) : const Color(0xFFFDE8E4),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: const Color(0xFF9E4723), size: 20),
+          child: Icon(icon, color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF9E4723), size: 20),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -35,20 +37,20 @@ class ContactInfoRow extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
-                  color: Colors.black54,
+                  color: isDark ? Colors.grey.shade400 : Colors.black54,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF222222),
+                  color: isDark ? Colors.white : const Color(0xFF222222),
                   height: 1.4,
                 ),
               ),

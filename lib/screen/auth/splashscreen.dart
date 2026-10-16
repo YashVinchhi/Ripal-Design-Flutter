@@ -40,12 +40,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFFFCE6E6); // Soft blush pink
-    const primaryColor = Color(0xFF6E1813); // Deep maroon / wine red
-    const subtleTextColor = Color(0xFF8D6864);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveBg = isDark ? const Color(0xFF141212) : const Color(0xFFFCE6E6);
+    final effectivePrimary = isDark ? const Color(0xFFE07A5F) : const Color(0xFF6E1813);
+    final effectiveSubtle = isDark ? Colors.grey.shade400 : const Color(0xFF8D6864);
+    final lineColor = isDark ? const Color(0xFF555555) : const Color(0xFF3B2E2E);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: effectiveBg,
       body: SafeArea(
         child: Stack(
           children: [
@@ -55,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
               left: 24,
               child: CustomPaint(
                 size: const Size(100, 140),
-                painter: CornerLinesPainter(isTopLeft: true),
+                painter: CornerLinesPainter(isTopLeft: true, lineColor: lineColor),
               ),
             ),
 
@@ -65,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
               right: 24,
               child: CustomPaint(
                 size: const Size(100, 140),
-                painter: CornerLinesPainter(isTopLeft: false),
+                painter: CornerLinesPainter(isTopLeft: false, lineColor: lineColor),
               ),
             ),
 
@@ -81,29 +83,29 @@ class _SplashScreenState extends State<SplashScreen> {
                       'assets/logo/Logo.png',
                       width: 140,
                       height: 140,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
+                      errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.architecture,
                         size: 110,
-                        color: primaryColor,
+                        color: effectivePrimary,
                       ),
                     ),
                     const SizedBox(height: 32),
-                    const Text(
+                    Text(
                       'Ripal Design',
                       style: TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.w800,
-                        color: primaryColor,
+                        color: effectivePrimary,
                         letterSpacing: -0.5,
                       ),
                     ),
                     const Spacer(),
-                    const Text(
+                    Text(
                       'ARCHITECTURAL EXCELLENCE',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: subtleTextColor,
+                        color: effectiveSubtle,
                         letterSpacing: 2.8,
                       ),
                     ),
@@ -122,13 +124,14 @@ class _SplashScreenState extends State<SplashScreen> {
 // Custom painter for the offset intersecting corner borders
 class CornerLinesPainter extends CustomPainter {
   final bool isTopLeft;
+  final Color lineColor;
 
-  CornerLinesPainter({required this.isTopLeft});
+  CornerLinesPainter({required this.isTopLeft, this.lineColor = const Color(0xFF3B2E2E)});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF3B2E2E)
+      ..color = lineColor
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
 

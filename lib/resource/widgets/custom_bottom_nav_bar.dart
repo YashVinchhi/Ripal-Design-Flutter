@@ -20,10 +20,14 @@ class CustomBottomNavBar extends StatelessWidget {
     final isEmployee = normalized == 'employee';
     final isWorkerOrEmployee = isWorker || isEmployee;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: (isAdmin || isWorkerOrEmployee) ? const Color(0xFFFFF7F2) : Colors.white,
+        color: isDark
+            ? const Color(0xFF1E1E1E)
+            : ((isAdmin || isWorkerOrEmployee) ? const Color(0xFFFFF7F2) : Colors.white),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: (isAdmin || isWorkerOrEmployee)
             ? []
@@ -34,18 +38,21 @@ class CustomBottomNavBar extends StatelessWidget {
                   offset: const Offset(0, -2),
                 ),
               ],
-        border: (isAdmin || isWorkerOrEmployee) ? Border.all(color: Colors.black12, width: 0.5) : null,
+        border: isDark
+            ? Border.all(color: const Color(0xFF2E2E2E), width: 0.5)
+            : ((isAdmin || isWorkerOrEmployee) ? Border.all(color: Colors.black12, width: 0.5) : null),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(icon: Icons.home_outlined, label: 'Home', index: 0),
+          _buildNavItem(icon: Icons.home_outlined, label: 'Home', index: 0, isDark: isDark),
           _buildNavItem(
             icon: (isAdmin || isWorkerOrEmployee)
                 ? Icons.calendar_today_outlined
                 : Icons.grid_view_outlined,
             label: (isAdmin || isWorkerOrEmployee) ? 'Leave' : 'Project',
             index: 1,
+            isDark: isDark,
           ),
           const SizedBox(width: 48), // Space for FAB
           _buildNavItem(
@@ -56,6 +63,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 ? 'Upload'
                 : (isAdmin ? 'Finance' : 'Contact'),
             index: 2,
+            isDark: isDark,
           ),
           _buildNavItem(
             icon: isWorkerOrEmployee
@@ -65,6 +73,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 ? 'Profile'
                 : (isAdmin ? 'Settings' : 'Profile'),
             index: 3,
+            isDark: isDark,
           ),
         ],
       ),
@@ -75,11 +84,12 @@ class CustomBottomNavBar extends StatelessWidget {
     required IconData icon,
     required String label,
     required int index,
+    required bool isDark,
   }) {
     final bool isSelected = currentIndex == index;
     final Color color = isSelected
-        ? const Color(0xFF5A0000)
-        : Colors.grey.shade500;
+        ? (isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000))
+        : (isDark ? Colors.grey.shade400 : Colors.grey.shade500);
 
     return GestureDetector(
       onTap: () => onTap(index),

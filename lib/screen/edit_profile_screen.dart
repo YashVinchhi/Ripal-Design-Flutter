@@ -139,13 +139,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return MainScaffold(
       currentIndex: _currentIndex,
       onNavTap: _onNavTap,
       onFabPressed: _onFabPressed,
       appBarTitle: 'Edit Profile',
       appBarLeading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: primaryColor),
+        icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : primaryColor),
         onPressed: () => Navigator.pop(context),
       ),
       body: SafeArea(
@@ -292,15 +293,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildField(String label, String hint, TextEditingController controller, {int maxLines = 1, int? maxLength, TextInputType keyboardType = TextInputType.text}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: _titleDark,
+            color: isDark ? Colors.white : _titleDark,
             letterSpacing: 0.8,
           ),
         ),
@@ -310,24 +312,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           maxLines: maxLines,
           maxLength: maxLength,
           keyboardType: keyboardType,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14),
           buildCounter: maxLength != null ? (context, {required currentLength, required isFocused, maxLength}) => null : null,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
             filled: true,
-            fillColor: const Color(0xFFFFF7F2),
+            fillColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFF7F2),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
-              borderSide: const BorderSide(color: Color(0xFFE5CCC9)),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : const Color(0xFFE5CCC9)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
-              borderSide: const BorderSide(color: Color(0xFFE5CCC9)),
+              borderSide: BorderSide(color: isDark ? const Color(0xFF333333) : const Color(0xFFE5CCC9)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
-              borderSide: const BorderSide(color: primaryColor),
+              borderSide: BorderSide(color: isDark ? const Color(0xFFE07A5F) : primaryColor),
             ),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppNotificationIcon extends StatelessWidget {
-  final Color color;
+  final Color? _color;
   final double size;
 
   const AppNotificationIcon({
@@ -9,25 +9,30 @@ class AppNotificationIcon extends StatelessWidget {
     Color? color,
     Color? iconColor,
     this.size = 24.0,
-  }) : color = color ?? iconColor ?? const Color(0xFF5A0000);
+  }) : _color = color ?? iconColor;
+
+  Color get color => _color ?? const Color(0xFF5A0000);
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveColor = _color ?? (isDark ? Colors.white : const Color(0xFF5A0000));
     return IconButton(
-      icon: Icon(Icons.notifications_none_outlined, color: color, size: size),
+      icon: Icon(Icons.notifications_none_outlined, color: effectiveColor, size: size),
       tooltip: 'Notifications',
       onPressed: () => showNotificationsModal(context),
     );
   }
 
   static void showNotificationsModal(BuildContext context) {
-    const primaryColor = Color(0xFF5A0000);
-    const titleDark = Color(0xFF2A0501);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000);
+    final titleDark = isDark ? Colors.white : const Color(0xFF2A0501);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFFFF7F2),
+      backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFF7F2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -59,7 +64,7 @@ class AppNotificationIcon extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             'Notifications',
                             style: TextStyle(
                               fontSize: 20,
@@ -71,10 +76,10 @@ class AppNotificationIcon extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFBECEB),
+                              color: isDark ? const Color(0xFF2A2020) : const Color(0xFFFBECEB),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Text(
+                            child: Text(
                               '3 New',
                               style: TextStyle(
                                 fontSize: 11,
@@ -95,7 +100,7 @@ class AppNotificationIcon extends StatelessWidget {
                             ),
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           'Mark All Read',
                           style: TextStyle(
                             fontSize: 12,
@@ -112,6 +117,7 @@ class AppNotificationIcon extends StatelessWidget {
                       controller: scrollController,
                       children: [
                         _buildNotificationTile(
+                          context: context,
                           icon: Icons.architecture,
                           title: 'Project Milestone Updated',
                           subtitle: 'Skyline Plaza structural framework reached 75% completion.',
@@ -120,6 +126,7 @@ class AppNotificationIcon extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         _buildNotificationTile(
+                          context: context,
                           icon: Icons.event_available,
                           title: 'Leave Request Approved',
                           subtitle: 'Your leave request for Annual Leave has been approved by management.',
@@ -128,6 +135,7 @@ class AppNotificationIcon extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         _buildNotificationTile(
+                          context: context,
                           icon: Icons.cloud_upload_outlined,
                           title: 'New Blueprint Uploaded',
                           subtitle: 'Modernist_Villa_Phase_01.dwg synced to the project repository.',
@@ -136,6 +144,7 @@ class AppNotificationIcon extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         _buildNotificationTile(
+                          context: context,
                           icon: Icons.assignment_turned_in_outlined,
                           title: 'Welcome to Ripal Design',
                           subtitle: 'Your workspace and team profile are active and ready.',
@@ -155,23 +164,28 @@ class AppNotificationIcon extends StatelessWidget {
   }
 
   static Widget _buildNotificationTile({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
     required String time,
     required bool isNew,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF282828) : Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isNew ? const Color(0xFFE2C4BD) : const Color(0xFFF2DED7),
+          color: isDark
+              ? (isNew ? const Color(0xFF503A3A) : const Color(0xFF383838))
+              : (isNew ? const Color(0xFFE2C4BD) : const Color(0xFFF2DED7)),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -184,12 +198,12 @@ class AppNotificationIcon extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFFFBECEB),
+              color: isDark ? const Color(0xFF3A2424) : const Color(0xFFFBECEB),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.notifications_active_outlined,
-              color: Color(0xFF5A0000),
+              color: isDark ? const Color(0xFFE07A5F) : const Color(0xFF5A0000),
               size: 20,
             ),
           ),
@@ -203,17 +217,17 @@ class AppNotificationIcon extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2A0501),
+                        color: isDark ? Colors.white : const Color(0xFF2A0501),
                       ),
                     ),
                     Text(
                       time,
                       style: TextStyle(
                         fontSize: 10,
-                        color: Colors.grey.shade500,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                       ),
                     ),
                   ],
@@ -223,7 +237,7 @@ class AppNotificationIcon extends StatelessWidget {
                   subtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                     height: 1.3,
                   ),
                 ),
