@@ -36,7 +36,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
   @override
   Widget build(BuildContext context) {
     return RoleGuardedScreen(
-      allowedRoles: const ['admin', 'employee'],
+      allowedRoles: const ['admin', 'employee', 'worker'],
       child: MainScaffold(
       role: UserService.currentRole,
       currentIndex: _currentIndex,
@@ -184,11 +184,13 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
                     _buildBlueprintCard(
                       filename: 'Main_Level_HVAC.pdf',
                       meta: '14.2 MB • Oct 12, 2023',
+                      imageUrl: 'assets/project/behance_239114219_12.webp',
                     ),
                     const SizedBox(width: 16),
                     _buildBlueprintCard(
                       filename: 'Structural_Cross_Section.dwg',
                       meta: '8.5 MB • Oct 15, 2023',
+                      imageUrl: 'assets/project/behance_239114219_05.webp',
                     ),
                   ],
                 ),
@@ -242,18 +244,29 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
                 childAspectRatio: 1.3,
-                children: List.generate(
-                  4,
-                  (index) => Container(
+                children: [
+                  'assets/project/behance_239114219_04.webp',
+                  'assets/project/behance_239114219_05.webp',
+                  'assets/project/behance_239114219_12.webp',
+                  'assets/project/behance_239114219_13.webp',
+                ].map((img) {
+                  return Container(
                     decoration: BoxDecoration(
                       color: _cardItemBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: CustomPaint(
-                      painter: _CheckeredPatternPainter(),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        img,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => CustomPaint(
+                          painter: _CheckeredPatternPainter(),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 28),
 
@@ -268,7 +281,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Video Container
+              // Video Container (Black Area with Video Image)
               Container(
                 height: 170,
                 width: double.infinity,
@@ -281,8 +294,20 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: CustomPaint(
-                          painter: _CheckeredPatternPainter(),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              'assets/project/behance_239114219_14.webp',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => CustomPaint(
+                                painter: _CheckeredPatternPainter(),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.black.withValues(alpha: 0.40),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -325,11 +350,11 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
               const SizedBox(height: 16),
 
               // Render Items List
-              _buildRenderItem('Exterior_Night_View.jpg', 'Rendered Oct 10 • 12 MB'),
+              _buildRenderItem('Exterior_Night_View.jpg', 'Rendered Oct 10 • 12 MB', 'assets/project/behance_239114219_04.webp'),
               const SizedBox(height: 8),
-              _buildRenderItem('Master_Bath_A.jpg', 'Rendered Oct 11 • 15 MB'),
+              _buildRenderItem('Master_Bath_A.jpg', 'Rendered Oct 11 • 15 MB', 'assets/project/behance_239114219_05.webp'),
               const SizedBox(height: 8),
-              _buildRenderItem('Terrace_Layout_V4.png', 'Rendered Oct 14 • 8 MB'),
+              _buildRenderItem('Terrace_Layout_V4.png', 'Rendered Oct 14 • 8 MB', 'assets/project/behance_239114219_13.webp'),
               const SizedBox(height: 32),
             ],
           ),
@@ -361,7 +386,11 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
     );
   }
 
-  Widget _buildBlueprintCard({required String filename, required String meta}) {
+  Widget _buildBlueprintCard({
+    required String filename,
+    required String meta,
+    String? imageUrl,
+  }) {
     return Container(
       width: 180,
       decoration: BoxDecoration(
@@ -379,11 +408,23 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
             ),
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: CustomPaint(
-                painter: _CheckeredPatternPainter(),
-                child: const Center(
-                  child: Icon(Icons.picture_as_pdf, size: 36, color: Color(0xFFC08070)),
-                ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    imageUrl ?? 'assets/project/behance_239114219_12.webp',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => CustomPaint(
+                      painter: _CheckeredPatternPainter(),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.15),
+                  ),
+                  const Center(
+                    child: Icon(Icons.picture_as_pdf, size: 36, color: Colors.white),
+                  ),
+                ],
               ),
             ),
           ),
@@ -458,7 +499,7 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
     );
   }
 
-  Widget _buildRenderItem(String filename, String meta) {
+  Widget _buildRenderItem(String filename, String meta, [String? imageUrl]) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
@@ -477,8 +518,12 @@ class _AdminFileViewScreenState extends State<AdminFileViewScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: CustomPaint(
-                painter: _CheckeredPatternPainter(),
+              child: Image.asset(
+                imageUrl ?? 'assets/project/behance_239114219_04.webp',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => CustomPaint(
+                  painter: _CheckeredPatternPainter(),
+                ),
               ),
             ),
           ),

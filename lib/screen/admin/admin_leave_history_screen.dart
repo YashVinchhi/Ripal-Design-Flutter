@@ -18,7 +18,7 @@ class _AdminLeaveHistoryScreenState extends State<AdminLeaveHistoryScreen> {
   static const Color primaryColor = Color(0xFF5A0000);
   static const Color _titleDark = Color(0xFF2A0501);
 
-  final int _currentIndex = 1;
+  final int _currentIndex = -1;
   List<LeaveRecord> _leaveHistory = [];
   bool _isLoading = true;
 

@@ -303,11 +303,11 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
               const SizedBox(height: 12),
               _buildWalkThroughVideo(),
               const SizedBox(height: 14),
-              _buildMediaItem('Exterior_Night_View.jpg', 'Rendered Oct 10 • 12 MB'),
+              _buildMediaItem('Exterior_Night_View.jpg', 'Rendered Oct 10 • 12 MB', 'assets/project/behance_239114219_04.webp'),
               const SizedBox(height: 10),
-              _buildMediaItem('Master_Bath_A.jpg', 'Rendered Oct 11 • 15 MB'),
+              _buildMediaItem('Master_Bath_A.jpg', 'Rendered Oct 11 • 15 MB', 'assets/project/behance_239114219_05.webp'),
               const SizedBox(height: 10),
-              _buildMediaItem('Terrace_Layout_V4.png', 'Rendered Oct 14 • 8 MB'),
+              _buildMediaItem('Terrace_Layout_V4.png', 'Rendered Oct 14 • 8 MB', 'assets/project/behance_239114219_13.webp'),
               const SizedBox(height: 40),
             ],
           ),
@@ -476,6 +476,12 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
   }
 
   Widget _buildSitePhotosGrid() {
+    final images = [
+      'assets/project/behance_239114219_04.webp',
+      'assets/project/behance_239114219_05.webp',
+      'assets/project/behance_239114219_12.webp',
+      'assets/project/behance_239114219_13.webp',
+    ];
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 12,
@@ -491,7 +497,11 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: const CheckeredPlaceholder(squareSize: 8),
+            child: Image.asset(
+              images[index % images.length],
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(squareSize: 8),
+            ),
           ),
         ),
       ),
@@ -500,10 +510,10 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
 
   Widget _buildWalkThroughVideo() {
     return Container(
-      height: 140,
+      height: 160,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF5A6065),
+        color: const Color(0xFF333333),
         borderRadius: BorderRadius.circular(16),
       ),
       child: ClipRRect(
@@ -524,7 +534,7 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: Colors.black.withValues(alpha: 0.40),
               ),
             ),
             Container(
@@ -571,7 +581,7 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
     );
   }
 
-  Widget _buildMediaItem(String name, String meta) {
+  Widget _buildMediaItem(String name, String meta, [String? imageUrl]) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -590,7 +600,11 @@ class _WorkerProjectFilesScreenState extends State<WorkerProjectFilesScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: const CheckeredPlaceholder(squareSize: 4),
+              child: Image.asset(
+                imageUrl ?? 'assets/project/behance_239114219_04.webp',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const CheckeredPlaceholder(squareSize: 4),
+              ),
             ),
           ),
           const SizedBox(width: 12),

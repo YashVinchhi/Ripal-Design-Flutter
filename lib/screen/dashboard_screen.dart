@@ -441,14 +441,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AdminProjectDetailScreen(
-                      projectName: 'Skyline Plaza',
-                      clientName: 'Vanguard Properties',
-                      budget: '₹2,50,000',
-                      timeline: 'Jan 2024 - Dec 2024',
-                      type: 'Commercial Architecture',
-                      location: 'Skyline Avenue — Phase 3',
-                    ),
+                    builder: (context) => const ClientProjectView(),
                   ),
                 );
               },
@@ -929,14 +922,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const WorkerProjectViewScreen(
-                      projectName: 'Skyline Plaza',
-                      clientName: 'Skyline Dev',
-                      budget: '₹4,50,000',
-                      timeline: 'Oct 2023 - Dec 2024',
-                      type: 'Structural Framework',
-                      location: 'Metropolitan Center',
-                    ),
+                    builder: (context) => const ClientProjectView(),
                   ),
                 );
               },
@@ -1428,14 +1414,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const WorkerProjectViewScreen(
-                      projectName: 'Skyline Plaza',
-                      clientName: 'Skyline Dev',
-                      budget: '₹4,50,000',
-                      timeline: 'Oct 2023 - Dec 2024',
-                      type: 'Structural Framework',
-                      location: 'Metropolitan Center',
-                    ),
+                    builder: (context) => const ClientProjectView(),
                   ),
                 );
               },

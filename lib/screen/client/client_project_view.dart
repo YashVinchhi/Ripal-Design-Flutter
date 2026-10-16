@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ripal_design/resource/project_card.dart';
 import 'package:ripal_design/resource/main_scaffold.dart';
 import 'package:ripal_design/resource/app_navigation.dart';
+import 'package:ripal_design/screen/dashboard_screen.dart';
+import 'package:ripal_design/service/user_service.dart';
 import 'package:ripal_design/screen/admin/admin_create_project.dart';
 import 'package:ripal_design/screen/client/client_project_detail_screen.dart';
 import 'package:ripal_design/screen/client/client_applay.dart';
@@ -105,15 +107,17 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
   Future<void> _loadRole() async {
     final prefs = await SharedPreferences.getInstance();
-    final loadedRole = prefs.getString('role') ?? 'admin';
-    setState(() {
-      role = loadedRole;
-      if (role == 'admin') {
-        _currentIndex = -1;
-      } else {
-        _currentIndex = 1;
-      }
-    });
+    final loadedRole = (prefs.getString('role') ?? UserService.currentRole).toLowerCase().trim();
+    if (mounted) {
+      setState(() {
+        role = loadedRole;
+        if (role == 'admin' || role == 'worker' || role == 'employee') {
+          _currentIndex = -1;
+        } else {
+          _currentIndex = 1;
+        }
+      });
+    }
   }
 
   List<Map<String, dynamic>> get _filteredProjects {
@@ -141,17 +145,7 @@ class _ClientProjectViewState extends State<ClientProjectView> {
   }
 
   void _onFabPressed() {
-    if (role == 'admin') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const AdminCreateProject()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ClientApplay()),
-      );
-    }
+    AppNavigation.handleFabPress(context, role);
   }
 
   @override
@@ -163,7 +157,22 @@ class _ClientProjectViewState extends State<ClientProjectView> {
 
     // Standalone: full scaffold with nav bar
     return MainScaffold(
+      role: role,
       appBarTitle: 'Projects',
+      appBarLeading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Color(0xFF5A0000)),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen(initialRole: role)),
+              (route) => false,
+            );
+          }
+        },
+      ),
       currentIndex: _currentIndex,
       onFabPressed: _onFabPressed,
       onNavTap: _onNavTap,

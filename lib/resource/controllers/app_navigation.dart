@@ -65,7 +65,7 @@ class AppNavigation {
         case 1:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const AdminLeaveHistoryScreen()),
+            MaterialPageRoute(builder: (_) => const AdminLeaveScreen()),
           );
           break;
         case 2:
